@@ -1,6 +1,7 @@
 #include "audiomidi.h"
 #include <iostream>
 #include <cstring>
+#include <stdlib.h>
 
 AudioMidi::AudioMidi() {}
 
@@ -10,6 +11,15 @@ void AudioMidi::start()
     int deviceIndex = 2;
     unsigned int bufferSize = 64;
     _track = Track(bufferSize);
+
+    std::string user = std::getenv("USER");
+    std::string frangi ("frangi");
+
+    if( user == frangi ) {
+        std::cout << "User is Frangi" << std::endl;
+        deviceIndex = 3;
+        bufferSize = 30;
+    }
 
     try
     {
