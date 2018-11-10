@@ -9,7 +9,7 @@ void AudioMidi::start()
 {
     RtAudio* _audio;
     int deviceIndex = 2;
-    unsigned int bufferSize = 32;
+    unsigned int bufferSize = 64;
     _track = Track(bufferSize);
 
     // HACKY POTTER ---------------
@@ -82,7 +82,7 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     Sample* out = (Sample*)bufferOut;
     Track* track = (Track*)userData;
 
-    memcpy(bufferOut, bufferIn, bufferSize * 2 * 16);
+    std::memcpy(bufferOut, bufferIn, bufferSize * 2 * 16);
     //track->process(in, out, 0);
 
     return 0;
