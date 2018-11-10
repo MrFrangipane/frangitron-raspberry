@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QThread>
+#include <QString>
 #include "audioworker.h"
 
 namespace Ui {
@@ -16,7 +17,7 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    int buffer_size;
+    int buffer_size = 0;
 
 private:
     Ui::MainWindow *ui;

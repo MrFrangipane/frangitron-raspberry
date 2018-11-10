@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(close()));
+    ui->label->setText(QString::number(buffer_size));
 
     _audioThread = new QThread();
     _audioThread->setObjectName("AudioMidi");
