@@ -9,11 +9,13 @@ Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
 
 void Track::process(Sample const * input, Sample * output, nFrame time)
 {
+    /*
     Sample *bufferA = new Sample[_bufferSize];
 
     filter.process(input, bufferA, time);
+    */
 
     for( int i = 0; i < _bufferSize; i++ ) {
-        output[i] = bufferA[i];
+        output[i] = input[i];
     }
 }
