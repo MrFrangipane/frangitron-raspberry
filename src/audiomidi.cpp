@@ -9,7 +9,7 @@ void AudioMidi::start()
 {
     RtAudio* _audio;
     int deviceIndex = 2;
-    unsigned int bufferSize = 64;
+    unsigned int bufferSize = 2048;
     _track = Track(bufferSize);
 
     // HACKY POTTER ---------------
