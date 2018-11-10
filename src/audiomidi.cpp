@@ -82,8 +82,9 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     Sample* out = (Sample*)bufferOut;
     Track* track = (Track*)userData;
 
-    std::memcpy(bufferOut, bufferIn, bufferSize * 2 * 16);
-    //track->process(in, out, 0);
+    if( status ) std::cout << "!";
+
+    track->process(in, out, 0);
 
     return 0;
 }
