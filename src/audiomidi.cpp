@@ -84,7 +84,10 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
 
     if( status ) std::cout << "!";
 
-    track->process(in, out, 0);
+    //track->process(in, out, 0);
+    for( int i = 0; i < bufferSize; i++ ) {
+        out[i] = in[i];
+    }
 
     return 0;
 }
