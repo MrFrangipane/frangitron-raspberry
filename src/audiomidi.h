@@ -8,6 +8,7 @@ class AudioMidi
 {
 public:
     AudioMidi();
+    AudioMidi(int buffer_size) : _buffer_size(buffer_size) {}
     void start();
 private:
     static int _audioCallback(
@@ -19,6 +20,7 @@ private:
         void *userData
     );
     Track _track;
+    int _buffer_size;
 };
 
 #endif // AUDIOMIDI_H

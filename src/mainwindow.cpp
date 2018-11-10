@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _audioThread = new QThread();
     _audioThread->setObjectName("AudioMidi");
-    _audioWorker = new AudioWorker();
+    _audioWorker = new AudioWorker(buffer_size);
     _audioWorker->moveToThread(_audioThread);
     connect(_audioThread, SIGNAL(started()), _audioWorker, SLOT(process()));
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(quit()));

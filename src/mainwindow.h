@@ -16,6 +16,7 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    int buffer_size;
 
 private:
     Ui::MainWindow *ui;
