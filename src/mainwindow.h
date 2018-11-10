@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QWidget>
+#include <QThread>
+#include "audioworker.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +19,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QThread* _audioThread;
+    AudioWorker* _audioWorker;
 };
 
 #endif // MAINWINDOW_H

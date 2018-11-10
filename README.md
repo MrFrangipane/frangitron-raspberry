@@ -7,7 +7,7 @@ Raspberry Pi part of the Frangitron
 On a headless Pi
 
 ```bash
-nice -10 ./build_rtaudiortmidi/project -platform linuxfb
+nice -10 ./build_rtaudiortmidi/project /path/to/configuration.json -platform linuxfb
 ```
 
 ## Dependencies
