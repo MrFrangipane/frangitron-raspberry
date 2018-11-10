@@ -19,6 +19,8 @@ void AudioMidi::start()
         std::cout << "User is Frangi" << std::endl;
         deviceIndex = 3;
         bufferSize = 30;
+    } else {
+        std::cout << "On the raspberry pi !" << std::endl;
     }
     // ----------------------------
 
