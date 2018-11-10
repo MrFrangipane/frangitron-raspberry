@@ -53,8 +53,8 @@ void AudioMidi::start()
                        std::endl;
 
           RtAudio::StreamOptions options;
-          //options.flags |= RTAUDIO_SCHEDULE_REALTIME;
-          //options.flags |= RTAUDIO_MINIMIZE_LATENCY;
+          options.flags |= RTAUDIO_SCHEDULE_REALTIME;
+          options.flags |= RTAUDIO_MINIMIZE_LATENCY;
 
           _audio->openStream(
               &_audioOutParams,
@@ -88,7 +88,7 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
 
     //track->process(in, out, 0);
     for( int i = 0; i < bufferSize; i++ ) {
-        out[i] = in[i];
+        *out++ = *in++;
     }
 
     return 0;
