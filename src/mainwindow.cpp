@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(close()));
 
     _audioThread = new QThread();
     _audioThread->setObjectName("AudioMidi");

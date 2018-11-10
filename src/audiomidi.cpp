@@ -7,8 +7,8 @@ AudioMidi::AudioMidi() {}
 void AudioMidi::start()
 {
     RtAudio* _audio;
-    int deviceIndex = 3;
-    unsigned int bufferSize = 30;
+    int deviceIndex = 2;
+    unsigned int bufferSize = 64;
     _track = Track(bufferSize);
 
     try
