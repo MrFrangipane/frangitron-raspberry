@@ -5,6 +5,7 @@
 int main(int argc, char *argv[])
 {
     assert(sizeof(float) * 8 == 32);
+    assert(sizeof(double) * 8 == 64);
 
     QApplication a(argc, argv);
     MainWindow w;
@@ -13,3 +14,4 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
+

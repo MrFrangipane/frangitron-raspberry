@@ -60,7 +60,7 @@ void AudioMidi::start()
         _audio->openStream(
           &_audioOutParams,
           &_audioInParams,
-          RTAUDIO_SINT32,
+          RTAUDIO_FLOAT64, // Weird : Needs to be 32bit long
           48000,
           &bufferSize,
           &_audioCallback,
@@ -84,26 +84,11 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     if( status ) std::cout << "!";
 
     // CAST
-    IOSample *ioIn = (IOSample*)bufferIn;
-    IOSample *ioOut = (IOSample*)bufferOut;
+    Sample *ioIn = (Sample*)bufferIn;
+    Sample *ioOut = (Sample*)bufferOut;
     Shared* shared = (Shared*)userData;
 
-    // NORMALIZE INT -> FLOAT
-    for( int i = 0; i < bufferSize; i++ ) {
-        //shared->in[i] = (Sample)ioIn[i] / std::numeric_limits<Sample>::max();
-        ioOut[i] = ioIn[i]; // shared->in[i] * std::numeric_limits<Sample>::max();
-
-        //std::cout << ioIn[i] << " " << ioOut[i] << " " << std::numeric_limits<Sample>::max() << std::endl;
-    }
     // PROCESS
-    //shared->track.process(shared->in, shared->out, 0);
-
-    // NORMALIZE FLOAT -> INT
-    /*
-    for( int i = 0; i < bufferSize; i++ ) {
-        ioOut[i] = (IOSample)(shared->out[i] * INT_FAST32_MAX);
-    }
-    */
-
+    shared->track.process(ioIn, ioOut, 0);
     return 0;
 }
