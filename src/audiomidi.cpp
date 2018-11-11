@@ -5,11 +5,16 @@
 
 AudioMidi::AudioMidi() {}
 
+AudioMidi::~AudioMidi() {
+    if( _shared.in ) delete[] _shared.in;
+    if( _shared.out ) delete[] _shared.out;
+}
+
 void AudioMidi::start()
 {
     int deviceIndex = 2;
     unsigned int bufferSize = 64;
-    _shared.track = Track(bufferSize);
+    _shared.track_input = Track(bufferSize);
     _shared.in = new Sample[bufferSize];
     _shared.out = new Sample[bufferSize];
 
@@ -89,6 +94,7 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     Shared* shared = (Shared*)userData;
 
     // PROCESS
-    shared->track.process(ioIn, ioOut, 0);
+    shared->track_input.process(ioIn, ioOut, 0);
+
     return 0;
 }

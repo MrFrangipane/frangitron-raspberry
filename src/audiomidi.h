@@ -7,7 +7,7 @@
 
 
 struct Shared {
-    Track track;
+    Track track_input;
     Sample* in;
     Sample* out;
 };
@@ -18,6 +18,7 @@ class AudioMidi
 public:
     AudioMidi();
     AudioMidi(int buffer_size) : _buffer_size(buffer_size) {}
+    ~AudioMidi();
     void start();
 private:
     RtAudio* _audio;
