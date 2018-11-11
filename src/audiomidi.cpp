@@ -60,7 +60,7 @@ void AudioMidi::start()
         _audio->openStream(
           &_audioOutParams,
           &_audioInParams,
-          RTAUDIO_FLOAT64, // Weird : Needs to be 32bit long
+          RTAUDIO_FLOAT32, // PiSound supports only up to 32bit
           48000,
           &bufferSize,
           &_audioCallback,
