@@ -7,10 +7,11 @@ AudioMidi::AudioMidi() {}
 
 void AudioMidi::start()
 {
-    RtAudio* _audio;
     int deviceIndex = 2;
     unsigned int bufferSize = 64;
-    _track = Track(bufferSize);
+    _shared.track = Track(bufferSize);
+    _shared.in = new Sample[bufferSize];
+    _shared.out = new Sample[bufferSize];
 
     // HACKY POTTER ---------------
     std::string user = std::getenv("USER");
@@ -47,28 +48,28 @@ void AudioMidi::start()
 
     try
     {
-          std::cout << "AudioMidi : Opening audio device and setting callback " <<
-                       "(" << deviceIndex << ") " <<
-                       _audio->getDeviceInfo(deviceIndex).name <<
-                       std::endl;
+        std::cout << "AudioMidi : Opening audio device and setting callback " <<
+                   "(" << deviceIndex << ") " <<
+                   _audio->getDeviceInfo(deviceIndex).name <<
+                   std::endl;
 
-          RtAudio::StreamOptions options;
-          options.flags |= RTAUDIO_SCHEDULE_REALTIME;
-          options.flags |= RTAUDIO_MINIMIZE_LATENCY;
+        RtAudio::StreamOptions options;
+        options.flags |= RTAUDIO_SCHEDULE_REALTIME;
+        options.flags |= RTAUDIO_MINIMIZE_LATENCY;
 
-          _audio->openStream(
-              &_audioOutParams,
-              &_audioInParams,
-              RTAUDIO_FLOAT64,
-              48000,
-              &bufferSize,
-              &_audioCallback,
-              &_track,
-              &options
-          );
-          std::cout << "AudioMidi : Expected latency : " << _audio->getStreamLatency() << " frames" << std::endl;
+        _audio->openStream(
+          &_audioOutParams,
+          &_audioInParams,
+          RTAUDIO_SINT32,
+          48000,
+          &bufferSize,
+          &_audioCallback,
+          &_shared,
+          &options
+        );
+        std::cout << "AudioMidi : Expected latency : " << _audio->getStreamLatency() << " frames" << std::endl;
 
-          _audio->startStream();
+        _audio->startStream();
       }
       catch (RtAudioError &error)
       {
@@ -80,16 +81,29 @@ void AudioMidi::start()
 
 int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double streamTime, RtAudioStreamStatus status, void* userData)
 {
-    Sample* in = (Sample*)bufferIn;
-    Sample* out = (Sample*)bufferOut;
-    Track* track = (Track*)userData;
-
     if( status ) std::cout << "!";
 
-    //track->process(in, out, 0);
+    // CAST
+    IOSample *ioIn = (IOSample*)bufferIn;
+    IOSample *ioOut = (IOSample*)bufferOut;
+    Shared* shared = (Shared*)userData;
+
+    // NORMALIZE INT -> FLOAT
     for( int i = 0; i < bufferSize; i++ ) {
-        *out++ = *in++;
+        //shared->in[i] = (Sample)ioIn[i] / std::numeric_limits<Sample>::max();
+        ioOut[i] = ioIn[i]; // shared->in[i] * std::numeric_limits<Sample>::max();
+
+        //std::cout << ioIn[i] << " " << ioOut[i] << " " << std::numeric_limits<Sample>::max() << std::endl;
     }
+    // PROCESS
+    //shared->track.process(shared->in, shared->out, 0);
+
+    // NORMALIZE FLOAT -> INT
+    /*
+    for( int i = 0; i < bufferSize; i++ ) {
+        ioOut[i] = (IOSample)(shared->out[i] * INT_FAST32_MAX);
+    }
+    */
 
     return 0;
 }
