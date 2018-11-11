@@ -4,6 +4,6 @@
 #include <QtGlobal>
 
 typedef uint_fast32_t nFrame;
-typedef float Sample; // Weird : Needs to be 64bit long
+typedef double Sample; // Weird : Needs to be 64bit
 
 #endif // TYPEDEFS_H
