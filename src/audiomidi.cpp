@@ -8,7 +8,7 @@ AudioMidi::~AudioMidi() {
 void AudioMidi::start()
 {
     int deviceIndex = 2;
-    unsigned int bufferSize = 64;
+    unsigned int bufferSize = 128;
     _shared.track_input = Track(bufferSize);
     _shared.in = new Sample[bufferSize];
     _shared.out = new Sample[bufferSize];
