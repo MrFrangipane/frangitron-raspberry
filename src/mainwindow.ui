@@ -13,22 +13,20 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QProgressBar::chunk::vertical {
+	height: 1 px;
+}</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="1" column="2">
     <widget class="QPushButton" name="exit">
      <property name="text">
       <string>EXIT</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="0" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -41,7 +39,7 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="0">
+   <item row="2" column="2">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -53,6 +51,73 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="0" rowspan="3">
+    <widget class="QProgressBar" name="rmsInL">
+     <property name="maximum">
+      <number>200</number>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="3">
+    <widget class="QProgressBar" name="rmsInR">
+     <property name="maximum">
+      <number>200</number>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3" rowspan="3">
+    <widget class="QProgressBar" name="rmsOutL">
+     <property name="maximum">
+      <number>200</number>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" rowspan="3">
+    <widget class="QProgressBar" name="rmsOutR">
+     <property name="maximum">
+      <number>200</number>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="invertedAppearance">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

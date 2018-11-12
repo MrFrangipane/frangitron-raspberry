@@ -8,10 +8,8 @@ class AudioWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit AudioWorker(int buffer_size, QObject *parent = nullptr) :
-        QObject(parent),
-        _audiomidi(buffer_size)
-    {}
+    explicit AudioWorker(QObject *parent = nullptr) : QObject(parent) {}
+    Status status() { return _audiomidi.status(); }
 private:
     AudioMidi _audiomidi;
 

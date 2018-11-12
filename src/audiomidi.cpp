@@ -1,9 +1,4 @@
 #include "audiomidi.h"
-#include <iostream>
-#include <cstring>
-#include <stdlib.h>
-
-AudioMidi::AudioMidi() {}
 
 AudioMidi::~AudioMidi() {
     if( _shared.in ) delete[] _shared.in;
@@ -83,7 +78,6 @@ void AudioMidi::start()
       }
 }
 
-
 int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double streamTime, RtAudioStreamStatus status, void* userData)
 {
     if( status ) std::cout << "!";
@@ -94,7 +88,16 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     Shared* shared = (Shared*)userData;
 
     // PROCESS
-    shared->track_input.process(ioIn, ioOut, 0);
+    shared->track_input.process(ioIn, ioOut, shared->time);
+
+    // UPDATE STATUS
+    shared->status.rmsInL = shared->track_input.levelMeterIn.rmsL;
+    shared->status.rmsInR = shared->track_input.levelMeterIn.rmsR;
+    shared->status.rmsOutL = shared->track_input.levelMeterOut.rmsL;
+    shared->status.rmsOutR = shared->track_input.levelMeterOut.rmsR;
+
+    // INCREMENT TIME
+    shared->time += bufferSize;
 
     return 0;
 }

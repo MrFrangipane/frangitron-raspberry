@@ -32,7 +32,8 @@ SOURCES += \
     effects/filter.cpp \
     audioworker.cpp \
     audiomidi.cpp \
-    ../include/rtaudio/RtAudio.cpp
+    ../include/rtaudio/RtAudio.cpp \
+    levelmeter.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -42,7 +43,8 @@ HEADERS += \
     track.h \
     effects/filter.h \
     audioworker.h \
-    audiomidi.h
+    audiomidi.h \
+    levelmeter.h
 
 FORMS += \
         mainwindow.ui

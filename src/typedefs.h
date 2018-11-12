@@ -1,9 +1,9 @@
 #ifndef TYPEDEFS_H
 #define TYPEDEFS_H
 
-#include <QtGlobal>
+#include <cstdint>
 
 typedef uint_fast32_t nFrame;
-typedef double Sample; // Weird : Needs to be 64bit (although soundcard is FLOAT32)
+typedef float Sample; // PiSound supports only up to 32 bits
 
 #endif // TYPEDEFS_H
