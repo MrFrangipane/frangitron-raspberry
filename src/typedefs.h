@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+#define RTAUDIO_DEBUG
 #define SAMPLE_RATE 48000
 
 typedef uint_fast32_t nFrame;
