@@ -30,8 +30,8 @@ void Track::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
         _left = i * 2;
         _right = _left + 1;
 
-        bufferOut[_left] = _bufferComp[_left];
-        bufferOut[_right] = _bufferComp[_right];
+        bufferOut[_left] = bufferIn[_left];
+        bufferOut[_right] = bufferIn[_right];
 
         //levelMeterIn.bufferStep(bufferIn[_left], bufferIn[_right]);
         //levelMeterOut.bufferStep(bufferOut[_left], bufferOut[_right]);
