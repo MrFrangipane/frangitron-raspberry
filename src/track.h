@@ -26,8 +26,8 @@ private:
     nFrame _left = 0;
     nFrame _right = 0;
     nFrame _time = 0;
-    Sample* _bufferA;
-    Sample* _bufferB;
+    Sample* _bufferFilter;
+    Sample* _bufferComp;
 };
 
 #endif // TRACK_H

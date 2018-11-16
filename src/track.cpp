@@ -4,8 +4,8 @@
 Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
 {
     // Swap buffers
-    _bufferA = new Sample[_bufferSize];
-    _bufferB = new Sample[_bufferSize];
+    _bufferFilter = new Sample[_bufferSize];
+    _bufferComp = new Sample[_bufferSize];
 
     // Effects
     filter = Filter(bufferSize);
@@ -13,8 +13,8 @@ Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
 }
 
 Track::~Track() {
-    if( _bufferA ) delete[] _bufferA;
-    if( _bufferB ) delete[] _bufferB;
+    if( _bufferFilter ) delete[] _bufferFilter;
+    if( _bufferComp ) delete[] _bufferComp;
 }
 
 void Track::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
@@ -22,16 +22,16 @@ void Track::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
     levelMeterIn.bufferBegin();
     levelMeterOut.bufferBegin();
 
-    //filter.process(bufferIn, _bufferB, time);
-    compressor.process(bufferIn, _bufferA, time);
+    filter.process(bufferIn, _bufferFilter, time);
+    compressor.process(_bufferFilter, _bufferComp, time);
 
     _time = time;
     for( int i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;
         _right = _left + 1;
 
-        bufferOut[_left] = _bufferA[_left];
-        bufferOut[_right] = _bufferA[_right];
+        bufferOut[_left] = _bufferComp[_left];
+        bufferOut[_right] = _bufferComp[_right];
 
         levelMeterIn.bufferStep(bufferIn[_left], bufferIn[_right]);
         levelMeterOut.bufferStep(bufferOut[_left], bufferOut[_right]);
