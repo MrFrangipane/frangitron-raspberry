@@ -2,14 +2,6 @@
 
 void Compressor::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
 {
-    for( int i = 0; i < _bufferSize; i++ ) {
-        _left = i * 2;
-        _right = _left + 1;
-
-        bufferOut[_left] = bufferIn[_left];
-        bufferOut[_right] = bufferIn[_right];
-    }
-    /*
     _time = time;
     _levelMeter.bufferBegin();
     _rmsMono = fmax(_levelMeter.rmsInstantL, _levelMeter.rmsInstantR);
@@ -32,5 +24,4 @@ void Compressor::process(Sample const * bufferIn, Sample * bufferOut, nFrame tim
         _time++;
     }
     _levelMeter.bufferEnd();
-    */
 }
