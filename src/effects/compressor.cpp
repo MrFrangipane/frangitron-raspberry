@@ -6,8 +6,8 @@ void Compressor::process(Sample const * bufferIn, Sample * bufferOut, nFrame tim
         _left = i * 2;
         _right = _left + 1;
 
-        bufferOut[_left] = bufferIn[_left] * level;
-        bufferOut[_right] = bufferIn[_right] * level;
+        bufferOut[_left] = bufferIn[_left];
+        bufferOut[_right] = bufferIn[_right];
     }
     /*
     _time = time;
