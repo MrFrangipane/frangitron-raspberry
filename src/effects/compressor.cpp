@@ -4,7 +4,7 @@ void Compressor::process(Sample const * bufferIn, Sample * bufferOut, nFrame tim
 {
     _time = time;
     _levelMeter.bufferBegin();
-    _rmsMono = fmin(0.0, (_levelMeter.rmsInstantL + _levelMeter.rmsInstantR) / 2.0);
+    _rmsMono = fmax(_levelMeter.rmsInstantL, _levelMeter.rmsInstantR);
 
     if( _rmsMono >= _threshold ) {
         level = fmax(1.0 / _ratio, fmin(1.0, level - _attack));

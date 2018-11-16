@@ -19,7 +19,7 @@ void AudioMidi::start()
     if( user == frangi ) {
         std::cout << "User is Frangi" << std::endl;
         deviceIndex = 3;
-        bufferSize = 60;
+        bufferSize = 30;
     } // --------------------------
 
     try
@@ -51,8 +51,8 @@ void AudioMidi::start()
                    std::endl;
 
         RtAudio::StreamOptions options;
-        options.flags |= RTAUDIO_SCHEDULE_REALTIME;
-        options.flags |= RTAUDIO_MINIMIZE_LATENCY;
+        //options.flags |= RTAUDIO_SCHEDULE_REALTIME;
+        //options.flags |= RTAUDIO_MINIMIZE_LATENCY;
 
         _audio->openStream(
           &_audioOutParams,
