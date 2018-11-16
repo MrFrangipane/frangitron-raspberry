@@ -79,6 +79,8 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
 {
     if( status ) std::cout << "!";
 
+    std::cout << "!";
+
     // CAST
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
