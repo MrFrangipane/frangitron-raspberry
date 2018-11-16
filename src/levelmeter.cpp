@@ -16,6 +16,9 @@ void LevelMeter::bufferStep(Sample left, Sample right)
 
 void LevelMeter::bufferEnd()
 {
+    rmsInstantL = 10 * log(2.0 * _instantL / (float)_nStep);
+    rmsInstantR = 10 * log(2.0 * _instantR / (float)_nStep);
+
     _averageL = (_averageL * _nAverage + _instantL / (float)_nStep) / ((float)_nAverage + 1.0);
     _averageR = (_averageR * _nAverage + _instantR / (float)_nStep) / ((float)_nAverage + 1.0);
 

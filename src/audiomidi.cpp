@@ -1,17 +1,17 @@
 #include "audiomidi.h"
 
 AudioMidi::~AudioMidi() {
-    if( _shared.in ) delete[] _shared.in;
-    if( _shared.out ) delete[] _shared.out;
+    if( _shared.inBuffer ) delete[] _shared.inBuffer;
+    if( _shared.outBuffer ) delete[] _shared.outBuffer;
 }
 
 void AudioMidi::start()
 {
     int deviceIndex = 2;
     unsigned int bufferSize = 128;
-    _shared.track_input = Track(bufferSize);
-    _shared.in = new Sample[bufferSize];
-    _shared.out = new Sample[bufferSize];
+    _shared.trackInput = Track(bufferSize);
+    _shared.inBuffer = new Sample[bufferSize];
+    _shared.outBuffer = new Sample[bufferSize];
 
     // HACKY POTTER ---------------
     std::string user = std::getenv("USER");
@@ -19,11 +19,8 @@ void AudioMidi::start()
     if( user == frangi ) {
         std::cout << "User is Frangi" << std::endl;
         deviceIndex = 3;
-        bufferSize = 30;
-    } else {
-        std::cout << "On the raspberry pi !" << std::endl;
-    }
-    // ----------------------------
+        bufferSize = 60;
+    } // --------------------------
 
     try
     {
@@ -61,7 +58,7 @@ void AudioMidi::start()
           &_audioOutParams,
           &_audioInParams,
           RTAUDIO_FLOAT32, // PiSound supports only up to 32 bits
-          48000,
+          SAMPLE_RATE,
           &bufferSize,
           &_audioCallback,
           &_shared,
@@ -88,13 +85,14 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     Shared* shared = (Shared*)userData;
 
     // PROCESS
-    shared->track_input.process(ioIn, ioOut, shared->time);
+    shared->trackInput.process(ioIn, ioOut, shared->time);
 
     // UPDATE STATUS
-    shared->status.rmsInL = shared->track_input.levelMeterIn.rmsL;
-    shared->status.rmsInR = shared->track_input.levelMeterIn.rmsR;
-    shared->status.rmsOutL = shared->track_input.levelMeterOut.rmsL;
-    shared->status.rmsOutR = shared->track_input.levelMeterOut.rmsR;
+    shared->status.compIn = shared->trackInput.compressor.level;
+    shared->status.rmsInL = shared->trackInput.levelMeterIn.rmsL;
+    shared->status.rmsInR = shared->trackInput.levelMeterIn.rmsR;
+    shared->status.rmsOutL = shared->trackInput.levelMeterOut.rmsL;
+    shared->status.rmsOutR = shared->trackInput.levelMeterOut.rmsR;
 
     // INCREMENT TIME
     shared->time += bufferSize;

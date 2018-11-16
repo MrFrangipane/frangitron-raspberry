@@ -10,6 +10,7 @@
 
 
 struct Status {
+    float compIn = 1.0;
     float rmsInL = 0.0;
     float rmsInR = 0.0;
     float rmsOutL = 0.0;
@@ -19,9 +20,9 @@ struct Status {
 
 struct Shared {
     nFrame time = 0;
-    Track track_input;
-    Sample* in;
-    Sample* out;
+    Track trackInput;
+    Sample* inBuffer;
+    Sample* outBuffer;
     Status status;
 };
 

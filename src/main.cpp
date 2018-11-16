@@ -1,6 +1,9 @@
 #include "assert.h"
 #include "mainwindow.h"
 #include <QApplication>
+#include <QStyle>
+#include <QStyleFactory>
+
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +13,8 @@ int main(int argc, char *argv[])
 
     // Main
     QApplication a(argc, argv);
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
+
     MainWindow w;
     w.show();
 

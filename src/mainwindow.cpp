@@ -33,6 +33,8 @@ void MainWindow::_refresh()
 {
     Status status = _audioWorker->status();
 
+    ui->compLevel->setValue((1.0 - status.compIn) * 100);
+
     ui->rmsInL->setValue(fmax(0, ui->rmsInL->maximum() + status.rmsInL));
     ui->rmsInR->setValue(fmax(0, ui->rmsInR->maximum() + status.rmsInR));
 

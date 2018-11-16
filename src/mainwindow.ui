@@ -19,14 +19,14 @@
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="2">
+   <item row="1" column="3">
     <widget class="QPushButton" name="exit">
      <property name="text">
       <string>EXIT</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
+   <item row="0" column="3">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -39,7 +39,7 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="2">
+   <item row="2" column="3">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -66,6 +66,9 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="format">
+      <string>%v</string>
+     </property>
     </widget>
    </item>
    <item row="0" column="1" rowspan="3">
@@ -82,9 +85,15 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="textDirection">
+      <enum>QProgressBar::BottomToTop</enum>
+     </property>
+     <property name="format">
+      <string>%v</string>
+     </property>
     </widget>
    </item>
-   <item row="0" column="3" rowspan="3">
+   <item row="0" column="4" rowspan="3">
     <widget class="QProgressBar" name="rmsOutL">
      <property name="maximum">
       <number>200</number>
@@ -100,7 +109,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="4" rowspan="3">
+   <item row="0" column="5" rowspan="3">
     <widget class="QProgressBar" name="rmsOutR">
      <property name="maximum">
       <number>200</number>
@@ -116,6 +125,25 @@
      </property>
      <property name="invertedAppearance">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" rowspan="3">
+    <widget class="QProgressBar" name="compLevel">
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="invertedAppearance">
+      <bool>true</bool>
+     </property>
+     <property name="format">
+      <string>%v</string>
      </property>
     </widget>
    </item>

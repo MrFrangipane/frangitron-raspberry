@@ -6,6 +6,7 @@
 #include "typedefs.h"
 #include "levelmeter.h"
 #include "effects/filter.h"
+#include "effects/compressor.h"
 
 
 class Track
@@ -15,6 +16,7 @@ public:
     Track(nFrame bufferSize);
     ~Track();
     Filter filter;
+    Compressor compressor;
     float volume = 1.0;
     LevelMeter levelMeterIn;
     LevelMeter levelMeterOut;

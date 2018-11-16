@@ -33,7 +33,8 @@ SOURCES += \
     audioworker.cpp \
     audiomidi.cpp \
     ../include/rtaudio/RtAudio.cpp \
-    levelmeter.cpp
+    levelmeter.cpp \
+    effects/compressor.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -44,7 +45,8 @@ HEADERS += \
     effects/filter.h \
     audioworker.h \
     audiomidi.h \
-    levelmeter.h
+    levelmeter.h \
+    effects/compressor.h
 
 FORMS += \
         mainwindow.ui

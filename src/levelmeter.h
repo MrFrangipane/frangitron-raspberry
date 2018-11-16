@@ -9,8 +9,10 @@ class LevelMeter
 {
 public:
     LevelMeter() {}
-    float rmsL = 0.0;
+    float rmsL = 0.0;  // 30 buffers average
     float rmsR = 0.0;
+    float rmsInstantL = 0.0;  // 1 buffer
+    float rmsInstantR = 0.0;
     void bufferBegin();
     void bufferStep(Sample left, Sample right);
     void bufferEnd();
