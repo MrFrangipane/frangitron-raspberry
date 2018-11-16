@@ -22,8 +22,8 @@ void Track::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
     levelMeterIn.bufferBegin();
     levelMeterOut.bufferBegin();
 
-    filter.process(bufferIn, _bufferA, time);
-    compressor.process(_bufferA, _bufferB, time);
+    filter.process(bufferIn, _bufferB, time);
+    //compressor.process(_bufferA, _bufferB, time);
 
     _time = time;
     for( int i = 0; i < _bufferSize; i++ ) {
