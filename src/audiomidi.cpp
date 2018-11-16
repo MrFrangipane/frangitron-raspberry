@@ -8,7 +8,7 @@ AudioMidi::~AudioMidi() {
 void AudioMidi::start()
 {
     int deviceIndex = 2;
-    unsigned int bufferSize = 1024;
+    unsigned int bufferSize = 256;
     _shared.trackInput = Track(bufferSize);
     _shared.inBuffer = new Sample[bufferSize];
     _shared.outBuffer = new Sample[bufferSize];
@@ -78,8 +78,6 @@ void AudioMidi::start()
 int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double streamTime, RtAudioStreamStatus status, void* userData)
 {
     if( status ) std::cout << "!";
-
-    std::cout << "_";
 
     // CAST
     Sample *ioIn = (Sample*)bufferIn;
