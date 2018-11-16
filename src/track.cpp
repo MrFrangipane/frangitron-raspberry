@@ -32,6 +32,8 @@ void Track::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
 
         //std::cout << i << ":" << _bufferFilter[i] << " ";
 
+        _bufferComp[i] = 1.0;
+
         bufferOut[_left] = _bufferFilter[_left];
         bufferOut[_right] = _bufferFilter[_right];
 
