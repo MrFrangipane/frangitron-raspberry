@@ -51,7 +51,7 @@ void AudioMidi::start()
                    std::endl;
 
         RtAudio::StreamOptions options;
-        //options.flags |= RTAUDIO_SCHEDULE_REALTIME;
+        options.flags |= RTAUDIO_SCHEDULE_REALTIME;
         //options.flags |= RTAUDIO_MINIMIZE_LATENCY;
 
         _audio->openStream(
