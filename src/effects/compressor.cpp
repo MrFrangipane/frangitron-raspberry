@@ -2,6 +2,13 @@
 
 void Compressor::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
 {
+    for( int i = 0; i < _bufferSize; i++ ) {
+        _left = i * 2;
+        _right = _left + 1;
+
+        bufferOut[_left] = bufferIn[_left] * level;
+        bufferOut[_right] = bufferIn[_right] * level;
+    }
     /*
     _time = time;
     _levelMeter.bufferBegin();
