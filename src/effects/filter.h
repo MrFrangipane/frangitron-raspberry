@@ -10,7 +10,7 @@ class Filter
 public:
     Filter() {}
     Filter(const nFrame bufferSize) : _bufferSize(bufferSize) {}
-    void process(Sample const * bufferIn, Sample * bufferOut, nFrame time);
+    void process(Sample const * bufferIn, Sample * bufferOut, const nFrame time);
 private:
     nFrame _bufferSize = 0;
     nFrame _left = 0;

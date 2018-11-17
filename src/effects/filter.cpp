@@ -1,6 +1,6 @@
 #include "filter.h"
 
-void Filter::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
+void Filter::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
 {
     _time = time;
     for( nFrame i = 0; i < _bufferSize; i++ ) {

@@ -1,6 +1,6 @@
 #include "compressor.h"
 
-void Compressor::process(Sample const * bufferIn, Sample * bufferOut, nFrame time)
+void Compressor::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
 {
     _time = time;
     _levelMeter.bufferBegin();

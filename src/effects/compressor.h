@@ -9,7 +9,7 @@ class Compressor
 public:
     Compressor() {}
     Compressor(const nFrame bufferSize) : _bufferSize(bufferSize) {}
-    void process(Sample const * bufferIn, Sample * bufferOut, nFrame time);
+    void process(Sample const * bufferIn, Sample * bufferOut, const nFrame time);
     float level = 1.0;
 private:
     nFrame _bufferSize = 0;

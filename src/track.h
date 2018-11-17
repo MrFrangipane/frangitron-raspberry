@@ -19,7 +19,7 @@ public:
     float volume = 1.0;
     LevelMeter levelMeterIn;
     LevelMeter levelMeterOut;
-    void process(const Sample * bufferIn, Sample * bufferOut, nFrame time);
+    void process(const Sample * bufferIn, Sample * bufferOut, const nFrame time);
 private:
     nFrame _bufferSize = 0;
     nFrame _left = 0;
