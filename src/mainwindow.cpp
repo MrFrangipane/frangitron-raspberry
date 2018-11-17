@@ -20,9 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QThread::currentThread()->setPriority(QThread::LowPriority);
 
+    /*
     _timerRefresh = new QTimer();
     connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
     _timerRefresh->start(1000 / 30);
+    */
 }
 
 MainWindow::~MainWindow()
