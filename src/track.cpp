@@ -3,8 +3,11 @@
 Track::Track()
 {
     // Swap buffers
-    _bufferFilter = new Sample[1]();
-    _bufferComp = new Sample[1]();
+    _bufferFilter = new Sample[1];
+    _bufferComp = new Sample[1];
+
+    _bufferFilter[0] = 0.0;
+    _bufferComp[0] = 0.0;
 }
 
 Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
@@ -13,14 +16,19 @@ Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
     _bufferFilter = new Sample[_bufferSize * 2]();
     _bufferComp = new Sample[_bufferSize * 2]();
 
+    for( int i = 0; i < bufferSize * 2; i++ ) {
+        _bufferFilter[i] = 0.0;
+        _bufferComp[i] = 0.0;
+    }
+
     // Effects
     filter = Filter(bufferSize);
     compressor = Compressor(bufferSize);
 }
 
 Track::~Track() {
-    if( _bufferFilter ) delete[] _bufferFilter;
-    if( _bufferComp ) delete[] _bufferComp;
+    //if( _bufferFilter ) delete[] _bufferFilter;
+    //if( _bufferComp ) delete[] _bufferComp;
 }
 
 void Track::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)

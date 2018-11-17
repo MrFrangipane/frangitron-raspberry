@@ -43,7 +43,7 @@ private:
         RtAudioStreamStatus status,
         void *userData
     );
-    unsigned int _deviceIndex;
+    unsigned int _deviceIndex = 0;
     unsigned int _bufferSize = 128;
     Shared _shared;
 };
