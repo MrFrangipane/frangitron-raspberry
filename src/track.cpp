@@ -4,8 +4,8 @@
 Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
 {
     // Swap buffers
-    _bufferFilter = new Sample[bufferSize * 2];
-    _bufferComp = new Sample[bufferSize * 2];
+    _bufferFilter = new Sample[bufferSize * 2]();
+    _bufferComp = new Sample[bufferSize * 2]();
 
     // Effects
     filter = Filter(bufferSize);
