@@ -5,22 +5,64 @@ AudioMidi::~AudioMidi() {
     if( _shared.outBuffer ) delete[] _shared.outBuffer;
 }
 
-void AudioMidi::start()
+void AudioMidi::_setAudioDeviceIndex()
 {
-    int deviceIndex = 2;
-    unsigned int bufferSize = 128;
-    _shared.trackInput = Track(bufferSize);
-    _shared.inBuffer = new Sample[bufferSize];
-    _shared.outBuffer = new Sample[bufferSize];
+    std::vector<std::string> interfaceNames;
+    interfaceNames.push_back("pisound");
+    interfaceNames.push_back("Fireface");
 
     // HACKY POTTER ---------------
-    std::string user = std::getenv("USER");
-    std::string frangi ("frangi");
-    if( user == frangi ) {
-        std::cout << "User is Frangi" << std::endl;
-        deviceIndex = 3;
-        bufferSize = 30;
+    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
+        _deviceIndex = 3;
+        _bufferSize = 30;
     } // --------------------------
+
+    RtAudio* audio;
+
+    try {
+        audio = new RtAudio();
+    }
+    catch (RtAudioError &error) {
+        std::cout << "AudioMidi : Error while allocating Audio" << std::endl;
+        std::cout << error.getMessage() << std::endl;
+        return;
+    }
+
+    std::cout << std::endl << "AudioMidi : Available Devices" << std::endl;
+
+    RtAudio::DeviceInfo device_infos;
+
+    for (unsigned int i = 0; i < audio->getDeviceCount(); i++)
+    {
+        device_infos = audio->getDeviceInfo(i);
+        std::cout << i << " : " << device_infos.name <<
+                    " duplex:" << device_infos.duplexChannels <<
+                    " in:" << device_infos.inputChannels <<
+                    " out:" << device_infos.outputChannels <<
+                     std::endl;
+        for (std::vector<std::string>::iterator interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++)
+        {
+            if (device_infos.inputChannels != 0 &&
+                device_infos.outputChannels != 0 &&
+                device_infos.name.find(*interfaceName) != std::string::npos)
+            {
+                _deviceIndex = i;
+                return;
+            }
+        }
+    }
+
+    _deviceIndex = 0;
+}
+
+void AudioMidi::start()
+{
+    _setAudioDeviceIndex();
+    _shared.trackInput = Track(_bufferSize);
+    _shared.inBuffer = new Sample[_bufferSize];
+    _shared.outBuffer = new Sample[_bufferSize];
+
+    std::cout << std::endl;
 
     try
     {
@@ -35,19 +77,19 @@ void AudioMidi::start()
 
     // AUDIO IN
     RtAudio::StreamParameters _audioInParams;
-    _audioInParams.deviceId = deviceIndex;
+    _audioInParams.deviceId = _deviceIndex;
     _audioInParams.nChannels = 2;
 
     // AUDIO OUT
     RtAudio::StreamParameters _audioOutParams;
-    _audioOutParams.deviceId = deviceIndex;
+    _audioOutParams.deviceId = _deviceIndex;
     _audioOutParams.nChannels = 2;
 
     try
     {
         std::cout << "AudioMidi : Opening audio device and setting callback " <<
-                   "(" << deviceIndex << ") " <<
-                   _audio->getDeviceInfo(deviceIndex).name <<
+                   "(" << _deviceIndex << ") " <<
+                   _audio->getDeviceInfo(_deviceIndex).name <<
                    std::endl;
 
         RtAudio::StreamOptions options;
@@ -59,7 +101,7 @@ void AudioMidi::start()
           &_audioInParams,
           RTAUDIO_FLOAT32, // PiSound supports only up to 32 bits
           SAMPLE_RATE,
-          &bufferSize,
+          &_bufferSize,
           &_audioCallback,
           &_shared,
           &options
@@ -77,10 +119,6 @@ void AudioMidi::start()
 
 int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double streamTime, RtAudioStreamStatus status, void* userData)
 {
-    if( status ) std::cout << "!";
-
-    std::cout << "a";
-
     // CAST
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;

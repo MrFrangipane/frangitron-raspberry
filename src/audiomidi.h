@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
+#include <vector>
 #include "../include/rtaudio/RtAudio.h"
 #include "typedefs.h"
 #include "track.h"
@@ -36,6 +37,7 @@ public:
     Status status() { return _shared.status; }
 private:
     RtAudio* _audio;
+    void _setAudioDeviceIndex();
     static int _audioCallback(
         void* bufferOut,
         void* bufferIn,
@@ -44,6 +46,8 @@ private:
         RtAudioStreamStatus status,
         void *userData
     );
+    unsigned int _deviceIndex;
+    unsigned int _bufferSize = 128;
     Shared _shared;
 };
 

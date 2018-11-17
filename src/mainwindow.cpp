@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWindow)
@@ -15,27 +16,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(quit()));
     connect(_audioWorker, SIGNAL(finished()), _audioWorker, SLOT(deleteLater()));
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(deleteLater()));
-
+    _audioThread->start();
 
     QThread::currentThread()->setPriority(QThread::LowPriority);
 
-    connect(ui->start, SIGNAL(clicked(bool)), this, SLOT(_start()));
+    _timerRefresh = new QTimer();
+    connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
+    _timerRefresh->start(1000 / 30);
+
     connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(close()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::_start()
-{
-    _audioThread->start();
-    /*
-    _timerRefresh = new QTimer();
-    connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
-    _timerRefresh->start(1000 / 30);
-    */
 }
 
 void MainWindow::_refresh()

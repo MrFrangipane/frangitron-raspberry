@@ -1,7 +1,6 @@
 #ifndef TRACK_H
 #define TRACK_H
 
-#include <iostream>
 #include <cstdint>
 #include "typedefs.h"
 #include "levelmeter.h"

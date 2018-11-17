@@ -19,6 +19,41 @@
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="2" rowspan="3">
+    <widget class="QProgressBar" name="compLevel">
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="invertedAppearance">
+      <bool>true</bool>
+     </property>
+     <property name="format">
+      <string>%v</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" rowspan="3">
+    <widget class="QProgressBar" name="rmsOutL">
+     <property name="maximum">
+      <number>200</number>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="3">
     <widget class="QPushButton" name="exit">
      <property name="text">
@@ -39,39 +74,7 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="3">
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0" rowspan="4">
-    <widget class="QProgressBar" name="rmsInL">
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="format">
-      <string>%v</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" rowspan="4">
+   <item row="0" column="1" rowspan="3">
     <widget class="QProgressBar" name="rmsInR">
      <property name="maximum">
       <number>200</number>
@@ -93,8 +96,8 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="4" rowspan="4">
-    <widget class="QProgressBar" name="rmsOutL">
+   <item row="0" column="0" rowspan="3">
+    <widget class="QProgressBar" name="rmsInL">
      <property name="maximum">
       <number>200</number>
      </property>
@@ -107,9 +110,12 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="format">
+      <string>%v</string>
+     </property>
     </widget>
    </item>
-   <item row="0" column="5" rowspan="4">
+   <item row="0" column="5" rowspan="3">
     <widget class="QProgressBar" name="rmsOutR">
      <property name="maximum">
       <number>200</number>
@@ -128,31 +134,18 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2" rowspan="4">
-    <widget class="QProgressBar" name="compLevel">
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
-     </property>
+   <item row="2" column="3">
+    <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="invertedAppearance">
-      <bool>true</bool>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-     <property name="format">
-      <string>%v</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QPushButton" name="start">
-     <property name="text">
-      <string>Start</string>
-     </property>
-    </widget>
+    </spacer>
    </item>
   </layout>
  </widget>

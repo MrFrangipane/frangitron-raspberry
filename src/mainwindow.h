@@ -28,7 +28,6 @@ private:
     bool _started = false;
 
 private slots:
-    void _start();
     void _refresh();
 };
 

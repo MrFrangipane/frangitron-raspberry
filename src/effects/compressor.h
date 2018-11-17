@@ -1,7 +1,6 @@
 #ifndef COMPRESSOR_H
 #define COMPRESSOR_H
 
-#include <iostream>
 #include <cmath>
 #include "levelmeter.h"
 
