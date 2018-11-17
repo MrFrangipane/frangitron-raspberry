@@ -11,7 +11,7 @@
 class Track
 {
 public:
-    Track() {}
+    Track();
     Track(nFrame bufferSize);
     ~Track();
     Filter filter;

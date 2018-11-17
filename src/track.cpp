@@ -1,11 +1,17 @@
 #include "track.h"
 
+Track::Track()
+{
+    // Swap buffers
+    _bufferFilter = new Sample[1]();
+    _bufferComp = new Sample[1]();
+}
 
 Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
 {
     // Swap buffers
-    _bufferFilter = new Sample[_bufferSize * 2];
-    _bufferComp = new Sample[_bufferSize * 2];
+    _bufferFilter = new Sample[_bufferSize * 2]();
+    _bufferComp = new Sample[_bufferSize * 2]();
 
     /*
     for( int i = 0; i < bufferSize; i++ ) {
@@ -22,8 +28,12 @@ Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
 }
 
 Track::~Track() {
-    if( _bufferFilter ) delete[] _bufferFilter;
-    if( _bufferComp ) delete[] _bufferComp;
+    if( _bufferFilter ) {
+        delete[] _bufferFilter;
+    }
+    if( _bufferComp ) {
+        delete[] _bufferComp;
+    }
 }
 
 void Track::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
