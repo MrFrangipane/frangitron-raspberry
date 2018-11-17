@@ -1,6 +1,10 @@
 echo '== PUSH, PULL AND COMPILE =='
 cd ~/frangitron/frangitron-raspberry
 
+echo '--         Commit         --'
+git add -A
+git commit -m "$1"
+
 echo '--     Push to Origin     --'
 git push origin master
 

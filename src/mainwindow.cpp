@@ -6,7 +6,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(close()));
 
     _audioThread = new QThread();
     _audioThread->setObjectName("AudioMidi");
@@ -16,20 +15,27 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(quit()));
     connect(_audioWorker, SIGNAL(finished()), _audioWorker, SLOT(deleteLater()));
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(deleteLater()));
-    _audioThread->start();
+
 
     QThread::currentThread()->setPriority(QThread::LowPriority);
 
-    /*
-    _timerRefresh = new QTimer();
-    connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
-    _timerRefresh->start(1000 / 30);
-    */
+    connect(ui->start, SIGNAL(clicked(bool)), this, SLOT(_start()));
+    connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(close()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::_start()
+{
+    _audioThread->start();
+    /*
+    _timerRefresh = new QTimer();
+    connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
+    _timerRefresh->start(1000 / 30);
+    */
 }
 
 void MainWindow::_refresh()

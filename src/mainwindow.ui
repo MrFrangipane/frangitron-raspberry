@@ -39,7 +39,7 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="3">
+   <item row="3" column="3">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -52,7 +52,7 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="0" rowspan="3">
+   <item row="0" column="0" rowspan="4">
     <widget class="QProgressBar" name="rmsInL">
      <property name="maximum">
       <number>200</number>
@@ -71,7 +71,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" rowspan="3">
+   <item row="0" column="1" rowspan="4">
     <widget class="QProgressBar" name="rmsInR">
      <property name="maximum">
       <number>200</number>
@@ -93,7 +93,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="4" rowspan="3">
+   <item row="0" column="4" rowspan="4">
     <widget class="QProgressBar" name="rmsOutL">
      <property name="maximum">
       <number>200</number>
@@ -109,7 +109,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="5" rowspan="3">
+   <item row="0" column="5" rowspan="4">
     <widget class="QProgressBar" name="rmsOutR">
      <property name="maximum">
       <number>200</number>
@@ -128,7 +128,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2" rowspan="3">
+   <item row="0" column="2" rowspan="4">
     <widget class="QProgressBar" name="compLevel">
      <property name="value">
       <number>24</number>
@@ -144,6 +144,13 @@
      </property>
      <property name="format">
       <string>%v</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="start">
+     <property name="text">
+      <string>Start</string>
      </property>
     </widget>
    </item>

@@ -25,8 +25,10 @@ private:
     QThread* _audioThread;
     AudioWorker* _audioWorker;
     QTimer* _timerRefresh;
+    bool _started = false;
 
 private slots:
+    void _start();
     void _refresh();
 };
 
