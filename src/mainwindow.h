@@ -22,9 +22,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QThread* _audioThread = NULL;
-    AudioWorker* _audioWorker = NULL;
-    QTimer* _timerRefresh = NULL;
+    QThread* _audioThread = nullptr;
+    AudioWorker* _audioWorker = nullptr;
+    QTimer* _timerRefresh = nullptr;
     bool _started = false;
 
 private slots:
