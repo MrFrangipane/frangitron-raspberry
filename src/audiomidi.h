@@ -33,7 +33,7 @@ public:
     void start();
     Status status() { return _shared.status; }
 private:
-    RtAudio* _audio;
+    RtAudio* _audio = NULL;
     void _setAudioDeviceIndex();
     static int _audioCallback(
         void* bufferOut,
