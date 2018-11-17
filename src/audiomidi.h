@@ -22,8 +22,6 @@ struct Status {
 struct Shared {
     nFrame time = 0;
     Track trackInput;
-    Sample* inBuffer;
-    Sample* outBuffer;
     Status status;
 };
 
@@ -32,7 +30,6 @@ class AudioMidi
 {
 public:
     AudioMidi() {}
-    ~AudioMidi();
     void start();
     Status status() { return _shared.status; }
 private:

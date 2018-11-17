@@ -1,10 +1,5 @@
 #include "audiomidi.h"
 
-AudioMidi::~AudioMidi() {
-    if( _shared.inBuffer ) delete[] _shared.inBuffer;
-    if( _shared.outBuffer ) delete[] _shared.outBuffer;
-}
-
 void AudioMidi::_setAudioDeviceIndex()
 {
     std::vector<std::string> interfaceNames;
@@ -59,8 +54,6 @@ void AudioMidi::start()
 {
     _setAudioDeviceIndex();
     _shared.trackInput = Track(_bufferSize);
-    _shared.inBuffer = new Sample[_bufferSize * 2];
-    _shared.outBuffer = new Sample[_bufferSize * 2];
 
     std::cout << std::endl;
 
