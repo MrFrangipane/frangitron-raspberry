@@ -13,7 +13,6 @@ class Track
 public:
     Track();
     Track(nFrame bufferSize);
-    ~Track();
     Filter filter;
     Compressor compressor;
     float volume = 1.0;
