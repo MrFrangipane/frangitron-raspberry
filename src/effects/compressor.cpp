@@ -12,7 +12,7 @@ void Compressor::process(Sample const * bufferIn, Sample * bufferOut, nFrame tim
         level = fmax(1.0 / _ratio, fmin(1.0, level + _release));
     }
 
-    for( int i = 0; i < _bufferSize; i++ ) {
+    for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;
         _right = _left + 1;
 
