@@ -7,12 +7,14 @@ Track::Track(nFrame bufferSize) : _bufferSize(bufferSize)
     _bufferFilter = new Sample[_bufferSize * 2];
     _bufferComp = new Sample[_bufferSize * 2];
 
+    /*
     for( int i = 0; i < bufferSize; i++ ) {
         _bufferFilter[i * 2] = 0.0;
         _bufferFilter[i * 2 + 1] = 0.0;
         _bufferComp[i * 2] = 0.0;
         _bufferComp[i * 2 + 1] = 0.0;
     }
+    */
 
     // Effects
     filter = Filter(bufferSize);
