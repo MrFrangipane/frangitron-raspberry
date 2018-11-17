@@ -18,8 +18,8 @@ private:
     nFrame _time = 0;
     float _rmsMono = 0.0;
     float _threshold = -30.0;
-    float _attack = 0.01;
-    float _release = 0.002;
+    float _attack = 0.08;
+    float _release = 0.004;
     float _ratio = 4.0;
     LevelMeter _levelMeter;
 };
