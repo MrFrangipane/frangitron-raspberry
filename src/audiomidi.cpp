@@ -59,8 +59,8 @@ void AudioMidi::start()
 {
     _setAudioDeviceIndex();
     _shared.trackInput = Track(_bufferSize);
-    _shared.inBuffer = new Sample[_bufferSize];
-    _shared.outBuffer = new Sample[_bufferSize];
+    _shared.inBuffer = new Sample[_bufferSize * 2];
+    _shared.outBuffer = new Sample[_bufferSize * 2];
 
     std::cout << std::endl;
 
@@ -87,8 +87,9 @@ void AudioMidi::start()
 
     try
     {
-        std::cout << "AudioMidi : Opening audio device and setting callback " <<
-                   "(" << _deviceIndex << ") " <<
+        std::cout << "AudioMidi : Opening audio device " <<
+                     "(" << _deviceIndex << ") " <<
+                     "and setting callback : " <<
                    _audio->getDeviceInfo(_deviceIndex).name <<
                    std::endl;
 
