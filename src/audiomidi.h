@@ -11,11 +11,7 @@
 
 
 struct Status {
-    float compIn = 1.0;
-    float rmsInL = 0.0;
-    float rmsInR = 0.0;
-    float rmsOutL = 0.0;
-    float rmsOutR = 0.0;
+    TrackStatus input;
 };
 
 

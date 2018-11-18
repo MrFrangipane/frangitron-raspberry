@@ -2,52 +2,47 @@
 
 Track::Track()
 {
-    // Init Swap buffers
+    // INIT BUFFERS
     _bufferFilter = new Sample[1]();
     _bufferComp = new Sample[1]();
 }
 
 Track::Track(const nFrame bufferSize) : _bufferSize(bufferSize)
 {
-    // Init Swap buffers
+    // INIT BUFFERS
     _bufferFilter = new Sample[_bufferSize * 2]();
     _bufferComp = new Sample[_bufferSize * 2]();
 
-    // Init Effects
+    // INIT EFFECTS
     filter = Filter(_bufferSize);
     compressor = Compressor(_bufferSize);
 }
 
 TrackStatus Track::status() {
-    TrackStatus status;
+    TrackStatus status_;
 
-    status.filterFreq = filter.freq;
-    status.compressorLevel = compressor.level();
-    status.compressorThreshold = compressor.threshold;
-    status.compressorAttack = compressor.attack;
-    status.compressorRelease = compressor.release;
-    status.levelInL = levelMeterIn.rmsL;
-    status.levelInR = levelMeterIn.rmsR;
-    status.levelOutL = levelMeterOut.rmsL;
-    status.levelOutR = levelMeterOut.rmsR;
+    status_.volume = volume;
+    status_.levelInL = levelMeterIn.rmsL;
+    status_.levelInR = levelMeterIn.rmsR;
+    status_.levelOutL = levelMeterOut.rmsL;
+    status_.levelOutR = levelMeterOut.rmsR;
 
-    return status;
+    status_.compressor = compressor.status();
+
+    return status_;
 }
 
-void Track::setStatus(const TrackStatus status) {
-    filter.freq = status.filterFreq;
-    compressor.threshold = status.compressorThreshold;
-    compressor.attack = status.compressorAttack;
-    compressor.release = status.compressorRelease;
+void Track::setStatus(const TrackStatus status_) {
+    volume = status_.volume;
 }
 
 void Track::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
 {
-    // Process Effects
+    // EFFECTS
     filter.process(bufferIn, _bufferFilter, time);
     compressor.process(_bufferFilter, _bufferComp, time);
 
-    // Level Meter + Copy to output buffer
+    // LEVELS + OUTPUT
     _time = time;
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;

@@ -36,11 +36,12 @@ void MainWindow::_refresh()
 {
     Status status = _audioWorker->status();
 
-    ui->compLevel->setValue((1.0 - status.compIn) * 100);
+    ui->compLevel->setValue((1.0 - status.input.compressor.level) * 100);
+    ui->compGate->setChecked(status.input.compressor.gate);
 
-    ui->rmsInL->setValue(fmax(0, ui->rmsInL->maximum() + status.rmsInL));
-    ui->rmsInR->setValue(fmax(0, ui->rmsInR->maximum() + status.rmsInR));
+    ui->rmsInL->setValue(fmax(0, ui->rmsInL->maximum() + status.input.levelInL));
+    ui->rmsInR->setValue(fmax(0, ui->rmsInR->maximum() + status.input.levelInR));
 
-    ui->rmsOutL->setValue(fmax(0, ui->rmsOutL->maximum() + status.rmsOutL));
-    ui->rmsOutR->setValue(fmax(0, ui->rmsOutR->maximum() + status.rmsOutR));
+    ui->rmsOutL->setValue(fmax(0, ui->rmsOutL->maximum() + status.input.levelOutL));
+    ui->rmsOutR->setValue(fmax(0, ui->rmsOutR->maximum() + status.input.levelOutR));
 }

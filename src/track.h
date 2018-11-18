@@ -10,15 +10,12 @@
 
 struct TrackStatus
 {
-    float filterFreq = 0.0;
-    float compressorLevel = 0.0;
-    float compressorThreshold = 0.0;
-    float compressorAttack = 0.0;
-    float compressorRelease = 0.0;
+    float volume = 0.0;
     float levelInL = 0.0;
     float levelInR = 0.0;
     float levelOutL = 0.0;
     float levelOutR = 0.0;
+    CompressorStatus compressor;
 };
 
 
