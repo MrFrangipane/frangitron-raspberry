@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(deleteLater()));
     _audioThread->start();
 
-    //QThread::currentThread()->setPriority(QThread::LowPriority);
+    QThread::currentThread()->setPriority(QThread::LowPriority);
 
     _timerRefresh = new QTimer();
     connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
@@ -34,8 +34,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::_refresh()
 {
-    Status status = _audioWorker->status();
+    AudioMidiStatus status = _audioWorker->status();
 
+    // READ
     ui->compLevel->setValue((1.0 - status.input.compressor.level) * 100);
     ui->compGate->setChecked(status.input.compressor.gate);
 
@@ -44,4 +45,15 @@ void MainWindow::_refresh()
 
     ui->rmsOutL->setValue(fmax(0, ui->rmsOutL->maximum() + status.input.levelOutL));
     ui->rmsOutR->setValue(fmax(0, ui->rmsOutR->maximum() + status.input.levelOutR));
+
+    ui->labelCompTreshold->setText(QString::number(status.input.compressor.threshold));
+    ui->labelCompAttack->setText(QString::number(status.input.compressor.attack));
+    ui->labelCompRelease->setText(QString::number(status.input.compressor.release));
+
+    // WRITE
+    status.input.compressor.threshold = ui->sliderCompThreshold->value();
+    status.input.compressor.attack = ui->sliderCompAttack->value() / 1000.0;
+    status.input.compressor.release = ui->sliderCompRelease->value() / 1000.0;
+
+    _audioWorker->update(status);
 }

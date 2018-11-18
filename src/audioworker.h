@@ -9,7 +9,8 @@ class AudioWorker : public QObject
     Q_OBJECT
 public:
     explicit AudioWorker(QObject *parent = nullptr) : QObject(parent) {}
-    Status status() { return _audiomidi.status(); }
+    AudioMidiStatus status() { return _audiomidi.status(); }
+    void update(AudioMidiStatus status_) { _audiomidi.update(status_); }
 private:
     AudioMidi _audiomidi;
 
@@ -19,7 +20,6 @@ signals:
 
 public slots:
     void process();
-
 };
 
 #endif // AUDIOWORKER_H

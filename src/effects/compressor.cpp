@@ -6,21 +6,21 @@ CompressorStatus Compressor::status() {
 
     status_.level = _level;
     status_.gate = _gate;
-    status_.threshold = threshold;
-    status_.attack = attack;
-    status_.release = release;
-    status_.ratio = ratio;
-    status_.gain = gain;
+    status_.threshold = _threshold;
+    status_.attack = _attack;
+    status_.release = _release;
+    status_.ratio = _ratio;
+    status_.gain = _gain;
 
     return status_;
 }
 
-void Compressor::setStatus(CompressorStatus status_) {
-    threshold = status_.threshold;
-    attack = status_.attack;
-    release = status_.release;
-    ratio = status_.ratio;
-    gain = status_.gain;
+void Compressor::update(CompressorStatus status_) {
+    _threshold = status_.threshold;
+    _attack = status_.attack;
+    _release = status_.release;
+    _ratio = status_.ratio;
+    _gain = status_.gain;
 }
 
 void Compressor::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
@@ -33,15 +33,15 @@ void Compressor::process(Sample const * bufferIn, Sample * bufferOut, const nFra
             _levelPrevious = _levelTarget;
             float increment = 0.0;
 
-            if( _rmsMono >= threshold ) {
+            if( _rmsMono >= _threshold ) {
                 _gate = true;
-                increment = - COMPRESSOR_UPDATE_SAMPLE_COUNT / (attack * SAMPLE_RATE);
+                increment = - COMPRESSOR_UPDATE_SAMPLE_COUNT / (_attack * SAMPLE_RATE);
             } else {
                 _gate = false;
-                increment = COMPRESSOR_UPDATE_SAMPLE_COUNT / (release * SAMPLE_RATE);
+                increment = COMPRESSOR_UPDATE_SAMPLE_COUNT / (_release * SAMPLE_RATE);
             }
 
-            _levelTarget = fmax(1.0 / ratio, fmin(1.0, _levelPrevious + increment));
+            _levelTarget = fmax(1.0 / _ratio, fmin(1.0, _levelPrevious + increment));
             _nCycles = 0;
         }
 
@@ -51,8 +51,8 @@ void Compressor::process(Sample const * bufferIn, Sample * bufferOut, const nFra
         _levelMeter.stepComputations(bufferIn[_left], bufferIn[_right]);
         _level = lerp(_levelPrevious, _levelTarget, (float)_nCycles / COMPRESSOR_UPDATE_SAMPLE_COUNT);
 
-        bufferOut[_left] = bufferIn[_left] * _level * gain;
-        bufferOut[_right] = bufferIn[_right] * _level * gain;
+        bufferOut[_left] = bufferIn[_left] * _level * _gain;
+        bufferOut[_right] = bufferIn[_right] * _level * _gain;
 
         _nCycles++;
     }

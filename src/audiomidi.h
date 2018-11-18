@@ -10,7 +10,7 @@
 #include "track.h"
 
 
-struct Status {
+struct AudioMidiStatus {
     TrackStatus input;
 };
 
@@ -18,7 +18,7 @@ struct Status {
 struct Shared {
     nFrame time = 0;
     Track trackInput;
-    Status status;
+    AudioMidiStatus status;
 };
 
 
@@ -27,7 +27,8 @@ class AudioMidi
 public:
     AudioMidi() {}
     void start();
-    Status status() { return _shared.status; }
+    AudioMidiStatus status() { return _shared.status; }
+    void update(AudioMidiStatus status_) { _shared.trackInput.update(status_.input); }
 private:
     RtAudio* _audio = nullptr;
     void _setAudioDeviceIndex();
