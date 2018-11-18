@@ -122,7 +122,7 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     shared->trackInput.process(ioIn, ioOut, shared->time);
 
     // UPDATE STATUS
-    shared->status.compIn = shared->trackInput.compressor.level;
+    shared->status.compIn = shared->trackInput.compressor.level();
     shared->status.rmsInL = shared->trackInput.levelMeterIn.rmsL;
     shared->status.rmsInR = shared->trackInput.levelMeterIn.rmsR;
     shared->status.rmsOutL = shared->trackInput.levelMeterOut.rmsL;

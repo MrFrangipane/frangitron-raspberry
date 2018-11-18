@@ -22,7 +22,7 @@ TrackStatus Track::status() {
     TrackStatus status;
 
     status.filterFreq = filter.freq;
-    status.compressorLevel = compressor.level;
+    status.compressorLevel = compressor.level();
     status.compressorThreshold = compressor.threshold;
     status.compressorAttack = compressor.attack;
     status.compressorRelease = compressor.release;
