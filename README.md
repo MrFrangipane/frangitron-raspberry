@@ -7,7 +7,7 @@ Raspberry Pi part of the Frangitron
 On a headless Pi
 
 ```bash
-nice -10 ./build_rtaudiortmidi/project /path/to/configuration.json -platform linuxfb
+./frangitron/frangitron --platform linuxfb
 ```
 
 ## Dependencies
@@ -39,23 +39,20 @@ nice -10 ./build_rtaudiortmidi/project /path/to/configuration.json -platform lin
 #### 7" LCD touchscreen brightness
 
 ```bash
-for i in `seq 0 255`;do echo $i > /sys/class/backlight/rpi_backlight/brightness;echo $i;sleep 0.1;done
+/sys/class/backlight/rpi_backlight/brightness
 ```
 
 #### Force turbo
 
 In `/boot/config.txt` set `force_turbo=1`
 
-### Pisound driver + Realtime Kernel
+### Rt Scheduling
 
-- Download and install from https://github.com/BlokasLabs/rpi-kernel-rt
-- Edit limits `sudo nano /etc/security/limits.conf`
+Edit limits `sudo nano /etc/security/limits.conf`
 
 ```text
 @audio -    rtprio    90
 @audio -    memlock   unlimited
-@audio -    nide      -10
 pi     -    rtprio    90
 pi     -    memlock   unlimited
-pi     -    nide      -10
 ```
