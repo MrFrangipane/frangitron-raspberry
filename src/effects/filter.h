@@ -11,6 +11,7 @@ public:
     Filter() {}
     Filter(const nFrame bufferSize) : _bufferSize(bufferSize) {}
     void process(Sample const * bufferIn, Sample * bufferOut, const nFrame time);
+    float freq = 0.0;
 private:
     nFrame _bufferSize = 0;
     nFrame _left = 0;

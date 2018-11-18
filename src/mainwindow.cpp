@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(deleteLater()));
     _audioThread->start();
 
-    QThread::currentThread()->setPriority(QThread::LowPriority);
+    //QThread::currentThread()->setPriority(QThread::LowPriority);
 
     _timerRefresh = new QTimer();
     connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
