@@ -51,7 +51,8 @@ void MainWindow::_refresh()
     status.input.compressor.threshold = ui->sliderCompThreshold->value();
     status.input.compressor.attack = ui->sliderCompAttack->value() / 1000.0;
     status.input.compressor.release = ui->sliderCompRelease->value() / 1000.0;
-    status.input.compressor.ratio = (float)ui->sliderCompRatio->value() / 10;
+    if( ui->checkComp->isChecked() ) status.input.compressor.ratio = (float)ui->sliderCompRatio->value() / 100.0;
+    else status.input.compressor.ratio = 1.0;
 
     _audioWorker->update(status);
 }

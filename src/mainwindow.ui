@@ -24,41 +24,26 @@ QProgressBar::chunk::vertical {
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QLabel" name="labelCompTreshold">
-     <property name="text">
-      <string>0.0</string>
+   <item row="1" column="6">
+    <widget class="QProgressBar" name="rmsOutL">
+     <property name="maximum">
+      <number>200</number>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="labelCompAttack">
+   <item row="3" column="0" colspan="8">
+    <widget class="QPushButton" name="exit">
      <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QLabel" name="labelCompRelease">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="QLabel" name="labelCompRatio">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="UiTrack" name="inputTrack" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>50</width>
-       <height>16777215</height>
-      </size>
+      <string>EXIT</string>
      </property>
     </widget>
    </item>
@@ -96,7 +81,7 @@ QProgressBar::chunk::vertical {
       <number>1</number>
      </property>
      <property name="maximum">
-      <number>1000</number>
+      <number>200</number>
      </property>
      <property name="value">
       <number>27</number>
@@ -106,13 +91,27 @@ QProgressBar::chunk::vertical {
      </property>
     </widget>
    </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="attack">
+     <property name="text">
+      <string>Attack</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="6" colspan="2">
+    <widget class="QLabel" name="output">
+     <property name="text">
+      <string>Ouput</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="3">
     <widget class="QSlider" name="sliderCompRelease">
      <property name="minimum">
       <number>1</number>
      </property>
      <property name="maximum">
-      <number>1000</number>
+      <number>200</number>
      </property>
      <property name="value">
       <number>25</number>
@@ -122,39 +121,52 @@ QProgressBar::chunk::vertical {
      </property>
     </widget>
    </item>
-   <item row="1" column="4">
-    <widget class="QSlider" name="sliderCompRatio">
-     <property name="minimum">
-      <number>10</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>13</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="1" column="0">
+    <widget class="UiTrack" name="inputTrack" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
      </property>
     </widget>
    </item>
-   <item row="1" column="5">
-    <widget class="QProgressBar" name="rmsOutL">
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="0" column="0">
+    <widget class="QLabel" name="input">
+     <property name="text">
+      <string>Input</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="6">
+   <item row="0" column="1">
+    <widget class="QLabel" name="labelCompTreshold">
+     <property name="text">
+      <string>0.0</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QLabel" name="release_2">
+     <property name="text">
+      <string>Ratio</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="labelCompAttack">
+     <property name="text">
+      <string>0.0</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLabel" name="release">
+     <property name="text">
+      <string>Release</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="7">
     <widget class="QProgressBar" name="rmsOutR">
      <property name="maximum">
       <number>200</number>
@@ -173,6 +185,13 @@ QProgressBar::chunk::vertical {
      </property>
     </widget>
    </item>
+   <item row="0" column="3">
+    <widget class="QLabel" name="labelCompRelease">
+     <property name="text">
+      <string>0.0</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="1">
     <widget class="QLabel" name="threshold">
      <property name="text">
@@ -180,45 +199,39 @@ QProgressBar::chunk::vertical {
      </property>
     </widget>
    </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="attack">
+   <item row="0" column="4">
+    <widget class="QLabel" name="labelCompRatio">
      <property name="text">
-      <string>Attack</string>
+      <string>0.0</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="3">
-    <widget class="QLabel" name="release">
-     <property name="text">
-      <string>Release</string>
+   <item row="1" column="4">
+    <widget class="QSlider" name="sliderCompRatio">
+     <property name="minimum">
+      <number>100</number>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="value">
+      <number>270</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="4">
-    <widget class="QLabel" name="release_2">
-     <property name="text">
-      <string>Ratio</string>
+   <item row="1" column="5">
+    <widget class="QCheckBox" name="checkComp">
+     <property name="styleSheet">
+      <string notr="true">QCheckBox::indicator {
+	width: 40px;
+	height: 40px;
+}</string>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="5" colspan="2">
-    <widget class="QLabel" name="output">
      <property name="text">
-      <string>Ouput</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="7">
-    <widget class="QPushButton" name="exit">
-     <property name="text">
-      <string>EXIT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="input">
-     <property name="text">
-      <string>Input</string>
+      <string>Comp Enabled</string>
      </property>
     </widget>
    </item>
