@@ -34,7 +34,7 @@ void AudioMidi::_setAudioDeviceIndex()
                     " in:" << device_infos.inputChannels <<
                     " out:" << device_infos.outputChannels <<
                      std::endl;
-        for (std::vector<std::string>::iterator interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++)
+        for (auto interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++)
         {
             if (device_infos.inputChannels != 0 &&
                 device_infos.outputChannels != 0 &&
@@ -99,7 +99,6 @@ void AudioMidi::start()
           &_shared,
           &options
         );
-        std::cout << "AudioMidi : Expected latency : " << _audio->getStreamLatency() << " frames" << std::endl;
 
         _audio->startStream();
       }

@@ -10,6 +10,9 @@
 #define LEVEL_METER_AVERAGE_CYCLE_COUNT 15
 #define COMPRESSOR_UPDATE_SAMPLE_COUNT 60
 
+#define UI_VU_MIN -220
+#define UI_VU_MARGIN 10
+
 typedef uint_fast32_t nFrame;
 typedef float Sample; // PiSound supports only up to 32 bits
 typedef std::vector<Sample> SampleVector;

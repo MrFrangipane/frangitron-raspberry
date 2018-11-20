@@ -37,11 +37,7 @@ void MainWindow::_refresh()
     AudioMidiStatus status = _audioWorker->status();
 
     // READ
-    ui->compLevel->setValue((1.0 - status.input.compressor.level) * 100);
-    ui->compGate->setChecked(status.input.compressor.gate);
-
-    ui->rmsInL->setValue(fmax(0, ui->rmsInL->maximum() + status.input.levelInL));
-    ui->rmsInR->setValue(fmax(0, ui->rmsInR->maximum() + status.input.levelInR));
+    ui->inputTrack->update_(status.input);
 
     ui->rmsOutL->setValue(fmax(0, ui->rmsOutL->maximum() + status.input.levelOutL));
     ui->rmsOutR->setValue(fmax(0, ui->rmsOutR->maximum() + status.input.levelOutR));
@@ -49,11 +45,13 @@ void MainWindow::_refresh()
     ui->labelCompTreshold->setText(QString::number(status.input.compressor.threshold));
     ui->labelCompAttack->setText(QString::number(status.input.compressor.attack));
     ui->labelCompRelease->setText(QString::number(status.input.compressor.release));
+    ui->labelCompRatio->setText(QString::number(status.input.compressor.ratio));
 
     // WRITE
     status.input.compressor.threshold = ui->sliderCompThreshold->value();
     status.input.compressor.attack = ui->sliderCompAttack->value() / 1000.0;
     status.input.compressor.release = ui->sliderCompRelease->value() / 1000.0;
+    status.input.compressor.ratio = (float)ui->sliderCompRatio->value() / 10;
 
     _audioWorker->update(status);
 }
