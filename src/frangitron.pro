@@ -53,3 +53,4 @@ FORMS += \
         mainwindow.ui
 
 LIBS += -lpthread -lasound -lsndfile
+QMAKE_CXXFLAGS *= -O3

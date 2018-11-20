@@ -8,7 +8,6 @@ void AudioMidi::_setAudioDeviceIndex()
 
     // HACKY POTTER ---------------
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
-        _deviceIndex = 3;
         _bufferSize = 30;
     } // --------------------------
 
