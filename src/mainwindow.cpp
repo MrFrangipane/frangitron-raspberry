@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _timerRefresh = new QTimer();
     connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
-    _timerRefresh->start(1000 / 30);
+    _timerRefresh->start(1000 / UI_FRAMERATE);
 
     connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(close()));
 }

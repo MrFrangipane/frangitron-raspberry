@@ -13,7 +13,8 @@ Track::Track(const nFrame bufferSize) : _bufferSize(bufferSize)
     _bufferFilter = new Sample[_bufferSize * 2]();
     _bufferComp = new Sample[_bufferSize * 2]();
 
-    _filter = Filter(_bufferSize);
+    _filter = Filter(_bufferSize, FilterMode::HIGHPASS);
+    _filter.setCutoff(0.5);
     _compressor = Compressor(_bufferSize);
 
     update(TrackStatus());
