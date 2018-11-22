@@ -24,12 +24,29 @@ double _SampleFilter::process(Sample input)
 }
 
 
-void _SampleFilter::setCutoff(float cutoff)
+void _SampleFilter::update(FilterStatus status_)
 {
-     _cutoff = cutoff;
-     _realCutoff = exp(-1.0 / _cutoff) * exp(1);
-     _realCutoff = (REAL_CUTOFF_MAX - REAL_CUTOFF_MIN) * _realCutoff + REAL_CUTOFF_MIN;
-     _calculateFeedbackAmount();
+    _mode = status_.mode;
+
+    _cutoff = status_.cutoff;
+    _realCutoff = exp(-1.0 / _cutoff) * exp(1);
+    _realCutoff = (REAL_CUTOFF_MAX - REAL_CUTOFF_MIN) * _realCutoff + REAL_CUTOFF_MIN;
+
+    _resonance = status_.resonance;
+
+    _calculateFeedbackAmount();
+}
+
+
+FilterStatus _SampleFilter::status()
+{
+    FilterStatus status_;
+
+    status_.mode = _mode;
+    status_.cutoff = _cutoff;
+    status_.resonance = _resonance;
+
+    return status_;
 }
 
 

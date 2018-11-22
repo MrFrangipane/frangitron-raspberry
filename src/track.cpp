@@ -2,19 +2,15 @@
 
 Track::Track()
 {
-    _bufferFilter = new Sample[1]();
-    _bufferComp = new Sample[1]();
-
     update(TrackStatus());
 }
 
 Track::Track(const nFrame bufferSize) : _bufferSize(bufferSize)
 {
-    _bufferFilter = new Sample[_bufferSize * 2]();
-    _bufferComp = new Sample[_bufferSize * 2]();
+    _bufferFilter.reserve(_bufferSize * 2);
+    _bufferComp.reserve(_bufferSize * 2);
 
     _filter = Filter(_bufferSize, FilterMode::HIGHPASS);
-    _filter.setCutoff(0.5);
     _compressor = Compressor(_bufferSize);
 
     update(TrackStatus());
@@ -31,19 +27,22 @@ TrackStatus Track::status() {
 
     status_.compressor = _compressor.status();
 
+    status_.filter = _filter.status();
+
     return status_;
 }
 
 void Track::update(const TrackStatus status_) {
     _volume = status_.volume;
     _compressor.update(status_.compressor);
+    _filter.update(status_.filter);
 }
 
 void Track::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
 {
     // EFFECTS
-    _filter.process(bufferIn, _bufferFilter, time);
-    _compressor.process(_bufferFilter, _bufferComp, time);
+    _filter.process(bufferIn, _bufferFilter.data(), time);
+    _compressor.process(_bufferFilter.data(), _bufferComp.data(), time);
 
     // LEVELS + OUTPUT
     _time = time;
@@ -51,8 +50,8 @@ void Track::process(Sample const * bufferIn, Sample * bufferOut, const nFrame ti
         _left = i * 2;
         _right = _left + 1;
 
-        bufferOut[_left] = _bufferComp[_left];
-        bufferOut[_right] = _bufferComp[_right];
+        bufferOut[_left] = _bufferComp.data()[_left];
+        bufferOut[_right] = _bufferComp.data()[_right];
 
         _levelMeterIn.stepComputations(bufferIn[_left], bufferIn[_right]);
         _levelMeterOut.stepComputations(bufferOut[_left], bufferOut[_right]);

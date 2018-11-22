@@ -16,6 +16,7 @@ struct TrackStatus
     float levelOutL = 0.0;
     float levelOutR = 0.0;
     CompressorStatus compressor;
+    FilterStatus filter;
 };
 
 
@@ -32,10 +33,10 @@ private:
     nFrame _left = 0;
     nFrame _right = 0;
     nFrame _time = 0;
-    Sample* _bufferFilter = nullptr;
-    Sample* _bufferComp = nullptr;
     Filter _filter;
+    Buffer _bufferFilter;
     Compressor _compressor;
+    Buffer _bufferComp;
     float _volume = 1.0;
     LevelMeter _levelMeterIn;
     LevelMeter _levelMeterOut;

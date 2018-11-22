@@ -16,7 +16,7 @@
 
 typedef uint_fast32_t nFrame;
 typedef float Sample; // PiSound supports only up to 32 bits
-typedef std::vector<Sample> SampleVector;
+typedef std::vector<Sample> Buffer;
 
 inline float lerp(float start, float end, float factor) { return (1.0 - factor) * start + factor * end; }
 

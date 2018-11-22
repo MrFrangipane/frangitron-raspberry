@@ -17,6 +17,13 @@ enum FilterMode {
 };
 
 
+struct FilterStatus {
+    FilterMode mode = FilterMode::HIGHPASS;
+    float cutoff = 0.0;
+    float resonance = 0.1;
+};
+
+
 class _SampleFilter
 {
 public:
@@ -34,9 +41,8 @@ public:
         _calculateFeedbackAmount();
     }
     double process(Sample input);
-    void setCutoff(float cutoff);
-    void setResonance(float resonance) {_resonance = resonance; _calculateFeedbackAmount(); }
-    void setMode(FilterMode mode) {_mode = mode; }
+    void update(FilterStatus status_);
+    FilterStatus status();
 
 private:
     float _cutoff;
@@ -63,9 +69,8 @@ public:
         _filterR(mode)
     {}
     void process(Sample const * bufferIn, Sample * bufferOut, const nFrame time);
-    void setCutoff(float cutoff) { _filterL.setCutoff(cutoff); _filterR.setCutoff(cutoff); }
-    void setResonance(float resonance) { _filterL.setResonance(resonance); _filterR.setResonance(resonance); }
-    void setMode(FilterMode mode) { _filterL.setMode(mode); _filterR.setMode(mode); }
+    void update(FilterStatus status_) { _filterL.update(status_); _filterR.update(status_); }
+    FilterStatus status() { return _filterL.status() ;}
 private:
     nFrame _bufferSize = 0;
     nFrame _left = 0;

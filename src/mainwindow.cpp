@@ -46,6 +46,7 @@ void MainWindow::_refresh()
     ui->labelCompAttack->setText(QString::number(status.input.compressor.attack));
     ui->labelCompRelease->setText(QString::number(status.input.compressor.release));
     ui->labelCompRatio->setText(QString::number(status.input.compressor.ratio));
+    ui->labelHipass->setText(QString::number(status.input.filter.cutoff));
 
     // WRITE
     status.input.compressor.threshold = ui->sliderCompThreshold->value();
@@ -53,6 +54,8 @@ void MainWindow::_refresh()
     status.input.compressor.release = ui->sliderCompRelease->value() / 1000.0;
     if( ui->checkComp->isChecked() ) status.input.compressor.ratio = (float)ui->sliderCompRatio->value() / 100.0;
     else status.input.compressor.ratio = 1.0;
+
+    status.input.filter.cutoff = (float)ui->sliderHipass->value() / 1000.0;
 
     _audioWorker->update(status);
 }
