@@ -2,13 +2,18 @@
 
 Raspberry Pi part of the Frangitron
 
-## Launch
+## Launch at startup
 
-On a headless Pi
+Add to the end of ~/.bashrc
 
 ```bash
-./frangitron/frangitron --platform linuxfb
+# FRANGITRON
+if ! [ "$SSH_CONNECTION" -a "$SSH_TTY" == $(tty) ]; then
+    ./frangitron/frangitron --platform linuxfb
+fi
 ```
+
+_This will avoid program launch when connecting through ssh to pull and build_
 
 ## Dependencies
 
