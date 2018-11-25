@@ -26,6 +26,7 @@ private:
     AudioWorker* _audioWorker = nullptr;
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
+    AudioMidiStatus _status;
 
 private slots:
     void _refresh();

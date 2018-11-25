@@ -7,17 +7,25 @@
 #include <vector>
 #include "../include/rtaudio/RtAudio.h"
 #include "typedefs.h"
-#include "track.h"
+#include "levelmeter.h"
+#include "effects/filter.h"
+#include "effects/compressor.h"
 
 
 struct AudioMidiStatus {
-    TrackStatus input;
+    LevelMeterStatus meterInput;
+    LevelMeterStatus meterOutput;
+    FilterStatus filterInput;
+    CompressorStatus compInput;
 };
 
 
 struct Shared {
     nFrame time = 0;
-    Track trackInput;
+    LevelMeter meterInput;
+    LevelMeter meterOutput;
+    Filter filterInput;
+    Compressor compInput;
     AudioMidiStatus status;
 };
 
@@ -28,7 +36,7 @@ public:
     AudioMidi() {}
     void start();
     AudioMidiStatus status() { return _shared.status; }
-    void update(AudioMidiStatus status_) { _shared.trackInput.update(status_.input); }
+    void update(AudioMidiStatus status_) { _shared.status = status_; }
 private:
     RtAudio* _audio = nullptr;
     void _setAudioDeviceIndex();

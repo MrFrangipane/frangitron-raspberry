@@ -12,7 +12,7 @@ double _SampleFilter::process(Sample input)
         case LOWPASS:
             return _buf3 / 2.0;
 
-        case HIGHPASS:
+        case HIPASS:
             return (input - _buf3) / 2.0;
 
         case BANDPASS:

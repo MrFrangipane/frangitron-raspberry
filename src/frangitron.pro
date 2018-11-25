@@ -29,14 +29,12 @@ CONFIG += debug
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    track.cpp \
     effects/filter.cpp \
     audioworker.cpp \
     audiomidi.cpp \
     ../include/rtaudio/RtAudio.cpp \
     levelmeter.cpp \
     effects/compressor.cpp \
-    ui/uitrack.cpp \
     ui/abstractwidget.cpp \
     ui/levelmeterwidget.cpp
 
@@ -45,13 +43,11 @@ HEADERS += \
     ../include/nlohmann/json.hpp \
     ../include/rtaudio/RtAudio.h \
     typedefs.h \
-    track.h \
     effects/filter.h \
     audioworker.h \
     audiomidi.h \
     levelmeter.h \
     effects/compressor.h \
-    ui/uitrack.h \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h
 

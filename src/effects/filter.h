@@ -11,14 +11,14 @@
 
 enum FilterMode {
     LOWPASS = 0,
-    HIGHPASS,
+    HIPASS,
     BANDPASS,
     nFilterMode
 };
 
 
 struct FilterStatus {
-    FilterMode mode = FilterMode::HIGHPASS;
+    FilterMode mode = FilterMode::HIPASS;
     float cutoff = 0.0;
     float resonance = 0.1;
 };
@@ -51,7 +51,7 @@ private:
     FilterMode _mode;
     float _feedbackAmount;
     void _calculateFeedbackAmount() { _feedbackAmount = fmin(_resonance + _resonance / (1.0 - _realCutoff), 1.0); }
-    void _initCutoff() { if (_mode == LOWPASS) { _cutoff = 1.0; } else if (_mode == HIGHPASS) { _cutoff = 0.0; } else { _cutoff = 0.5; } }
+    void _initCutoff() { if (_mode == LOWPASS) { _cutoff = 1.0; } else if (_mode == HIPASS) { _cutoff = 0.0; } else { _cutoff = 0.5; } }
     Sample _buf0;
     Sample _buf1;
     Sample _buf2;

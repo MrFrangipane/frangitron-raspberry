@@ -6,10 +6,10 @@ void AudioMidi::_setAudioDeviceIndex()
     interfaceNames.push_back("pisound");
     interfaceNames.push_back("Fireface");
 
-    // HACKY POTTER ---------------
+    // HACKY POTTER (to work with Fireface UCX) ---
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
         _bufferSize = 30;
-    } // --------------------------
+    } // ------------------------------------------
 
     RtAudio* audio;
 
@@ -51,11 +51,20 @@ void AudioMidi::_setAudioDeviceIndex()
 
 void AudioMidi::start()
 {
+    // AUDIO DEVICES
     _setAudioDeviceIndex();
-    _shared.trackInput = Track(_bufferSize);
 
-    std::cout << std::endl;
+    // SHARED
+    _shared.filterInput = Filter(_bufferSize, FilterMode::HIPASS);
+    _shared.compInput = Compressor(_bufferSize);
 
+    // HACKY POTTER (Until Midi is back) ---
+    FilterStatus s = _shared.filterInput.status();
+    s.cutoff = 0.0;
+    _shared.filterInput.update(s);
+    // -------------------------------------
+
+    // NEW DAC
     try
     {
         _audio = new RtAudio();
@@ -117,10 +126,23 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     Shared* shared = (Shared*)userData;
 
     // PROCESS
-    shared->trackInput.process(ioIn, ioOut, shared->time);
+    shared->filterInput.process(ioIn, shared->time);
+    shared->compInput.process(shared->filterInput.bufferOut(), shared->time);
+
+    for( int i = 0; i < bufferSize; i++) {
+        shared->meterInput.stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
+
+        ioOut[i * 2] = shared->compInput.bufferOut()[i * 2];
+        ioOut[i * 2 + 1] = shared->compInput.bufferOut()[i * 2 + 1];
+
+        shared->meterOutput.stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
+    }
 
     // UPDATE STATUS
-    shared->status.input = shared->trackInput.status();
+    shared->status.meterInput = shared->meterInput.status();
+    shared->status.filterInput = shared->filterInput.status();
+    shared->status.compInput = shared->compInput.status();
+    shared->status.meterOutput = shared->meterOutput.status();
 
     // INCREMENT TIME
     shared->time += bufferSize;

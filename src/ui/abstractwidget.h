@@ -2,6 +2,9 @@
 #define ABSTRACTWIDGET_H
 
 #include <QObject>
+#include <QApplication>
+#include <QFontMetrics>
+#include <QSize>
 #include <QString>
 #include <QRect>
 #include <QWidget>
@@ -21,14 +24,17 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    QSize minimumSizeHint() const;
 
 signals:
     void selectedChanged(bool isSelected);
 
 private:
-    void* _status;
+    void* _status = nullptr;
     bool _selected = false;
     virtual void paint_(QRect rect, void* status) { }
+    int widthHint() { return -1; }
+    int heightHint() { return -1; }
 };
 
 #endif // ABSTRACTWIDGET_H

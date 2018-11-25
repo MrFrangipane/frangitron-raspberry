@@ -46,15 +46,30 @@ QProgressBar::chunk::vertical {
 	height: 1 px;
 }</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="2" colspan="2">
-    <widget class="QLabel" name="output">
-     <property name="text">
-      <string>Ouput</string>
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,1,0" columnstretch="0,0,0,0">
+   <property name="leftMargin">
+    <number>6</number>
+   </property>
+   <property name="topMargin">
+    <number>6</number>
+   </property>
+   <property name="rightMargin">
+    <number>6</number>
+   </property>
+   <property name="bottomMargin">
+    <number>6</number>
+   </property>
+   <property name="spacing">
+    <number>4</number>
+   </property>
+   <item row="0" column="1" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterInput_2" native="true">
+     <property name="displayName" stdset="0">
+      <string>Sample Selector</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="4">
+   <item row="3" column="0" colspan="4">
     <layout class="QGridLayout" name="layoutEncoders">
      <property name="rightMargin">
       <number>0</number>
@@ -164,14 +179,14 @@ QProgressBar::chunk::vertical {
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="input">
-     <property name="text">
-      <string>Input</string>
+   <item row="0" column="0" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterInput" native="true">
+     <property name="displayName" stdset="0">
+      <string>IN</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="4">
+   <item row="2" column="0" colspan="4">
     <widget class="QPushButton" name="exit">
      <property name="minimumSize">
       <size>
@@ -184,67 +199,24 @@ QProgressBar::chunk::vertical {
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="UiTrack" name="inputTrack" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>50</width>
-       <height>16777215</height>
-      </size>
-     </property>
+   <item row="0" column="3" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterOutput" native="true">
      <property name="displayName" stdset="0">
-      <string>Input Meter</string>
+      <string>OUT</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="3">
-    <widget class="QProgressBar" name="rmsOutR">
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
+   <item row="0" column="2" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterInput_3" native="true">
+     <property name="displayName" stdset="0">
+      <string>Sample Selector</string>
      </property>
     </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QProgressBar" name="rmsOutL">
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="LevelMeterWidget" name="levelMeterInput" native="true"/>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>UiTrack</class>
-   <extends>QWidget</extends>
-   <header>ui/uitrack.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>LevelMeterWidget</class>
    <extends>QWidget</extends>

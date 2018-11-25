@@ -34,18 +34,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::_refresh()
 {
-    AudioMidiStatus status = _audioWorker->status();
+    _status = _audioWorker->status();
 
-    if( status.input.compressor == nullptr) return;
-
-    // READ
-    ui->inputTrack->update_(status.input);
-
-    ui->rmsOutL->setValue(fmax(0, ui->rmsOutL->maximum() + status.input.levelIn->rmsL));
-    ui->rmsOutR->setValue(fmax(0, ui->rmsOutR->maximum() + status.input.levelIn->rmsR));
-    ui->levelMeterInput->update_((void*)status.input.levelIn);
-
-    // WRITE
-
-    _audioWorker->update(status);
+    ui->levelMeterInput->update_((void*)&_status.meterInput);
+    ui->levelMeterOutput->update_((void*)&_status.meterOutput);
 }
