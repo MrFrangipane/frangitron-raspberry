@@ -67,11 +67,15 @@ public:
         _bufferSize(bufferSize),
         _filterL(mode),
         _filterR(mode)
-    {}
-    void process(Sample const * bufferIn, Sample * bufferOut, const nFrame time);
-    void update(FilterStatus status_) { _filterL.update(status_); _filterR.update(status_); }
+    {
+        _bufferOut.reserve(bufferSize * 2);
+    }
     FilterStatus status() { return _filterL.status() ;}
+    void update(FilterStatus status_) { _filterL.update(status_); _filterR.update(status_); }
+    Sample const * bufferOut() { return _bufferOut.data(); }
+    void process(Sample const * bufferIn, const nFrame time);
 private:
+    Buffer _bufferOut;
     nFrame _bufferSize = 0;
     nFrame _left = 0;
     nFrame _right = 0;

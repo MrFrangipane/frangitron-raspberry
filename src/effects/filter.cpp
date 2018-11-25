@@ -50,13 +50,13 @@ FilterStatus _SampleFilter::status()
 }
 
 
-void Filter::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
+void Filter::process(Sample const * bufferIn, const nFrame time)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;
         _right = _left + 1;
 
-        bufferOut[_left] = _filterL.process(bufferIn[_left]);
-        bufferOut[_right] = _filterR.process(bufferIn[_right]);
+        _bufferOut[_left] = _filterL.process(bufferIn[_left]);
+        _bufferOut[_right] = _filterR.process(bufferIn[_right]);
     }
 }

@@ -23,12 +23,12 @@ void Compressor::update(CompressorStatus status_) {
     _gain = status_.gain;
 }
 
-void Compressor::process(Sample const * bufferIn, Sample * bufferOut, const nFrame time)
+void Compressor::process(Sample const * bufferIn, const nFrame time)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         // TRESHOLD
         if( _nCycles > COMPRESSOR_UPDATE_SAMPLE_COUNT ) {
-            _rmsMono = fmax(_levelMeter.rmsInstantL, _levelMeter.rmsInstantR);
+            _rmsMono = fmax(_levelMeter.status().rmsInstantL, _levelMeter.status().rmsInstantR);
 
             _levelPrevious = _levelTarget;
             float increment = 0.0;
@@ -51,8 +51,8 @@ void Compressor::process(Sample const * bufferIn, Sample * bufferOut, const nFra
         _levelMeter.stepComputations(bufferIn[_left], bufferIn[_right]);
         _level = lerp(_levelPrevious, _levelTarget, (float)_nCycles / COMPRESSOR_UPDATE_SAMPLE_COUNT);
 
-        bufferOut[_left] = bufferIn[_left] * _level * _gain;
-        bufferOut[_right] = bufferIn[_right] * _level * _gain;
+        _bufferOut[_left] = bufferIn[_left] * _level * _gain;
+        _bufferOut[_right] = bufferIn[_right] * _level * _gain;
 
         _nCycles++;
     }

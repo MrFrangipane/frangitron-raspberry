@@ -36,7 +36,9 @@ SOURCES += \
     ../include/rtaudio/RtAudio.cpp \
     levelmeter.cpp \
     effects/compressor.cpp \
-    ui/uitrack.cpp
+    ui/uitrack.cpp \
+    ui/abstractwidget.cpp \
+    ui/levelmeterwidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +51,9 @@ HEADERS += \
     audiomidi.h \
     levelmeter.h \
     effects/compressor.h \
-    ui/uitrack.h
+    ui/uitrack.h \
+    ui/abstractwidget.h \
+    ui/levelmeterwidget.h
 
 FORMS += \
         mainwindow.ui

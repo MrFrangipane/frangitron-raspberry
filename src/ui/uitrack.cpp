@@ -1,4 +1,5 @@
 #include "uitrack.h"
+#include <iostream>
 
 void UiTrack::update_(TrackStatus status_)
 {
@@ -8,9 +9,13 @@ void UiTrack::update_(TrackStatus status_)
 
 void UiTrack::paintEvent(QPaintEvent *event)
 {
-    QPainter painter(this);
-    painter.setPen(Qt::NoPen);
+    if( _status.compressor == nullptr ) return;
 
+    QPainter painter(this);
+
+    //property("displayName").toString()
+
+    // COMPUTE RECTS
     QRect vu(event->rect().adjusted(
         UI_VU_MARGIN,
         0,
@@ -24,31 +29,42 @@ void UiTrack::paintEvent(QPaintEvent *event)
         -1
     ));
 
-    // VU
+    // FRAME
+    if( _selected ) {
+        painter.setBrush(Qt::NoBrush);
+        painter.setPen(QPen(Qt::white, 3.0));
+    } else {
+        painter.setBrush(Qt::NoBrush);
+        painter.setPen(QPen(Qt::darkGray, 3.0));
+    }
+    painter.drawRect(event->rect().adjusted(3, 3, -3, -3));
+
+    // METERS
+    painter.setPen(Qt::NoPen);
     painter.setBrush(Qt::white);
 
     painter.drawRect(vu.adjusted(
         0,
-        (_status.levelInL / UI_VU_MIN) * vu.height(),
+        (_status.levelIn->rmsL / UI_VU_MIN) * vu.height(),
         -(vu.width() / 2),
         0
     ));
 
     painter.drawRect(vu.adjusted(
         vu.width() / 2,
-        (_status.levelInR / UI_VU_MIN) * vu.height(),
+        (_status.levelIn->rmsR / UI_VU_MIN) * vu.height(),
         0,
         0
     ));
 
     // COMP
-    if( _status.compressor.gate ) painter.setPen(QPen(Qt::red, 2.0));
+    if( _status.compressor->gate ) painter.setPen(QPen(Qt::red, 2.0));
     else painter.setPen(QPen(Qt::yellow, 2.0));
     painter.drawLine(
         UI_VU_MARGIN,
-        (_status.compressor.threshold / UI_VU_MIN) * event->rect().height(),
+        (_status.compressor->threshold / UI_VU_MIN) * event->rect().height(),
         vu.width() + UI_VU_MARGIN,
-        (_status.compressor.threshold / UI_VU_MIN) * event->rect().height()
+        (_status.compressor->threshold / UI_VU_MIN) * event->rect().height()
     );
 
     painter.setPen(Qt::NoPen);
@@ -58,17 +74,13 @@ void UiTrack::paintEvent(QPaintEvent *event)
         0,
         0,
         0,
-        -_status.compressor.level * comp.height()
+        -_status.compressor->level * comp.height()
     ));
+}
 
-    // FRAME
-    /*
-    painter.setBrush(Qt::NoBrush);
-    painter.setPen(Qt::white);
-    painter.drawRect(event->rect());
-    painter.setPen(Qt::yellow);
-    painter.drawRect(vu);
-    painter.setPen(Qt::green);
-    painter.drawRect(comp);
-    */
+void UiTrack::mousePressEvent(QMouseEvent *event) {
+    if( event->button() == Qt::LeftButton ) {
+        _selected = !_selected;
+        emit selectedChanged(_selected);
+    }
 }

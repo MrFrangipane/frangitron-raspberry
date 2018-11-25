@@ -16,7 +16,30 @@
   <property name="styleSheet">
    <string notr="true">QWidget {
 	color: white;
-	background-color: darkgrey;
+	background-color: rgb(46, 46, 46);
+}
+
+QLabel[style=encoderName] {
+	qproperty-alignment: AlignCenter;
+	border: 0px solid;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	color: black;
+	background-color: white;
+	padding: 2px 0px;
+	max-height: 25px;
+}
+
+QLabel[style=encoderValue] {
+	qproperty-alignment: AlignCenter;
+	border: 1px solid white;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	color: white;
+	background-color: transparent;
+	padding: 2px 0px;
+	max-height: 25px;
+	margin-top: -1px;
 }
 
 QProgressBar::chunk::vertical {
@@ -24,100 +47,140 @@ QProgressBar::chunk::vertical {
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="7">
-    <widget class="QProgressBar" name="rmsOutL">
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="9">
-    <widget class="QPushButton" name="exit">
-     <property name="text">
-      <string>EXIT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QSlider" name="sliderCompThreshold">
-     <property name="minimum">
-      <number>-200</number>
-     </property>
-     <property name="maximum">
-      <number>0</number>
-     </property>
-     <property name="value">
-      <number>-34</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
-     </property>
-     <property name="invertedControls">
-      <bool>false</bool>
-     </property>
-     <property name="tickPosition">
-      <enum>QSlider::TicksAbove</enum>
-     </property>
-     <property name="tickInterval">
-      <number>20</number>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QSlider" name="sliderCompAttack">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>27</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="attack">
-     <property name="text">
-      <string>Attack</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="7" colspan="2">
+   <item row="2" column="2" colspan="2">
     <widget class="QLabel" name="output">
      <property name="text">
       <string>Ouput</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="3">
-    <widget class="QSlider" name="sliderCompRelease">
-     <property name="minimum">
-      <number>1</number>
+   <item row="4" column="0" colspan="4">
+    <layout class="QGridLayout" name="layoutEncoders">
+     <property name="rightMargin">
+      <number>0</number>
      </property>
-     <property name="maximum">
-      <number>200</number>
+     <property name="verticalSpacing">
+      <number>0</number>
      </property>
-     <property name="value">
-      <number>25</number>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelEncValue1">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelEncName1">
+       <property name="text">
+        <string>Encoder 1</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="labelEncName2">
+       <property name="text">
+        <string>Encoder 2</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLabel" name="labelEncValue4">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="labelEncName3">
+       <property name="text">
+        <string>Encoder 3</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="labelEncValue3">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QLabel" name="labelEncName4">
+       <property name="text">
+        <string>Encoder 4</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="labelEncValue2">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QLabel" name="labelEncName5">
+       <property name="text">
+        <string>Encoder 5</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5">
+      <widget class="QLabel" name="labelEncValue5">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="input">
+     <property name="text">
+      <string>Input</string>
      </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="4">
+    <widget class="QPushButton" name="exit">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>EXIT</string>
      </property>
     </widget>
    </item>
@@ -129,44 +192,12 @@ QProgressBar::chunk::vertical {
        <height>16777215</height>
       </size>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="input">
-     <property name="text">
-      <string>Input</string>
+     <property name="displayName" stdset="0">
+      <string>Input Meter</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="labelCompTreshold">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <widget class="QLabel" name="release_2">
-     <property name="text">
-      <string>Ratio</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="labelCompAttack">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QLabel" name="release">
-     <property name="text">
-      <string>Release</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="8">
+   <item row="1" column="3">
     <widget class="QProgressBar" name="rmsOutR">
      <property name="maximum">
       <number>200</number>
@@ -185,85 +216,24 @@ QProgressBar::chunk::vertical {
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QLabel" name="labelCompRelease">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="threshold">
-     <property name="text">
-      <string>Threshold</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="QLabel" name="labelCompRatio">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QSlider" name="sliderCompRatio">
-     <property name="minimum">
-      <number>100</number>
-     </property>
+   <item row="1" column="2">
+    <widget class="QProgressBar" name="rmsOutL">
      <property name="maximum">
-      <number>1000</number>
+      <number>200</number>
      </property>
      <property name="value">
-      <number>270</number>
+      <number>24</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>
-   <item row="1" column="5">
-    <widget class="QCheckBox" name="checkComp">
-     <property name="styleSheet">
-      <string notr="true">QCheckBox::indicator {
-	width: 40px;
-	height: 40px;
-}</string>
-     </property>
-     <property name="text">
-      <string>Comp Enabled</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="6">
-    <widget class="QSlider" name="sliderHipass">
-     <property name="minimum">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <number>1000</number>
-     </property>
-     <property name="value">
-      <number>270</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="6">
-    <widget class="QLabel" name="labelHipass">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="6">
-    <widget class="QLabel" name="release_3">
-     <property name="text">
-      <string>High pass</string>
-     </property>
-    </widget>
+   <item row="1" column="1">
+    <widget class="LevelMeterWidget" name="levelMeterInput" native="true"/>
    </item>
   </layout>
  </widget>
@@ -275,12 +245,15 @@ QProgressBar::chunk::vertical {
    <header>ui/uitrack.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>LevelMeterWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/levelmeterwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>exit</tabstop>
-  <tabstop>sliderCompThreshold</tabstop>
-  <tabstop>sliderCompAttack</tabstop>
-  <tabstop>sliderCompRelease</tabstop>
  </tabstops>
  <resources/>
  <connections/>

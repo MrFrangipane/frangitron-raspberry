@@ -18,11 +18,18 @@ class Compressor
 {
 public:
     Compressor() { update(CompressorStatus()); }
-    Compressor(const nFrame bufferSize) : _bufferSize(bufferSize) { update(CompressorStatus()); }
+    Compressor(const nFrame bufferSize) :
+        _bufferSize(bufferSize)
+    {
+        _bufferOut.reserve(bufferSize * 2);
+        update(CompressorStatus());
+    }
     CompressorStatus status();
     void update(CompressorStatus status_);
-    void process(Sample const * bufferIn, Sample * bufferOut, const nFrame time);
+    Sample const * bufferOut() { return _bufferOut.data(); }
+    void process(Sample const * bufferIn, const nFrame time);
 private:
+    Buffer _bufferOut;
     nFrame _bufferSize = 0;
     nFrame _nCycles = 0;
     nFrame _left = 0;

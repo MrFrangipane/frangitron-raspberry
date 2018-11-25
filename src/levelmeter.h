@@ -5,16 +5,23 @@
 #include "typedefs.h"
 
 
-class LevelMeter
+struct LevelMeterStatus
 {
-public:
-    LevelMeter() {}
     float rmsL = 0.0;
     float rmsR = 0.0;
     float rmsInstantL = 0.0;
     float rmsInstantR = 0.0;
+};
+
+
+class LevelMeter
+{
+public:
+    LevelMeter() {}
     void stepComputations(Sample left, Sample right);
+    LevelMeterStatus status() { return _status; }
 private:
+    LevelMeterStatus _status;
     void _endComputations();
     int _nStep = 0;
     int _nAverage = 0;
