@@ -55,7 +55,7 @@ void AudioMidi::start()
     _setAudioDeviceIndex();
 
     // SHARED
-    _shared.filterInput = Filter(_bufferSize, FilterMode::HIPASS);
+    _shared.filterInput = Filter(_bufferSize);
     _shared.compInput = Compressor(_bufferSize);
 
     // HACKY POTTER (Until Midi is back) ---

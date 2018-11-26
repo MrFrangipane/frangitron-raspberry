@@ -6,6 +6,6 @@ void FilterWidget::paint_(QRect rect, void* status)
     QPainter painter(this);
 
     painter.setBrush(Qt::white);
-    painter.setPen(Qt::NoPen);
-    painter.drawRect(rect);
+    painter.setPen(Qt::white);
+    painter.drawText(rect, Qt::AlignCenter, QString::number(status_->cutoff));
 }

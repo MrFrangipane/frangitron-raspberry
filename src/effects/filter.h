@@ -9,25 +9,24 @@
 #define REAL_CUTOFF_MAX 0.98
 
 
-enum FilterMode {
-    LOWPASS = 0,
-    HIPASS,
-    BANDPASS,
-    nFilterMode
+struct FilterStatus {
+    float cutoff = 0.0;
+    float resonance = 0.1;
 };
 
 
-struct FilterStatus {
-    FilterMode mode = FilterMode::HIPASS;
-    float cutoff = 0.0;
-    float resonance = 0.1;
+enum _SampleFilterMode {
+    LOWPASS = 0,
+    HIPASS,
+    BANDPASS,
+    n_SampleFilterMode
 };
 
 
 class _SampleFilter
 {
 public:
-    _SampleFilter(FilterMode mode = LOWPASS) :
+    _SampleFilter(_SampleFilterMode mode = LOWPASS) :
         _cutoff(1.0),
         _resonance(0.10),
         _realCutoff(REAL_CUTOFF_MAX),
@@ -41,14 +40,17 @@ public:
         _calculateFeedbackAmount();
     }
     double process(Sample input);
-    void update(FilterStatus status_);
+    float cutoff() { return _cutoff; }
+    void setCutoff(float cutoff) { _cutoff = cutoff; _calculateFeedbackAmount(); }
+    float resonance() { return _resonance; }
+    void setResonance(float resonance) { _resonance = resonance; _calculateFeedbackAmount(); }
     FilterStatus status();
 
 private:
     float _cutoff;
     float _resonance;
     float _realCutoff;
-    FilterMode _mode;
+    _SampleFilterMode _mode;
     float _feedbackAmount;
     void _calculateFeedbackAmount() { _feedbackAmount = fmin(_resonance + _resonance / (1.0 - _realCutoff), 1.0); }
     void _initCutoff() { if (_mode == LOWPASS) { _cutoff = 1.0; } else if (_mode == HIPASS) { _cutoff = 0.0; } else { _cutoff = 0.5; } }
@@ -62,16 +64,25 @@ private:
 class Filter
 {
 public:
+    enum FilterMode {
+        LOWPASS = 0,
+        HIPASS,
+        PASSTHROUGH,
+        nFilterMode
+    };
+
     Filter() {}
-    Filter(const nFrame bufferSize, FilterMode mode) :
+    Filter(const nFrame bufferSize) :
         _bufferSize(bufferSize),
-        _filterL(mode),
-        _filterR(mode)
+        _lowPassL(_SampleFilterMode::LOWPASS),
+        _lowPassR(_SampleFilterMode::LOWPASS),
+        _hiPassL(_SampleFilterMode::HIPASS),
+        _hiPassR(_SampleFilterMode::HIPASS)
     {
         _bufferOut.reserve(bufferSize * 2);
     }
-    FilterStatus status() { return _filterL.status() ;}
-    void update(FilterStatus status_) { _filterL.update(status_); _filterR.update(status_); }
+    FilterStatus status();
+    void update(FilterStatus status_);
     Sample const * bufferOut() { return _bufferOut.data(); }
     void process(Sample const * bufferIn, const nFrame time);
 private:
@@ -80,8 +91,11 @@ private:
     nFrame _left = 0;
     nFrame _right = 0;
     nFrame _time = 0;
-    _SampleFilter _filterL;
-    _SampleFilter _filterR;
+    FilterMode _mode = FilterMode::PASSTHROUGH;
+    _SampleFilter _lowPassL;
+    _SampleFilter _lowPassR;
+    _SampleFilter _hiPassL;
+    _SampleFilter _hiPassR;
 };
 
 #endif // FILTER_H
