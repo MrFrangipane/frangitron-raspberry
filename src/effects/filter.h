@@ -9,12 +9,6 @@
 #define REAL_CUTOFF_MAX 0.98
 
 
-struct FilterStatus {
-    float cutoff = 0.0;
-    float resonance = 0.1;
-};
-
-
 enum _SampleFilterMode {
     LOWPASS = 0,
     HIPASS,
@@ -44,7 +38,6 @@ public:
     void setCutoff(float cutoff) { _cutoff = cutoff; _calculateFeedbackAmount(); }
     float resonance() { return _resonance; }
     void setResonance(float resonance) { _resonance = resonance; _calculateFeedbackAmount(); }
-    FilterStatus status();
 
 private:
     float _cutoff;
@@ -58,6 +51,12 @@ private:
     Sample _buf1;
     Sample _buf2;
     Sample _buf3;
+};
+
+
+struct FilterStatus {
+    float cutoff = 0.0;
+    float resonance = 0.1;
 };
 
 

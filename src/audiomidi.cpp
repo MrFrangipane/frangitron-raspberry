@@ -60,7 +60,7 @@ void AudioMidi::start()
 
     // HACKY POTTER (Until Midi is back) ---
     FilterStatus s = _shared.filterInput.status();
-    s.cutoff = 0.0;
+    s.cutoff = 0;
     _shared.filterInput.update(s);
     // -------------------------------------
 
@@ -127,13 +127,13 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
 
     // PROCESS
     shared->filterInput.process(ioIn, shared->time);
-    shared->compInput.process(shared->filterInput.bufferOut(), shared->time);
+    //shared->compInput.process(shared->filterInput.bufferOut(), shared->time);
 
     for( int i = 0; i < bufferSize; i++) {
         shared->meterInput.stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
 
-        ioOut[i * 2] = shared->compInput.bufferOut()[i * 2];
-        ioOut[i * 2 + 1] = shared->compInput.bufferOut()[i * 2 + 1];
+        ioOut[i * 2] = shared->filterInput.bufferOut()[i * 2];
+        ioOut[i * 2 + 1] = shared->filterInput.bufferOut()[i * 2 + 1];
 
         shared->meterOutput.stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
     }

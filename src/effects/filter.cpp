@@ -1,4 +1,5 @@
 #include "filter.h"
+#include <iostream>
 
 double _SampleFilter::process(Sample input)
 {
@@ -27,8 +28,8 @@ void Filter::update(FilterStatus status_)
 {
     if( status_.cutoff < 0 ) {
         _mode = FilterMode::LOWPASS;
-        _lowPassL.setCutoff(1.0 - status_.cutoff);
-        _lowPassR.setCutoff(1.0 - status_.cutoff);
+        _lowPassL.setCutoff(1.0 + status_.cutoff);
+        _lowPassR.setCutoff(1.0 + status_.cutoff);
         _hiPassL.setCutoff(0.0);
         _hiPassR.setCutoff(0.0);
     }
@@ -41,21 +42,33 @@ void Filter::update(FilterStatus status_)
     }
     else {
         _mode = FilterMode::PASSTHROUGH;
+        _lowPassL.setCutoff(1.0);
+        _lowPassR.setCutoff(1.0);
+        _hiPassL.setCutoff(0.0);
+        _hiPassR.setCutoff(0.0);
     }
 
     _lowPassL.setResonance(status_.resonance);
     _lowPassR.setResonance(status_.resonance);
     _hiPassL.setResonance(status_.resonance);
     _hiPassR.setResonance(status_.resonance);
+
+    std::cout << "LOWPASS " << _lowPassL.cutoff() << " | HIPASS " << _hiPassL.cutoff() << " | MODE " << _mode << std::endl;
 }
 
 FilterStatus Filter::status()
 {
     FilterStatus status_;
 
-    if( _mode == FilterMode::HIPASS ) status_.cutoff = _hiPassL.cutoff();
-    else if( _mode == FilterMode::LOWPASS ) status_.cutoff = _lowPassL.cutoff() - 1.0;
-    else status_.cutoff = 0.0;
+    if( _mode == FilterMode::LOWPASS ) {
+        status_.cutoff = _lowPassL.cutoff() - 1.0;
+    }
+    else if( _mode == FilterMode::HIPASS ) {
+        status_.cutoff = _hiPassL.cutoff();
+    }
+    else {
+        status_.cutoff = 0.0;
+    }
 
     status_.resonance = _hiPassL.resonance();
 
@@ -86,14 +99,17 @@ void Filter::process(Sample const * bufferIn, const nFrame time)
         }
         break;
 
-    default:
+    case FilterMode::PASSTHROUGH:
         for( nFrame i = 0; i < _bufferSize; i++ ) {
             _left = i * 2;
             _right = _left + 1;
 
-            _bufferOut[_left] = bufferIn[_left];
-            _bufferOut[_right] = bufferIn[_right];
+            _bufferOut[_left] = bufferIn[_left] / 2.0;
+            _bufferOut[_right] = bufferIn[_right] / 2.0;
         }
+        break;
+
+    default:
         break;
     }
 }
