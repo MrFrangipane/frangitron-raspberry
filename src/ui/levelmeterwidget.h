@@ -7,7 +7,11 @@
 class LevelMeterWidget : public AbstractWidget
 {
 public:
-    explicit LevelMeterWidget(QWidget *parent = nullptr) : AbstractWidget(parent) { }
+    explicit LevelMeterWidget(QWidget *parent = nullptr) :
+        AbstractWidget(parent)
+    {
+        _minimumWidth = 60;
+    }
 
 private:
     void paint_(QRect rect, void* status) override;

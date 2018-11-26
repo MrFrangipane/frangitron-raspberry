@@ -22,6 +22,8 @@ public:
     void desselect() { _selected = false; QWidget::update(); }
 
 protected:
+    int _minimumWidth = -1;
+    int _minimumHeight = -1;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     QSize minimumSizeHint() const;
@@ -33,8 +35,6 @@ private:
     void* _status = nullptr;
     bool _selected = false;
     virtual void paint_(QRect rect, void* status) { }
-    int widthHint() { return -1; }
-    int heightHint() { return -1; }
 };
 
 #endif // ABSTRACTWIDGET_H

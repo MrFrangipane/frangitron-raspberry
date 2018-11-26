@@ -46,26 +46,58 @@ QProgressBar::chunk::vertical {
 	height: 1 px;
 }</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,1,0" columnstretch="0,0,0,0">
-   <property name="leftMargin">
-    <number>6</number>
-   </property>
-   <property name="topMargin">
-    <number>6</number>
-   </property>
-   <property name="rightMargin">
-    <number>6</number>
-   </property>
-   <property name="bottomMargin">
-    <number>6</number>
-   </property>
-   <property name="spacing">
-    <number>4</number>
-   </property>
-   <item row="0" column="1" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterInput_2" native="true">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,0,0">
+   <item row="0" column="0" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterInput" native="true">
      <property name="displayName" stdset="0">
-      <string>Sample Selector</string>
+      <string>IN</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="FilterWidget" name="filterInput" native="true">
+     <property name="displayName" stdset="0">
+      <string>IN FLT</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterOutput" native="true">
+     <property name="displayName" stdset="0">
+      <string>OUT</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="LevelMeterWidget" name="compInput" native="true">
+     <property name="displayName" stdset="0">
+      <string>IN COMP</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>761</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="QPushButton" name="exit">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>EXIT</string>
      </property>
     </widget>
    </item>
@@ -179,40 +211,6 @@ QProgressBar::chunk::vertical {
      </item>
     </layout>
    </item>
-   <item row="0" column="0" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterInput" native="true">
-     <property name="displayName" stdset="0">
-      <string>IN</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QPushButton" name="exit">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>40</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>EXIT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterOutput" native="true">
-     <property name="displayName" stdset="0">
-      <string>OUT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterInput_3" native="true">
-     <property name="displayName" stdset="0">
-      <string>Sample Selector</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -221,6 +219,12 @@ QProgressBar::chunk::vertical {
    <class>LevelMeterWidget</class>
    <extends>QWidget</extends>
    <header>ui/levelmeterwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FilterWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/filterwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

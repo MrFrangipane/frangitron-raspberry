@@ -36,7 +36,8 @@ SOURCES += \
     levelmeter.cpp \
     effects/compressor.cpp \
     ui/abstractwidget.cpp \
-    ui/levelmeterwidget.cpp
+    ui/levelmeterwidget.cpp \
+    ui/filterwidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +50,8 @@ HEADERS += \
     levelmeter.h \
     effects/compressor.h \
     ui/abstractwidget.h \
-    ui/levelmeterwidget.h
+    ui/levelmeterwidget.h \
+    ui/filterwidget.h
 
 FORMS += \
         mainwindow.ui

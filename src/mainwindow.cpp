@@ -37,5 +37,7 @@ void MainWindow::_refresh()
     _status = _audioWorker->status();
 
     ui->levelMeterInput->update_((void*)&_status.meterInput);
+    ui->filterInput->update_((void*)&_status.filterInput);
+
     ui->levelMeterOutput->update_((void*)&_status.meterOutput);
 }

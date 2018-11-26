@@ -11,8 +11,8 @@ QSize AbstractWidget::minimumSizeHint() const
 {
     QFontMetrics metrics(QApplication::font());
     return QSize(
-        metrics.width(property("displayName").toString()) + 15,
-        40
+        std::max(metrics.width(property("displayName").toString()) + 15, _minimumWidth),
+        std::max(40, _minimumHeight)
     );
 }
 
