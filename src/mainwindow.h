@@ -27,9 +27,11 @@ private:
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
     AudioMidiStatus _status;
+    void setupUi();
 
 private slots:
     void _refresh();
+    void _selectedChanged();
 };
 
 #endif // MAINWINDOW_H
