@@ -57,6 +57,11 @@ void MainWindow::_refresh()
 
     ui->levelMeterInput->update_((void*)&_status.meterInput);
     ui->filterInput->update_((void*)&_status.filterInput);
+    ui->compInput->update_((void*)&_status.compInput);
 
     ui->levelMeterOutput->update_((void*)&_status.meterOutput);
+    ui->labCompThreshold->setText(QString::number(_status.compInput.threshold));
+
+    _status.compInput.threshold = ui->sliderComp->value();
+    _audioWorker->update(_status);
 }

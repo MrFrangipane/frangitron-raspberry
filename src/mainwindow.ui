@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true">QWidget {
 	color: white;
-	background-color: rgb(46, 46, 46);
+	background-color: rgb(23, 23, 23);
 }
 
 QLabel[style=encoderName] {
@@ -46,49 +46,24 @@ QProgressBar::chunk::vertical {
 	height: 1 px;
 }</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,0,0">
-   <item row="0" column="0" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterInput" native="true">
-     <property name="displayName" stdset="0">
-      <string>IN</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="FilterWidget" name="filterInput" native="true">
-     <property name="displayName" stdset="0">
-      <string>IN FLT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterOutput" native="true">
-     <property name="displayName" stdset="0">
-      <string>OUT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="LevelMeterWidget" name="compInput" native="true">
-     <property name="displayName" stdset="0">
-      <string>IN COMP</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
+  <property name="background" stdset="0">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="4">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>761</width>
+       <width>710</width>
        <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
-   <item row="2" column="0" colspan="4">
+   <item row="2" column="0" colspan="6">
     <widget class="QPushButton" name="exit">
      <property name="minimumSize">
       <size>
@@ -101,7 +76,7 @@ QProgressBar::chunk::vertical {
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="4">
+   <item row="3" column="0" colspan="6">
     <layout class="QGridLayout" name="layoutEncoders">
      <property name="rightMargin">
       <number>0</number>
@@ -211,6 +186,67 @@ QProgressBar::chunk::vertical {
      </item>
     </layout>
    </item>
+   <item row="1" column="1">
+    <widget class="CompWidget" name="compInput" native="true">
+     <property name="displayName" stdset="0">
+      <string>IN COMP</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterInput" native="true">
+     <property name="displayName" stdset="0">
+      <string>IN</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QSlider" name="verticalSlider_2">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="5" rowspan="2">
+    <widget class="LevelMeterWidget" name="levelMeterOutput" native="true">
+     <property name="displayName" stdset="0">
+      <string>OUT</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="FilterWidget" name="filterInput" native="true">
+     <property name="displayName" stdset="0">
+      <string>IN FLT</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QSlider" name="sliderComp">
+     <property name="minimum">
+      <number>-100</number>
+     </property>
+     <property name="maximum">
+      <number>0</number>
+     </property>
+     <property name="value">
+      <number>-51</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QLabel" name="labCompThreshold">
+     <property name="text">
+      <string>comp lavel</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -225,6 +261,12 @@ QProgressBar::chunk::vertical {
    <class>FilterWidget</class>
    <extends>QWidget</extends>
    <header>ui/filterwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CompWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/compwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

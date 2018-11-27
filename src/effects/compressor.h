@@ -7,11 +7,12 @@
 struct CompressorStatus {
     float level = 0.0;
     bool gate = false;
-    float threshold = -30.0;
+    float threshold = -50.0;
     float attack = 0.2;
     float release = 0.5;
-    float ratio = 4.0;
+    float ratio = 100.0;
     float gain = 1.5;
+    float rms = 0.0;
 };
 
 class Compressor

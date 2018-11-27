@@ -125,15 +125,18 @@ int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int buff
     Sample *ioOut = (Sample*)bufferOut;
     Shared* shared = (Shared*)userData;
 
+    //UPDATE
+    shared->compInput.update(shared->status.compInput);
+
     // PROCESS
     shared->filterInput.process(ioIn, shared->time);
-    //shared->compInput.process(shared->filterInput.bufferOut(), shared->time);
+    shared->compInput.process(shared->filterInput.bufferOut(), shared->time);
 
     for( int i = 0; i < bufferSize; i++) {
         shared->meterInput.stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
 
-        ioOut[i * 2] = shared->filterInput.bufferOut()[i * 2];
-        ioOut[i * 2 + 1] = shared->filterInput.bufferOut()[i * 2 + 1];
+        ioOut[i * 2] = shared->compInput.bufferOut()[i * 2];
+        ioOut[i * 2 + 1] = shared->compInput.bufferOut()[i * 2 + 1];
 
         shared->meterOutput.stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
     }

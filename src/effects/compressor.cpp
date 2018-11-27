@@ -11,6 +11,7 @@ CompressorStatus Compressor::status() {
     status_.release = _release;
     status_.ratio = _ratio;
     status_.gain = _gain;
+    status_.rms = _rmsMono;
 
     return status_;
 }
