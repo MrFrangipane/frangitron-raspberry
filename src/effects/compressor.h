@@ -27,7 +27,7 @@ public:
     }
     CompressorStatus status();
     void update(CompressorStatus status_);
-    Sample const * bufferOut() { return _bufferOut.data(); }
+    Sample const * output() { return _bufferOut.data(); }
     void process(Sample const * bufferIn, const nFrame time);
 private:
     Buffer _bufferOut;

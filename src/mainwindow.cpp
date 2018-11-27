@@ -55,13 +55,15 @@ void MainWindow::_refresh()
 {
     _status = _audioWorker->status();
 
+    // STATUS -> UI
     ui->levelMeterInput->update_((void*)&_status.meterInput);
     ui->filterInput->update_((void*)&_status.filterInput);
     ui->compInput->update_((void*)&_status.compInput);
-
     ui->levelMeterOutput->update_((void*)&_status.meterOutput);
-    ui->labCompThreshold->setText(QString::number(_status.compInput.threshold));
 
+    // UI -> STATUS
     _status.compInput.threshold = ui->sliderComp->value();
+    _status.filterInput.cutoff = (float)ui->sliderFilter->value() / 100.0;
+    _status.filterInput.resonance = (float)ui->sliderResonance->value() / 100.0;
     _audioWorker->update(_status);
 }

@@ -7,6 +7,8 @@
 
 #define REAL_CUTOFF_MIN 0.005
 #define REAL_CUTOFF_MAX 0.98
+#define FEEDBACK_MAX 1.2  // Resonance max = 0.5 * FEEDBACK_MAX
+#define FEEDBACK_FACTOR 0.18
 
 
 enum _SampleFilterMode {
@@ -35,9 +37,11 @@ public:
     }
     double process(Sample input);
     float cutoff() { return _cutoff; }
-    void setCutoff(float cutoff) { _cutoff = cutoff; _calculateFeedbackAmount(); }
+    void setCutoff(float cutoff);
     float resonance() { return _resonance; }
     void setResonance(float resonance) { _resonance = resonance; _calculateFeedbackAmount(); }
+    float feedback() { return _feedbackAmount; }
+    float overhead() { return 1.0 / fmax(1.0, FEEDBACK_FACTOR * _feedbackAmount); }
 
 private:
     float _cutoff;
@@ -45,7 +49,7 @@ private:
     float _realCutoff;
     _SampleFilterMode _mode;
     float _feedbackAmount;
-    void _calculateFeedbackAmount() { _feedbackAmount = fmin(_resonance + _resonance / (1.0 - _realCutoff), 1.0); }
+    void _calculateFeedbackAmount() { _feedbackAmount = fmin(_resonance + _resonance / (1.0 - _realCutoff), FEEDBACK_MAX); }
     void _initCutoff() { if (_mode == LOWPASS) { _cutoff = 1.0; } else if (_mode == HIPASS) { _cutoff = 0.0; } else { _cutoff = 0.5; } }
     Sample _buf0;
     Sample _buf1;
@@ -57,6 +61,7 @@ private:
 struct FilterStatus {
     float cutoff = 0.0;
     float resonance = 0.1;
+    float feedback = 0.0;
 };
 
 
@@ -82,7 +87,7 @@ public:
     }
     FilterStatus status();
     void update(FilterStatus status_);
-    Sample const * bufferOut() { return _bufferOut.data(); }
+    Sample const * output() { return _bufferOut.data(); }
     void process(Sample const * bufferIn, const nFrame time);
 private:
     Buffer _bufferOut;

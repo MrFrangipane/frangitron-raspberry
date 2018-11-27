@@ -1,5 +1,4 @@
 #include "filter.h"
-#include <iostream>
 
 double _SampleFilter::process(Sample input)
 {
@@ -11,18 +10,27 @@ double _SampleFilter::process(Sample input)
     switch (_mode)
     {
         case LOWPASS:
-            return _buf3 / 2.0;
+            return _buf3 * FEEDBACK_FACTOR;
 
         case HIPASS:
-            return (input - _buf3) / 2.0;
+            return (input - _buf3) * FEEDBACK_FACTOR;
 
         case BANDPASS:
-            return (_buf0 - _buf2) / 2.0;
+            return (_buf0 - _buf2) * FEEDBACK_FACTOR;
 
         default:
-            return input / 2.0;
+            return 0.0;
     }
 }
+
+void _SampleFilter::setCutoff(float cutoff)
+{
+     _cutoff = cutoff;
+     _realCutoff = exp(-1.0 / _cutoff) * exp(1);
+     _realCutoff = (REAL_CUTOFF_MAX - REAL_CUTOFF_MIN) * _realCutoff + REAL_CUTOFF_MIN;
+     _calculateFeedbackAmount();
+}
+
 
 void Filter::update(FilterStatus status_)
 {
@@ -52,8 +60,6 @@ void Filter::update(FilterStatus status_)
     _lowPassR.setResonance(status_.resonance);
     _hiPassL.setResonance(status_.resonance);
     _hiPassR.setResonance(status_.resonance);
-
-    std::cout << "LOWPASS " << _lowPassL.cutoff() << " | HIPASS " << _hiPassL.cutoff() << " | MODE " << _mode << std::endl;
 }
 
 FilterStatus Filter::status()
@@ -71,6 +77,7 @@ FilterStatus Filter::status()
     }
 
     status_.resonance = _hiPassL.resonance();
+    status_.feedback = _hiPassL.feedback();
 
     return status_;
 }
@@ -104,8 +111,8 @@ void Filter::process(Sample const * bufferIn, const nFrame time)
             _left = i * 2;
             _right = _left + 1;
 
-            _bufferOut[_left] = bufferIn[_left] / 2.0;
-            _bufferOut[_right] = bufferIn[_right] / 2.0;
+            _bufferOut[_left] = bufferIn[_left] * FEEDBACK_FACTOR;
+            _bufferOut[_right] = bufferIn[_right] * FEEDBACK_FACTOR;
         }
         break;
 
