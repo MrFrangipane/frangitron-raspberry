@@ -1,5 +1,4 @@
 #include "compressor.h"
-#include <iostream>
 
 CompressorStatus Compressor::status() {
     CompressorStatus status_;
@@ -11,7 +10,7 @@ CompressorStatus Compressor::status() {
     status_.release = _release;
     status_.ratio = _ratio;
     status_.gain = _gain;
-    status_.rms = _rmsMono;
+    status_.rms = std::fmax(_levelMeter.status().rmsL, _levelMeter.status().rmsR);
 
     return status_;
 }

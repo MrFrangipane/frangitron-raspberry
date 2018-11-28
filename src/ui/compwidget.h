@@ -1,8 +1,9 @@
 #ifndef COMPWIDGET_H
 #define COMPWIDGET_H
 
+#include "ui/helpers.h"
 #include "abstractwidget.h"
-#include "effects/compressor.h".h"
+#include "effects/compressor.h"
 
 class CompWidget : public AbstractWidget
 {

@@ -53,7 +53,8 @@ HEADERS += \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
-    ui/compwidget.h
+    ui/compwidget.h \
+    ui/helpers.h
 
 FORMS += \
         mainwindow.ui
