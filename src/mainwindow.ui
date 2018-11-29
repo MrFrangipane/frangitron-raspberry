@@ -74,20 +74,7 @@ QSlider::sub-page:vertical {
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="4">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>710</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0" colspan="6">
+   <item row="2" column="0" colspan="5">
     <widget class="QPushButton" name="exit">
      <property name="minimumSize">
       <size>
@@ -100,7 +87,7 @@ QSlider::sub-page:vertical {
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="6">
+   <item row="3" column="0" colspan="5">
     <layout class="QGridLayout" name="layoutEncoders">
      <property name="rightMargin">
       <number>0</number>
@@ -210,21 +197,36 @@ QSlider::sub-page:vertical {
      </item>
     </layout>
    </item>
-   <item row="1" column="1">
-    <widget class="CompWidget" name="compInput" native="true">
-     <property name="displayName" stdset="0">
-      <string>IN COMP</string>
+   <item row="0" column="4">
+    <widget class="QSlider" name="sliderResonance">
+     <property name="maximum">
+      <number>60</number>
+     </property>
+     <property name="value">
+      <number>10</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterInput" native="true">
-     <property name="displayName" stdset="0">
-      <string>IN</string>
+   <item row="1" column="4">
+    <widget class="QSlider" name="sliderComp">
+     <property name="minimum">
+      <number>-100</number>
+     </property>
+     <property name="maximum">
+      <number>0</number>
+     </property>
+     <property name="value">
+      <number>-33</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
+   <item row="0" column="3">
     <widget class="QSlider" name="sliderFilter">
      <property name="enabled">
       <bool>true</bool>
@@ -246,72 +248,12 @@ QSlider::sub-page:vertical {
      </property>
     </widget>
    </item>
-   <item row="0" column="5" rowspan="2">
-    <widget class="LevelMeterWidget" name="levelMeterOutput" native="true">
-     <property name="displayName" stdset="0">
-      <string>OUT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="FilterWidget" name="filterInput" native="true">
-     <property name="displayName" stdset="0">
-      <string>IN FLT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QSlider" name="sliderComp">
-     <property name="minimum">
-      <number>-100</number>
-     </property>
-     <property name="maximum">
-      <number>0</number>
-     </property>
-     <property name="value">
-      <number>-33</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QSlider" name="sliderResonance">
-     <property name="maximum">
-      <number>60</number>
-     </property>
-     <property name="value">
-      <number>10</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
+   <item row="0" column="0" rowspan="2" colspan="3">
+    <layout class="QGridLayout" name="layoutPatch"/>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>LevelMeterWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/levelmeterwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>FilterWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/filterwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CompWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/compwidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>exit</tabstop>
  </tabstops>

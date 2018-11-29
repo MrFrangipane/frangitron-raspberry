@@ -1,0 +1,51 @@
+{
+    "header": {
+        "name": "FrangitronPatch",
+        "version": [0, 0, 0]
+    },
+    "body": {
+        "modules": {
+            "IN" : {
+                "index": 0,
+                "type": "LevelMeter",
+                "layout-pos": [0, 0],
+                "layout-span": [1, 2],
+                "parameters": {}
+            },
+            "IN FLT" : {
+                "index": 1,
+                "type": "Filter",
+                "layout-pos": [0, 1],
+                "layout-span": [1, 1],
+                "parameters": {
+                    "cutoff": 0.0,
+                    "resonance": 0.4
+                }
+            },
+            "IN COMP" : {
+                "index": 2,
+                "type": "Compressor",
+                "layout-pos": [1, 1],
+                "layout-span": [1, 1],
+                "parameters": {
+                    "threshold": -50.0,
+                    "attack": 0.2,
+                    "release": 0.5,
+                    "ratio": 100.0,
+                    "gain": 1.5
+                }
+            },
+            "OUT" : {
+                "index": 3,
+                "type": "LevelMeter",
+                "layout-pos": [2, 0],
+                "layout-span": [1, 2],
+                "parameters": {}
+            }
+        },
+        "routing" : [
+            [-1, 0], [0, 1], [1, 2], [2, 3], [3, -2]
+        ]
+    }
+}
+

@@ -1,12 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <vector>
 #include <QWidget>
 #include <QThread>
 #include <QString>
 #include <QTimer>
 #include "audiomidi.h"
 #include "audioworker.h"
+#include "../include/nlohmann/json.hpp"
 
 namespace Ui {
 class MainWindow;

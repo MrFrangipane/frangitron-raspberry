@@ -5,6 +5,7 @@
 #include "levelmeter.h"
 
 struct CompressorStatus {
+    float rms = 0.0;
     float level = 0.0;
     bool gate = false;
     float threshold = -50.0;
@@ -12,7 +13,6 @@ struct CompressorStatus {
     float release = 0.5;
     float ratio = 100.0;
     float gain = 1.5;
-    float rms = 0.0;
 };
 
 class Compressor
