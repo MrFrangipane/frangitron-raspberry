@@ -1,6 +1,7 @@
 #ifndef ABSTRACTWIDGET_H
 #define ABSTRACTWIDGET_H
 
+#include "typedefs.h"
 #include <QObject>
 #include <QApplication>
 #include <QFontMetrics>
@@ -18,7 +19,7 @@ class AbstractWidget : public QWidget
     Q_OBJECT
 public:
     explicit AbstractWidget(QWidget *parent = nullptr) : QWidget(parent) { }
-    void update_(void *status_);
+    void update_(const Status status_);
     void desselect() { _selected = false; QWidget::update(); }
 
 protected:
@@ -32,9 +33,9 @@ signals:
     void selectedChanged(bool isSelected);
 
 private:
-    void* _status = nullptr;
+    Status _status;
     bool _selected = false;
-    virtual void paint_(QRect /*rect*/, void* /*status*/) { }
+    virtual void paint_(QRect /*rect*/, Status const /*status*/) { }
 };
 
 #endif // ABSTRACTWIDGET_H

@@ -1,14 +1,14 @@
-#ifndef AUDIOWORKER_H
-#define AUDIOWORKER_H
+#ifndef ENGINEWORKER_H
+#define ENGINEWORKER_H
 
 #include <QObject>
 #include "audio/engine.h"
 
-class AudioWorker : public QObject
+class EngineWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit AudioWorker(QObject *parent = nullptr) : QObject(parent) {}
+    explicit EngineWorker(QObject *parent = nullptr) : QObject(parent) {}
     EngineStatus status() { return _engine.status(); }
     void update(EngineStatus status_) { _engine.update(status_); }
 private:
@@ -19,7 +19,7 @@ signals:
     void error(QString error);
 
 public slots:
-    void process();
+    void process() { _engine.start(); }
 };
 
-#endif // AUDIOWORKER_H
+#endif // ENGINEWORKER_H

@@ -55,13 +55,15 @@ void Engine::start()
     _setAudioDeviceIndex();
 
     // SHARED
-    _shared.filterInput = Filter(_bufferSize);
-    _shared.compInput = Compressor(_bufferSize);
+    _shared.modules.push_back(LevelMeter());
+    _shared.modules.push_back(Filter(_bufferSize));
+    _shared.modules.push_back(Compressor(_bufferSize));
+    _shared.modules.push_back(LevelMeter());
 
     // HACKY POTTER (Until Midi is back) ---
-    FilterStatus s = _shared.filterInput.status();
-    s.cutoff = 0;
-    _shared.filterInput.update(s);
+    Status s = _shared.modules[1].status();
+    s["cutoff"] = 0;
+    _shared.modules[1].update(s);
     // -------------------------------------
 
     // NEW DAC
@@ -126,27 +128,29 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     EngineShared* shared = (EngineShared*)userData;
 
     //UPDATE
+    /*
     shared->compInput.update(shared->status.compInput);
     shared->filterInput.update(shared->status.filterInput);
+    */
 
     // PROCESS
-    shared->filterInput.process(ioIn, shared->time);
-    shared->compInput.process(shared->filterInput.output(), shared->time);
+    shared->modules[1].process(ioIn, shared->time);
+    shared->modules[2].process(shared->modules[1].output(), shared->time);
 
     for( nFrame i = 0; i < bufferSize; i++ ) {
-        shared->meterInput.stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
+        //((LevelMeter)shared->modules[0]).stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
 
-        ioOut[i * 2] = shared->compInput.output()[i * 2];
-        ioOut[i * 2 + 1] = shared->compInput.output()[i * 2 + 1];
+        ioOut[i * 2] = shared->modules[2].output()[i * 2];
+        ioOut[i * 2 + 1] = shared->modules[2].output()[i * 2 + 1];
 
-        shared->meterOutput.stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
+        //((LevelMeter)shared->modules[3]).stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
     }
 
     // UPDATE STATUS
-    shared->status.meterInput = shared->meterInput.status();
-    shared->status.filterInput = shared->filterInput.status();
-    shared->status.compInput = shared->compInput.status();
-    shared->status.meterOutput = shared->meterOutput.status();
+    shared->status._statuses.clear();
+    for ( AbstractModule module : shared->modules ) {
+        shared->status._statuses.push_back(module.status());
+    }
 
     // INCREMENT TIME
     shared->time += bufferSize;

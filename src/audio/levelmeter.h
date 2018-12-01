@@ -3,25 +3,25 @@
 
 #include "cmath"
 #include "typedefs.h"
+#include "audio/abstractmodule.h"
 
-
-struct LevelMeterStatus
-{
+struct _LevelMeterStatus {
     float rmsL = 0.0;
     float rmsR = 0.0;
     float rmsInstantL = 0.0;
     float rmsInstantR = 0.0;
 };
 
-
-class LevelMeter
+class LevelMeter : public AbstractModule
 {
 public:
-    LevelMeter() {}
+    LevelMeter() : AbstractModule(0) { }
+    Status const status() override;
+    void update(Status /*status_*/) override { }
+    void process(Sample const * /*bufferIn*/, const nFrame /*time*/) override { }
     void stepComputations(Sample left, Sample right);
-    LevelMeterStatus status() { return _status; }
 private:
-    LevelMeterStatus _status;
+    _LevelMeterStatus _status;
     void _endComputations();
     int _nStep = 0;
     int _nAverage = 0;

@@ -11,6 +11,18 @@ void LevelMeter::stepComputations(Sample left, Sample right)
     }
 }
 
+Status const LevelMeter::status()
+{
+    Status status_;
+
+    status_["rmsL"] = _status.rmsL;
+    status_["rmsR"] = _status.rmsR;
+    status_["rmsInstantL"] = _status.rmsInstantL;
+    status_["rmsInstantL"] = _status.rmsInstantR;
+
+    return status_;
+}
+
 void LevelMeter::_endComputations()
 {
     _status.rmsInstantL = 10 * log(2.0 * _instantL / (float)_nStep);

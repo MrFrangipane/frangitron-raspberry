@@ -1,26 +1,26 @@
 #include "compressor.h"
 
-CompressorStatus Compressor::status() {
-    CompressorStatus status_;
+Status const Compressor::status() {
+    Status status_;
 
-    status_.level = _level;
-    status_.gate = _gate;
-    status_.threshold = _threshold;
-    status_.attack = _attack;
-    status_.release = _release;
-    status_.ratio = _ratio;
-    status_.gain = _gain;
-    status_.rms = std::fmax(_levelMeter.status().rmsL, _levelMeter.status().rmsR);
+    status_["level"] = _level;
+    status_["gate"] = _gate;
+    status_["threshold"] = _threshold;
+    status_["attack"] = _attack;
+    status_["release"] = _release;
+    status_["ratio"] = _ratio;
+    status_["gain"] = _gain;
+    status_["rms"] = std::fmax(_levelMeter.status().at("rmsL"), _levelMeter.status().at("rmsR"));
 
     return status_;
 }
 
-void Compressor::update(CompressorStatus status_) {
-    _threshold = status_.threshold;
-    _attack = status_.attack;
-    _release = status_.release;
-    _ratio = status_.ratio;
-    _gain = status_.gain;
+void Compressor::update(Status status) {
+    _threshold = status["threshold"];
+    _attack = status["attack"];
+    _release = status["release"];
+    _ratio = status["ratio"];
+    _gain = status["gain"];
 }
 
 void Compressor::process(Sample const * bufferIn, const nFrame /*time*/)
@@ -28,7 +28,7 @@ void Compressor::process(Sample const * bufferIn, const nFrame /*time*/)
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         // TRESHOLD
         if( _nCycles > COMPRESSOR_UPDATE_SAMPLE_COUNT ) {
-            _rmsMono = fmax(_levelMeter.status().rmsInstantL, _levelMeter.status().rmsInstantR);
+            _rmsMono = fmax(_levelMeter.status().at("rmsInstantL"), _levelMeter.status().at("rmsInstantR"));
 
             _levelPrevious = _levelTarget;
             float increment = 0.0;

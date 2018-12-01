@@ -16,7 +16,7 @@ public:
     }
 
 private:
-    void paint_(QRect rect, void* status) override;
+    void paint_(QRect rect, Status const status) override;
 };
 
 #endif // COMPWIDGET_H

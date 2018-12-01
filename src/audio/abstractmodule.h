@@ -3,8 +3,6 @@
 
 #include "typedefs.h"
 
-
-template<typename T>
 class AbstractModule
 {
 public:
@@ -12,12 +10,11 @@ public:
         _bufferSize(bufferSize)
     {
         _bufferOut.reserve(bufferSize * 2);
-        update(T());
     }
-    virtual T status() { return T(); }
-    virtual void update(T /*status_*/) { }
-    Sample const * output() { return _bufferOut.data(); }
+    virtual Status const status() { return Status(); }
+    virtual void update(Status /*status_*/) { }
     virtual void process(Sample const * /*bufferIn*/, const nFrame /*time*/) { }
+    Sample const * output() { return _bufferOut.data(); }
 
 protected:
     Buffer _bufferOut;

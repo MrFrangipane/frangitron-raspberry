@@ -1,7 +1,7 @@
 #include "abstractwidget.h"
 
 
-void AbstractWidget::update_(void* status_)
+void AbstractWidget::update_(Status const status_)
 {
     _status = status_;
     QWidget::update();
@@ -52,7 +52,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     painter.drawText(rectName, Qt::AlignCenter, property("displayName").toString());
 
     // ACTUAL PAINT
-    if( _status != nullptr )
+    if( _status.size() != 0)
         paint_(rectContent, _status);
 }
 

@@ -1,31 +1,26 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include <vector>
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
-#include <vector>
 #include "../include/rtaudio/RtAudio.h"
 #include "typedefs.h"
+#include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
 #include "audio/filter.h"
 #include "audio/compressor.h"
 
 
 struct EngineStatus {
-    LevelMeterStatus meterInput;
-    LevelMeterStatus meterOutput;
-    FilterStatus filterInput;
-    CompressorStatus compInput;
+    std::vector<Status> _statuses;
 };
 
 
 struct EngineShared {
     nFrame time = 0;
-    LevelMeter meterInput;
-    LevelMeter meterOutput;
-    Filter filterInput;
-    Compressor compInput;
+    std::vector<AbstractModule> modules;
     EngineStatus status;
 };
 

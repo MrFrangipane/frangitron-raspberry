@@ -1,14 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <vector>
+#include <QList>
 #include <QWidget>
 #include <QThread>
 #include <QString>
 #include <QTimer>
-#include "audio/engine.h"
-#include "ui/audioworker.h"
 #include "../include/nlohmann/json.hpp"
+#include "audio/engine.h"
+#include "ui/engineworker.h"
+#include "ui/abstractwidget.h"
+#include "ui/levelmeterwidget.h"
+#include "ui/filterwidget.h"
+#include "ui/compwidget.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -25,10 +30,11 @@ public:
 private:
     Ui::MainWindow *ui;
     QThread* _audioThread = nullptr;
-    AudioWorker* _audioWorker = nullptr;
+    EngineWorker* _audioWorker = nullptr;
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
     EngineStatus _status;
+    QList<AbstractWidget*> _moduleWidgets;
     void setupUi();
 
 private slots:

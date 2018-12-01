@@ -34,11 +34,11 @@ SOURCES += \
     audio/filter.cpp \
     audio/compressor.cpp \
     ui/mainwindow.cpp \
-    ui/audioworker.cpp \
     ui/abstractwidget.cpp \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
-    ui/compwidget.cpp
+    ui/compwidget.cpp \
+    audio/_samplefilter.cpp
 
 HEADERS += \
     ../include/nlohmann/json.hpp \
@@ -50,12 +50,13 @@ HEADERS += \
     audio/compressor.h \
     ui/helpers.h \
     ui/mainwindow.h \
-    ui/audioworker.h \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
     ui/compwidget.h \
-    audio/abstractmodule.h
+    audio/abstractmodule.h \
+    ui/engineworker.h \
+    audio/_samplefilter.h
 
 FORMS += \
     ui/mainwindow.ui

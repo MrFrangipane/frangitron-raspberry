@@ -1,6 +1,7 @@
 #ifndef TYPEDEFS_H
 #define TYPEDEFS_H
 
+#include <map>
 #include <cstdint>
 #include <vector>
 
@@ -15,6 +16,7 @@
 typedef uint_fast32_t nFrame;
 typedef float Sample; // PiSound supports only up to 32 bits
 typedef std::vector<Sample> Buffer;
+typedef std::map<std::string, float> Status;
 
 inline float lerp(float start, float end, float factor) { return (1.0 - factor) * start + factor * end; }
 
