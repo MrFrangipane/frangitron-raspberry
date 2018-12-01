@@ -79,5 +79,6 @@ void MainWindow::_refresh()
     }
 
     // UI -> STATUS
-    //_audioWorker->update(_status);
+    _status.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
+    _audioWorker->update(_status);
 }

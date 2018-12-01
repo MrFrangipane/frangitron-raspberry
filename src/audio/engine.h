@@ -34,7 +34,7 @@ public:
     Engine() { _shared.is_updating.store(false); }
     void start();
     EngineStatus status();
-    void update(EngineStatus status_) { _shared.status = status_; }
+    void update(EngineStatus status_);
 private:
     RtAudio* _audio = nullptr;
     void _setAudioDeviceIndex();

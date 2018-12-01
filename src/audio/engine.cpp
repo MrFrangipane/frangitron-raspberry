@@ -60,6 +60,11 @@ void Engine::start()
     _shared.modules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
     _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter()));
 
+    _shared.status.moduleStatuses.push_back(Status());
+    _shared.status.moduleStatuses.push_back(Status());
+    _shared.status.moduleStatuses.push_back(Status());
+    _shared.status.moduleStatuses.push_back(Status());
+
     // HACKY POTTER (Until Midi is back) ---
     Status s = _shared.modules[1]->status();
     s["cutoff"] = 0;
@@ -126,18 +131,26 @@ EngineStatus Engine::status()
     return _shared.status;
 }
 
+void Engine::update(EngineStatus status_)
+{
+    while( _shared.is_updating.load() ) { }
+    _shared.status = status_;
+}
+
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
 {
-    // CAST
+    // INIT
+    int i;
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
     EngineShared* shared = (EngineShared*)userData;
 
     // STATUS -> MODULES
-    int i = 0;
+    i = 0;
     shared->is_updating.store(true);
     for( Status status : shared->status.moduleStatuses ) {
-        shared->modules[i]->update(status);
+        if( !status.empty() )
+            shared->modules[i]->update(status);
         i++;
     }
     shared->is_updating.store(false);
@@ -157,9 +170,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
     // MODULES -> STATUS
     shared->is_updating.store(true);
-    shared->status.moduleStatuses.clear();
+    i = 0;
     for( std::shared_ptr<AbstractModule> module : shared->modules ) {
-        shared->status.moduleStatuses.push_back(module->status());
+        shared->status.moduleStatuses[i] = module->status();
+        i++;
     }
     shared->is_updating.store(false);
 
