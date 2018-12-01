@@ -1,8 +1,8 @@
 #ifndef FILTERWIDGET_H
 #define FILTERWIDGET_H
 
-#include "abstractwidget.h"
-#include "effects/filter.h"
+#include "ui/abstractwidget.h"
+#include "audio/filter.h"
 
 class FilterWidget : public AbstractWidget
 {

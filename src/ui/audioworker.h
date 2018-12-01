@@ -2,17 +2,17 @@
 #define AUDIOWORKER_H
 
 #include <QObject>
-#include "audiomidi.h"
+#include "audio/engine.h"
 
 class AudioWorker : public QObject
 {
     Q_OBJECT
 public:
     explicit AudioWorker(QObject *parent = nullptr) : QObject(parent) {}
-    AudioMidiStatus status() { return _audiomidi.status(); }
-    void update(AudioMidiStatus status_) { _audiomidi.update(status_); }
+    EngineStatus status() { return _engine.status(); }
+    void update(EngineStatus status_) { _engine.update(status_); }
 private:
-    AudioMidi _audiomidi;
+    Engine _engine;
 
 signals:
     void finished();

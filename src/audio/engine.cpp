@@ -1,6 +1,6 @@
-#include "audiomidi.h"
+#include "engine.h"
 
-void AudioMidi::_setAudioDeviceIndex()
+void Engine::_setAudioDeviceIndex()
 {
     std::vector<std::string> interfaceNames;
     interfaceNames.push_back("pisound");
@@ -49,7 +49,7 @@ void AudioMidi::_setAudioDeviceIndex()
     _deviceIndex = 0;
 }
 
-void AudioMidi::start()
+void Engine::start()
 {
     // AUDIO DEVICES
     _setAudioDeviceIndex();
@@ -118,12 +118,12 @@ void AudioMidi::start()
       }
 }
 
-int AudioMidi::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double streamTime, RtAudioStreamStatus status, void* userData)
+int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double streamTime, RtAudioStreamStatus status, void* userData)
 {
     // CAST
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
-    Shared* shared = (Shared*)userData;
+    EngineShared* shared = (EngineShared*)userData;
 
     //UPDATE
     shared->compInput.update(shared->status.compInput);

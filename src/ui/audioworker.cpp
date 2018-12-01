@@ -2,5 +2,5 @@
 
 void AudioWorker::process()
 {
-    _audiomidi.start();
+    _engine.start();
 }

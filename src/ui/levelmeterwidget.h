@@ -1,8 +1,8 @@
 #ifndef LEVELMETERWIDGET_H
 #define LEVELMETERWIDGET_H
 
-#include "abstractwidget.h"
-#include "levelmeter.h"
+#include "ui/abstractwidget.h"
+#include "audio/levelmeter.h"
 
 class LevelMeterWidget : public AbstractWidget
 {

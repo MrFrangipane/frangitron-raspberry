@@ -1,5 +1,5 @@
 #include "assert.h"
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 #include <QApplication>
 #include <QStyle>
 #include <QStyleFactory>

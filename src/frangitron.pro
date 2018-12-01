@@ -27,37 +27,37 @@ DEFINES += RTAUDIO_DEBUG
 CONFIG += debug
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    effects/filter.cpp \
-    audioworker.cpp \
-    audiomidi.cpp \
     ../include/rtaudio/RtAudio.cpp \
-    levelmeter.cpp \
-    effects/compressor.cpp \
+    main.cpp \
+    audio/engine.cpp \
+    audio/levelmeter.cpp \
+    audio/filter.cpp \
+    audio/compressor.cpp \
+    ui/mainwindow.cpp \
+    ui/audioworker.cpp \
     ui/abstractwidget.cpp \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
     ui/compwidget.cpp
 
 HEADERS += \
-        mainwindow.h \
     ../include/nlohmann/json.hpp \
     ../include/rtaudio/RtAudio.h \
     typedefs.h \
-    effects/filter.h \
-    audioworker.h \
-    audiomidi.h \
-    levelmeter.h \
-    effects/compressor.h \
+    audio/engine.h \
+    audio/levelmeter.h \
+    audio/filter.h \
+    audio/compressor.h \
+    ui/helpers.h \
+    ui/mainwindow.h \
+    ui/audioworker.h \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
-    ui/compwidget.h \
-    ui/helpers.h
+    ui/compwidget.h
 
 FORMS += \
-        mainwindow.ui
+    ui/mainwindow.ui
 
 LIBS += -lpthread -lasound -lsndfile
 QMAKE_CXXFLAGS *= -O3

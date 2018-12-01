@@ -1,5 +1,5 @@
-#ifndef AUDIOMIDI_H
-#define AUDIOMIDI_H
+#ifndef ENGINE_H
+#define ENGINE_H
 
 #include <iostream>
 #include <cstring>
@@ -7,12 +7,12 @@
 #include <vector>
 #include "../include/rtaudio/RtAudio.h"
 #include "typedefs.h"
-#include "levelmeter.h"
-#include "effects/filter.h"
-#include "effects/compressor.h"
+#include "audio/levelmeter.h"
+#include "audio/filter.h"
+#include "audio/compressor.h"
 
 
-struct AudioMidiStatus {
+struct EngineStatus {
     LevelMeterStatus meterInput;
     LevelMeterStatus meterOutput;
     FilterStatus filterInput;
@@ -20,23 +20,23 @@ struct AudioMidiStatus {
 };
 
 
-struct Shared {
+struct EngineShared {
     nFrame time = 0;
     LevelMeter meterInput;
     LevelMeter meterOutput;
     Filter filterInput;
     Compressor compInput;
-    AudioMidiStatus status;
+    EngineStatus status;
 };
 
 
-class AudioMidi
+class Engine
 {
 public:
-    AudioMidi() {}
+    Engine() {}
     void start();
-    AudioMidiStatus status() { return _shared.status; }
-    void update(AudioMidiStatus status_) { _shared.status = status_; }
+    EngineStatus status() { return _shared.status; }
+    void update(EngineStatus status_) { _shared.status = status_; }
 private:
     RtAudio* _audio = nullptr;
     void _setAudioDeviceIndex();
@@ -50,7 +50,7 @@ private:
     );
     unsigned int _deviceIndex = 0;
     unsigned int _bufferSize = 128;
-    Shared _shared;
+    EngineShared _shared;
 };
 
-#endif // AUDIOMIDI_H
+#endif // ENGINE_H

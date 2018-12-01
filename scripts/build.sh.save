@@ -1,8 +1,0 @@
-cd ~/frangitron-raspberry
-git pull
-chmod +x ~/frangitron-raspberry/scripts/build.sh
-
-cd ~/frangitro
-make clean
-qmake ~/frangitron-raspberry/src/frangitron.pro
-make -j4

@@ -6,8 +6,8 @@
 #include <QThread>
 #include <QString>
 #include <QTimer>
-#include "audiomidi.h"
-#include "audioworker.h"
+#include "audio/engine.h"
+#include "ui/audioworker.h"
 #include "../include/nlohmann/json.hpp"
 
 namespace Ui {
@@ -28,7 +28,7 @@ private:
     AudioWorker* _audioWorker = nullptr;
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
-    AudioMidiStatus _status;
+    EngineStatus _status;
     void setupUi();
 
 private slots:
