@@ -79,6 +79,12 @@ void MainWindow::_refresh()
     }
 
     // UI -> STATUS
-    _status.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
+    if( !_status.moduleStatuses[1].empty() )
+        _status.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
+
+    if( !_status.moduleStatuses[2].empty() )
+        _status.moduleStatuses[2]["threshold"] = ((float)ui->sliderEnc2->value() / 10.0) - 100.0;
+
     _audioWorker->update(_status);
 }
+

@@ -66,9 +66,15 @@ void Engine::start()
     _shared.status.moduleStatuses.push_back(Status());
 
     // HACKY POTTER (Until Midi is back) ---
+    // Filter at 0
     Status s = _shared.modules[1]->status();
     s["cutoff"] = 0;
     _shared.modules[1]->update(s);
+
+    // Comp at -20.0
+    s = _shared.modules[2]->status();
+    s["threshold"] = -20.0;
+    _shared.modules[2]->update(s);
     // -------------------------------------
 
     // NEW DAC
