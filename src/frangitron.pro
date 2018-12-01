@@ -54,7 +54,8 @@ HEADERS += \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
-    ui/compwidget.h
+    ui/compwidget.h \
+    audio/abstractmodule.h
 
 FORMS += \
     ui/mainwindow.ui

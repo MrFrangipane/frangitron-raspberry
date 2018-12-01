@@ -23,7 +23,7 @@ void Compressor::update(CompressorStatus status_) {
     _gain = status_.gain;
 }
 
-void Compressor::process(Sample const * bufferIn, const nFrame time)
+void Compressor::process(Sample const * bufferIn, const nFrame /*time*/)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         // TRESHOLD

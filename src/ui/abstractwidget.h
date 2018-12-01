@@ -34,7 +34,7 @@ signals:
 private:
     void* _status = nullptr;
     bool _selected = false;
-    virtual void paint_(QRect rect, void* status) { }
+    virtual void paint_(QRect /*rect*/, void* /*status*/) { }
 };
 
 #endif // ABSTRACTWIDGET_H

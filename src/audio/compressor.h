@@ -2,7 +2,8 @@
 #define COMPRESSOR_H
 
 #include <cmath>
-#include "levelmeter.h"
+#include "audio/abstractmodule.h"
+#include "audio/levelmeter.h"
 
 struct CompressorStatus {
     float rms = 0.0;
@@ -15,26 +16,15 @@ struct CompressorStatus {
     float gain = 1.5;
 };
 
-class Compressor
+class Compressor : public AbstractModule<CompressorStatus>
 {
 public:
-    Compressor() { update(CompressorStatus()); }
-    Compressor(const nFrame bufferSize) :
-        _bufferSize(bufferSize)
-    {
-        _bufferOut.reserve(bufferSize * 2);
-        update(CompressorStatus());
-    }
-    CompressorStatus status();
-    void update(CompressorStatus status_);
-    Sample const * output() { return _bufferOut.data(); }
-    void process(Sample const * bufferIn, const nFrame time);
+    Compressor(const nFrame bufferSize = 0) : AbstractModule<CompressorStatus>(bufferSize) { }
+    CompressorStatus status() override;
+    void update(CompressorStatus status_) override;
+    void process(Sample const * bufferIn, const nFrame /*time*/) override;
 private:
-    Buffer _bufferOut;
-    nFrame _bufferSize = 0;
     nFrame _nCycles = 0;
-    nFrame _left = 0;
-    nFrame _right = 0;
     nFrame _time = 0;
     nFrame _nLerp = 0;
     float _threshold = 0.0;

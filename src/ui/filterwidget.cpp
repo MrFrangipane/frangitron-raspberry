@@ -1,4 +1,5 @@
-#include "filterwidget.h".h"
+#include "filterwidget.h"
+
 
 void FilterWidget::paint_(QRect rect, void* status)
 {

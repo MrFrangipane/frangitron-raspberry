@@ -118,7 +118,7 @@ void Engine::start()
       }
 }
 
-int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double streamTime, RtAudioStreamStatus status, void* userData)
+int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
 {
     // CAST
     Sample *ioIn = (Sample*)bufferIn;
@@ -133,7 +133,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     shared->filterInput.process(ioIn, shared->time);
     shared->compInput.process(shared->filterInput.output(), shared->time);
 
-    for( int i = 0; i < bufferSize; i++) {
+    for( nFrame i = 0; i < bufferSize; i++ ) {
         shared->meterInput.stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
 
         ioOut[i * 2] = shared->compInput.output()[i * 2];

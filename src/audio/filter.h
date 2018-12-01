@@ -2,7 +2,7 @@
 #define FILTER_H
 
 #include <cmath>
-#include "typedefs.h"
+#include "audio/abstractmodule.h"
 
 
 #define REAL_CUTOFF_MIN 0.005
@@ -65,7 +65,7 @@ struct FilterStatus {
 };
 
 
-class Filter
+class Filter : public AbstractModule<FilterStatus>
 {
 public:
     enum FilterMode {
@@ -75,26 +75,16 @@ public:
         nFilterMode
     };
 
-    Filter() {}
-    Filter(const nFrame bufferSize) :
-        _bufferSize(bufferSize),
+    Filter(const nFrame bufferSize = 0) :
+        AbstractModule<FilterStatus>(bufferSize),
         _lowPassL(_SampleFilterMode::LOWPASS),
         _lowPassR(_SampleFilterMode::LOWPASS),
         _hiPassL(_SampleFilterMode::HIPASS),
-        _hiPassR(_SampleFilterMode::HIPASS)
-    {
-        _bufferOut.reserve(bufferSize * 2);
-    }
-    FilterStatus status();
-    void update(FilterStatus status_);
-    Sample const * output() { return _bufferOut.data(); }
-    void process(Sample const * bufferIn, const nFrame time);
+        _hiPassR(_SampleFilterMode::HIPASS) { }
+    FilterStatus status() override;
+    void update(FilterStatus status_) override;
+    void process(Sample const * bufferIn, const nFrame /*time*/) override;
 private:
-    Buffer _bufferOut;
-    nFrame _bufferSize = 0;
-    nFrame _left = 0;
-    nFrame _right = 0;
-    nFrame _time = 0;
     FilterMode _mode = FilterMode::PASSTHROUGH;
     _SampleFilter _lowPassL;
     _SampleFilter _lowPassR;
