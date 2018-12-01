@@ -23,6 +23,7 @@ public:
     void desselect() { _selected = false; QWidget::update(); }
 
 protected:
+    Status _status;
     int _minimumWidth = -1;
     int _minimumHeight = -1;
     void paintEvent(QPaintEvent *event) override;
@@ -33,9 +34,8 @@ signals:
     void selectedChanged(bool isSelected);
 
 private:
-    Status _status;
     bool _selected = false;
-    virtual void paint_(QRect /*rect*/, Status const /*status*/) { }
+    virtual void paint_(QRect /*rect*/) { }
 };
 
 #endif // ABSTRACTWIDGET_H

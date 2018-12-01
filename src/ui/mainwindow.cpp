@@ -59,7 +59,7 @@ void MainWindow::setupUi()
 
 void MainWindow::_selectedChanged()
 {
-    for (AbstractWidget* moduleWidget : _moduleWidgets) {
+    for( AbstractWidget* moduleWidget : _moduleWidgets ) {
         if( moduleWidget != sender() ) {
             moduleWidget->desselect();
         }
@@ -69,14 +69,15 @@ void MainWindow::_selectedChanged()
 void MainWindow::_refresh()
 {
     _status = _audioWorker->status();
+    if( _status.moduleStatuses.empty() ) return;
 
     // STATUS -> UI
+    int i = 0;
+    for( AbstractWidget* moduleWidget : _moduleWidgets ) {
+        moduleWidget->update_(_status.moduleStatuses[i]);
+        i++;
+    }
 
     // UI -> STATUS
-    /*
-    _status.compInput.threshold = ui->sliderComp->value();
-    _status.filterInput.cutoff = (float)ui->sliderFilter->value() / 100.0;
-    _status.filterInput.resonance = (float)ui->sliderResonance->value() / 100.0;
-    _audioWorker->update(_status);
-    */
+    //_audioWorker->update(_status);
 }

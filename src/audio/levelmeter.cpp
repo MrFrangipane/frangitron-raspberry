@@ -18,7 +18,7 @@ Status const LevelMeter::status()
     status_["rmsL"] = _status.rmsL;
     status_["rmsR"] = _status.rmsR;
     status_["rmsInstantL"] = _status.rmsInstantL;
-    status_["rmsInstantL"] = _status.rmsInstantR;
+    status_["rmsInstantR"] = _status.rmsInstantR;
 
     return status_;
 }

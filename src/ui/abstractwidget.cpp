@@ -52,8 +52,13 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     painter.drawText(rectName, Qt::AlignCenter, property("displayName").toString());
 
     // ACTUAL PAINT
-    if( _status.size() != 0)
-        paint_(rectContent, _status);
+    if( !_status.empty() ) {
+        paint_(rectContent);
+    }
+    else {
+        painter.setPen(Qt::white);
+        painter.drawText(rectContent, Qt::AlignCenter, "Status\nunavailable");
+    }
 }
 
 void AbstractWidget::mousePressEvent(QMouseEvent *event) {

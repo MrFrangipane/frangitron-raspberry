@@ -2,6 +2,7 @@
 #define ABSTRACTMODULE_H
 
 #include "typedefs.h"
+#include <iostream>
 
 class AbstractModule
 {
@@ -11,7 +12,7 @@ public:
     {
         _bufferOut.reserve(bufferSize * 2);
     }
-    virtual Status const status() { return Status(); }
+    virtual Status const status() { return Status(); std::cout << "JEAN"; }
     virtual void update(Status /*status_*/) { }
     virtual void process(Sample const * /*bufferIn*/, const nFrame /*time*/) { }
     Sample const * output() { return _bufferOut.data(); }

@@ -1,7 +1,9 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include <atomic>
 #include <vector>
+#include <memory>
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
@@ -14,13 +16,14 @@
 
 
 struct EngineStatus {
-    std::vector<Status> _statuses;
+    std::vector<Status> moduleStatuses;
 };
 
 
 struct EngineShared {
     nFrame time = 0;
-    std::vector<AbstractModule> modules;
+    std::vector<std::shared_ptr<AbstractModule>> modules;
+    std::atomic_bool is_updating;
     EngineStatus status;
 };
 
@@ -28,9 +31,9 @@ struct EngineShared {
 class Engine
 {
 public:
-    Engine() {}
+    Engine() { _shared.is_updating.store(false); }
     void start();
-    EngineStatus status() { return _shared.status; }
+    EngineStatus status();
     void update(EngineStatus status_) { _shared.status = status_; }
 private:
     RtAudio* _audio = nullptr;

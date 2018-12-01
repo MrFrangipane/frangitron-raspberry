@@ -55,15 +55,15 @@ void Engine::start()
     _setAudioDeviceIndex();
 
     // SHARED
-    _shared.modules.push_back(LevelMeter());
-    _shared.modules.push_back(Filter(_bufferSize));
-    _shared.modules.push_back(Compressor(_bufferSize));
-    _shared.modules.push_back(LevelMeter());
+    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter()));
+    _shared.modules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
+    _shared.modules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
+    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter()));
 
     // HACKY POTTER (Until Midi is back) ---
-    Status s = _shared.modules[1].status();
+    Status s = _shared.modules[1]->status();
     s["cutoff"] = 0;
-    _shared.modules[1].update(s);
+    _shared.modules[1]->update(s);
     // -------------------------------------
 
     // NEW DAC
@@ -120,6 +120,12 @@ void Engine::start()
       }
 }
 
+EngineStatus Engine::status()
+{
+    while( _shared.is_updating.load() ) { }
+    return _shared.status;
+}
+
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
 {
     // CAST
@@ -127,30 +133,35 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     Sample *ioOut = (Sample*)bufferOut;
     EngineShared* shared = (EngineShared*)userData;
 
-    //UPDATE
-    /*
-    shared->compInput.update(shared->status.compInput);
-    shared->filterInput.update(shared->status.filterInput);
-    */
+    // STATUS -> MODULES
+    int i = 0;
+    shared->is_updating.store(true);
+    for( Status status : shared->status.moduleStatuses ) {
+        shared->modules[i]->update(status);
+        i++;
+    }
+    shared->is_updating.store(false);
 
     // PROCESS
-    shared->modules[1].process(ioIn, shared->time);
-    shared->modules[2].process(shared->modules[1].output(), shared->time);
+    shared->modules[1]->process(ioIn, shared->time);
+    shared->modules[2]->process(shared->modules[1]->output(), shared->time);
 
     for( nFrame i = 0; i < bufferSize; i++ ) {
-        //((LevelMeter)shared->modules[0]).stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
+        std::dynamic_pointer_cast<LevelMeter>(shared->modules[0])->stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
 
-        ioOut[i * 2] = shared->modules[2].output()[i * 2];
-        ioOut[i * 2 + 1] = shared->modules[2].output()[i * 2 + 1];
+        ioOut[i * 2] = shared->modules[2]->output()[i * 2];
+        ioOut[i * 2 + 1] = shared->modules[2]->output()[i * 2 + 1];
 
-        //((LevelMeter)shared->modules[3]).stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
+        std::dynamic_pointer_cast<LevelMeter>(shared->modules[3])->stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
     }
 
-    // UPDATE STATUS
-    shared->status._statuses.clear();
-    for ( AbstractModule module : shared->modules ) {
-        shared->status._statuses.push_back(module.status());
+    // MODULES -> STATUS
+    shared->is_updating.store(true);
+    shared->status.moduleStatuses.clear();
+    for( std::shared_ptr<AbstractModule> module : shared->modules ) {
+        shared->status.moduleStatuses.push_back(module->status());
     }
+    shared->is_updating.store(false);
 
     // INCREMENT TIME
     shared->time += bufferSize;

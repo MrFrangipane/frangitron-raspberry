@@ -14,7 +14,7 @@ public:
     }
 
 private:
-    void paint_(QRect rect, Status const status) override;
+    void paint_(QRect rect) override;
 };
 
 #endif // LEVELMETERWIDGET_H
