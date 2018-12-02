@@ -5,13 +5,14 @@
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWindow)
-{
+{    
     setupUi();
 
     _audioThread = new QThread();
     _audioThread->setObjectName("AudioMidi");
     _audioWorker = new EngineWorker();
     _audioWorker->moveToThread(_audioThread);
+    _audioWorker->setStatusCallback(this, MainWindow::engineStatusCallback);
     connect(_audioThread, SIGNAL(started()), _audioWorker, SLOT(process()));
     connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(quit()));
     connect(_audioWorker, SIGNAL(finished()), _audioWorker, SLOT(deleteLater()));
@@ -79,24 +80,22 @@ void MainWindow::_selectedChanged()
 
 void MainWindow::_refresh()
 {
-    _status = _audioWorker->status();
-    if( _status.moduleStatuses.empty() ) return;
+    _engineStatus = _audioWorker->status();
+    if( _engineStatus.moduleStatuses.empty() ) return;
 
     // STATUS -> UI
     int i = 0;
     for( AbstractWidget* moduleWidget : _moduleWidgets ) {
-        moduleWidget->update_(_status.moduleStatuses[i]);
+        moduleWidget->update_(_engineStatus.moduleStatuses[i]);
         i++;
     }
 
     // UI -> STATUS
-    if( !_status.moduleStatuses[1].empty() )
-        _status.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
+    if( !_engineStatus.moduleStatuses[1].empty() )
+        _engineStatus.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
 
-    if( !_status.moduleStatuses[2].empty() ) {
-        _status.moduleStatuses[2]["threshold"] = ((float)ui->sliderEnc2->value() / 10.0) - 100.0;
-        _status.moduleStatuses[2]["ratio"] = fmax((int)_moduleWidgets[2]->isSelected() * 10.0, 1.0);
+    if( !_engineStatus.moduleStatuses[2].empty() ) {
+        _engineStatus.moduleStatuses[2]["threshold"] = ((float)ui->sliderEnc2->value() / 10.0) - 100.0;
+        _engineStatus.moduleStatuses[2]["ratio"] = fmax((int)_moduleWidgets[2]->isSelected() * 10.0, 1.0);
     }
-
-    _audioWorker->update(_status);
 }

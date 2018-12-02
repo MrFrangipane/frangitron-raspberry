@@ -121,20 +121,6 @@ void Engine::start()
       }
 }
 
-EngineStatus Engine::status()
-{
-    while( _shared.isUpdating.load() ) { }
-    return _shared.status;
-}
-
-void Engine::update(EngineStatus status_)
-{
-    while( _shared.isUpdating.load() ) { }
-    _shared.isUpdating.store(true);
-    _shared.status = status_;
-    _shared.isUpdating.store(false);
-}
-
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
 {
     // INIT
@@ -145,16 +131,18 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     Sample *ioOut = (Sample*)bufferOut;
     EngineShared* shared = (EngineShared*)userData;
 
+    // UI -> STATUS
+    EngineStatus uiEngineStatus = shared->uiEngineStatusCallback(shared->uiPtr);
+    if( !uiEngineStatus.moduleStatuses.empty() )
+        shared->status.moduleStatuses = uiEngineStatus.moduleStatuses;
+
     // STATUS -> MODULES
     moduleId = 0;
-    while( shared->isUpdating.load() ) { }
-    shared->isUpdating.store(true);
     for( Status status : shared->status.moduleStatuses ) {
         if( !status.empty() )
             shared->modules[moduleId]->update(status);
         moduleId++;
     }
-    shared->isUpdating.store(false);
 
     // PROCESS
     moduleId = 0;
@@ -178,14 +166,11 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // MODULES -> STATUS
-    while( shared->isUpdating.load() ) { }
-    shared->isUpdating.store(true);
     moduleId = 0;
     for( std::shared_ptr<AbstractModule> module : shared->modules ) {
         shared->status.moduleStatuses[moduleId] = module->status();
         moduleId++;
     }
-    shared->isUpdating.store(false);
 
     // INCREMENT TIME
     shared->time += bufferSize;

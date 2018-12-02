@@ -26,6 +26,8 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    static EngineStatus engineStatusCallback(void * thisPtr) { return ((MainWindow*)thisPtr)->engineStatus(); }
+    EngineStatus engineStatus() { return _engineStatus; }
 
 private:
     Ui::MainWindow *ui;
@@ -33,7 +35,7 @@ private:
     EngineWorker* _audioWorker = nullptr;
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
-    EngineStatus _status;
+    EngineStatus _engineStatus;
     QList<AbstractWidget*> _moduleWidgets;
     void setupUi();
 
