@@ -121,8 +121,9 @@ void Engine::start()
       }
 }
 
-EngineStatus const Engine::status()
+EngineStatus Engine::status() const
 {
+    while( _shared.isWritingStatus ) { }
     return _shared.status;
 }
 
@@ -137,9 +138,14 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     EngineShared* shared = (EngineShared*)userData;
 
     // UI -> STATUS
+    shared->isWritingStatus = true;
+    moduleId = 0;
     EngineStatus uiEngineStatus = shared->uiEngineStatusCallback(shared->uiPtr);
-    if( !uiEngineStatus.moduleStatuses.empty() )
-        shared->status.moduleStatuses = uiEngineStatus.moduleStatuses;
+    for( Status status : uiEngineStatus.moduleStatuses ) {
+        shared->status.moduleStatuses[moduleId] = status;
+        moduleId++;
+    }
+    shared->isWritingStatus = false;
 
     // STATUS -> MODULES
     moduleId = 0;
@@ -171,11 +177,13 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // MODULES -> STATUS
+    shared->isWritingStatus = true;
     moduleId = 0;
     for( std::shared_ptr<AbstractModule> module : shared->modules ) {
         shared->status.moduleStatuses[moduleId] = module->status();
         moduleId++;
     }
+    shared->isWritingStatus = false;
 
     // INCREMENT TIME
     shared->time += bufferSize;

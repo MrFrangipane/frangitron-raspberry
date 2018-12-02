@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <atomic>
 #include <QList>
 #include <QWidget>
 #include <QThread>
@@ -27,7 +28,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     static EngineStatus engineStatusCallback(void * thisPtr) { return ((MainWindow*)thisPtr)->engineStatus(); }
-    EngineStatus const engineStatus() { return _engineStatus; }
+    EngineStatus engineStatus() const;
 
 private:
     Ui::MainWindow *ui;
@@ -37,7 +38,8 @@ private:
     bool _started = false;
     EngineStatus _engineStatus;
     QList<AbstractWidget*> _moduleWidgets;
-    void setupUi();
+    void _setupUi();
+    std::atomic<bool> _isWritingStatus{false};
 
 private slots:
     void _refresh();

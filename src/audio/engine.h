@@ -30,6 +30,8 @@ struct EngineShared {
     std::vector<int> wires;
     EngineStatusCallback uiEngineStatusCallback;
     void* uiPtr;
+    std::atomic<bool> isWritingStatus{false};
+    std::atomic<bool> isReadingStatus{false};
 };
 
 
@@ -38,7 +40,7 @@ class Engine
 public:
     Engine() { }
     void start();
-    EngineStatus const status();
+    EngineStatus status() const;
     void setStatusCallback(void * uiPtr, EngineStatusCallback callback) { _shared.uiPtr = uiPtr; _shared.uiEngineStatusCallback = callback; }
 private:
     RtAudio* _audio = nullptr;

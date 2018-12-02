@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWindow)
 {    
-    setupUi();
+    _setupUi();
 
     _audioThread = new QThread();
     _audioThread->setObjectName("AudioMidi");
@@ -33,7 +33,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setupUi()
+EngineStatus MainWindow::engineStatus() const
+{
+    while( _isWritingStatus ) { }
+    return _engineStatus;
+}
+
+void MainWindow::_setupUi()
 {
     ui->setupUi(this);
 
@@ -91,6 +97,7 @@ void MainWindow::_refresh()
     }
 
     // UI -> STATUS
+    _isWritingStatus = true;
     if( !_engineStatus.moduleStatuses[1].empty() )
         _engineStatus.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
 
@@ -98,4 +105,5 @@ void MainWindow::_refresh()
         _engineStatus.moduleStatuses[2]["threshold"] = ((float)ui->sliderEnc2->value() / 10.0) - 100.0;
         _engineStatus.moduleStatuses[2]["ratio"] = fmax((int)_moduleWidgets[2]->isSelected() * 10.0, 1.0);
     }
+    _isWritingStatus = false;
 }
