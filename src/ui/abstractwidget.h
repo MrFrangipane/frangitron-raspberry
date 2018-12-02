@@ -19,7 +19,7 @@ class AbstractWidget : public QWidget
     Q_OBJECT
 public:
     explicit AbstractWidget(QWidget *parent = nullptr) : QWidget(parent) { }
-    void update_(const Status status_);
+    void update_(const Status status);
     void desselect() { _selected = false; QWidget::update(); }
     bool isSelected() { return _selected; }
 

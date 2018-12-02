@@ -10,7 +10,7 @@ class EngineWorker : public QObject
 public:
     explicit EngineWorker(QObject *parent = nullptr) : QObject(parent) {}
     void setStatusCallbacks(void * uiPtr, GetStatusCallback callbackGet, SetStatusCallback callbackSet) {
-        _engine.setStatusCallbacks(uiPtr, callbackGet, callbackSet);
+        _engine.setUiCallbacks(uiPtr, callbackGet, callbackSet);
     }
 private:
     Engine _engine;

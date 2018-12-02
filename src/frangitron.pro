@@ -30,7 +30,6 @@ SOURCES += \
     ../include/rtaudio/RtAudio.cpp \
     main.cpp \
     audio/engine.cpp \
-    audio/abstractmodule.cpp \
     audio/_samplefilter.cpp \
     audio/levelmeter.cpp \
     audio/filter.cpp \

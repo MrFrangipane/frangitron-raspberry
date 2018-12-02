@@ -26,14 +26,12 @@ typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 struct EngineShared {
     nFrame time = 0;
-    std::vector<std::shared_ptr<AbstractModule>> modules;
+    std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;
-    std::vector<int> wires;
-    GetStatusCallback uiGetStatusCallback;
-    SetStatusCallback uiSetStatusCallback;
+    std::vector<int> audioWires;
     void* uiPtr;
-    std::atomic<bool> isWritingStatus{false};
-    std::atomic<bool> isReadingStatus{false};
+    GetStatusCallback uiGetStatus;
+    SetStatusCallback uiSetStatus;
 };
 
 
@@ -42,8 +40,8 @@ class Engine
 public:
     Engine() { }
     void start();
-    void setStatusCallbacks(void * uiPtr, GetStatusCallback getCallback, SetStatusCallback setCallback) {
-        _shared.uiPtr = uiPtr; _shared.uiGetStatusCallback = getCallback; _shared.uiSetStatusCallback = setCallback;
+    void setUiCallbacks(void * uiPtr, GetStatusCallback getCallback, SetStatusCallback setCallback) {
+        _shared.uiPtr = uiPtr; _shared.uiGetStatus = getCallback; _shared.uiSetStatus = setCallback;
     }
 private:
     RtAudio* _audio = nullptr;

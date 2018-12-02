@@ -50,8 +50,10 @@ EngineStatus MainWindow::getEngineStatus() const
 
 void MainWindow::setEngineStatus(EngineStatus status)
 {
-    while( _isWritingStatus ) { }
+    while( _isReadingStatus ) { }
+    _isWritingStatus = true;
     _engineStatus = status;
+    _isWritingStatus = false;
 }
 // ------------------
 
@@ -108,21 +110,29 @@ void MainWindow::_refresh()
 {
     if( _engineStatus.moduleStatuses.empty() ) return;
 
+    while( _isWritingStatus ) { }
+    _isReadingStatus = true;
+    EngineStatus engineStatus = _engineStatus;
+    _isReadingStatus = false;
+
     // STATUS -> UI
     int i = 0;
     for( AbstractWidget* moduleWidget : _moduleWidgets ) {
-        moduleWidget->update_(_engineStatus.moduleStatuses[i]);
+        moduleWidget->update_(engineStatus.moduleStatuses[i]);
         i++;
     }
 
-    // UI -> STATUS
-    _isWritingStatus = true;
-    if( !_engineStatus.moduleStatuses[1].empty() )
-        _engineStatus.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
+    if( !engineStatus.moduleStatuses[1].empty() )
+        engineStatus.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
 
-    if( !_engineStatus.moduleStatuses[2].empty() ) {
-        _engineStatus.moduleStatuses[2]["threshold"] = ((float)ui->sliderEnc2->value() / 10.0) - 100.0;
-        _engineStatus.moduleStatuses[2]["ratio"] = fmax((int)_moduleWidgets[2]->isSelected() * 10.0, 1.0);
+    if( !engineStatus.moduleStatuses[2].empty() ) {
+        engineStatus.moduleStatuses[2]["threshold"] = ((float)ui->sliderEnc2->value() / 10.0) - 100.0;
+        engineStatus.moduleStatuses[2]["ratio"] = fmax((int)_moduleWidgets[2]->isSelected() * 10.0, 1.0);
     }
+
+    // UI -> STATUS
+    while( _isWritingStatus ) { }
+    _isWritingStatus = true;
+    _engineStatus = engineStatus;
     _isWritingStatus = false;
 }

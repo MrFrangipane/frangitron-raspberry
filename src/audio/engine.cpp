@@ -52,21 +52,21 @@ void Engine::start()
     } // ------------------------------------------
 
     // MODULES
-    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.modules[0]->status());
-    _shared.wires.push_back(-1);  // Input
+    _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+    _shared.status.moduleStatuses.push_back(_shared.audioModules[0]->status());
+    _shared.audioWires.push_back(-1);  // Input
 
-    _shared.modules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.modules[1]->status());
-    _shared.wires.push_back(0);  // Level Meter
+    _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
+    _shared.status.moduleStatuses.push_back(_shared.audioModules[1]->status());
+    _shared.audioWires.push_back(0);  // Level Meter
 
-    _shared.modules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.modules[2]->status());
-    _shared.wires.push_back(1);  // Filter
+    _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
+    _shared.status.moduleStatuses.push_back(_shared.audioModules[2]->status());
+    _shared.audioWires.push_back(1);  // Filter
 
-    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.modules[3]->status());
-    _shared.wires.push_back(2);  // Compressor
+    _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+    _shared.status.moduleStatuses.push_back(_shared.audioModules[3]->status());
+    _shared.audioWires.push_back(2);  // Compressor
 
     // AUDIO DEVICE
     _setAudioDeviceIndex();
@@ -131,56 +131,49 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     Sample *ioOut = (Sample*)bufferOut;
     EngineShared* shared = (EngineShared*)userData;
 
-    // UI -> STATUS
-    shared->isWritingStatus = true;
-    moduleId = 0;
-    EngineStatus uiEngineStatus = shared->uiGetStatusCallback(shared->uiPtr);
-    for( Status status : uiEngineStatus.moduleStatuses ) {
-        shared->status.moduleStatuses[moduleId] = status;
-        moduleId++;
-    }
-    shared->isWritingStatus = false;
+    // UI -> STATUS (all)
+    EngineStatus engineStatus = shared->uiGetStatus(shared->uiPtr);
+    if( !engineStatus.moduleStatuses.empty() )
+        shared->status = engineStatus;
 
-    // STATUS -> MODULES
+    // STATUS -> MODULES (parameters)
     moduleId = 0;
     for( Status status : shared->status.moduleStatuses ) {
         if( !status.empty() )
-            shared->modules[moduleId]->update(status);
+            shared->audioModules[moduleId]->update(status);
         moduleId++;
     }
 
     // PROCESS
     moduleId = 0;
-    for( std::shared_ptr<AbstractModule> module : shared->modules ) {
-        inputId = shared->wires[moduleId];
+    for( std::shared_ptr<AbstractModule> module : shared->audioModules ) {
+        inputId = shared->audioWires[moduleId];
 
-        if( inputId == -1 ) {  // Audio Input
+        if( inputId == -1 ) {  // Hardware Input
             module->process(ioIn, shared->time);
         }
-        else if( inputId >= 0 ) {  // Other modules
-           module->process(shared->modules[inputId]->output(), shared->time);
+        else if( inputId >= 0 ) {  // Module Input
+           module->process(shared->audioModules[inputId]->output(), shared->time);
         }
 
         moduleId++;
     }
 
-    masterId = shared->modules.size() - 1;
+    masterId = shared->audioModules.size() - 1;
     for( nFrame i = 0; i < bufferSize; i++ ) {
-        ioOut[i * 2] = shared->modules[masterId]->output()[i * 2];
-        ioOut[i * 2 + 1] = shared->modules[masterId]->output()[i * 2 + 1];
+        ioOut[i * 2] = shared->audioModules[masterId]->output()[i * 2];
+        ioOut[i * 2 + 1] = shared->audioModules[masterId]->output()[i * 2 + 1];
     }
 
-    // MODULES -> STATUS
-    shared->isWritingStatus = true;
+    // MODULES -> STATUS (all)
     moduleId = 0;
-    for( std::shared_ptr<AbstractModule> module : shared->modules ) {
+    for( std::shared_ptr<AbstractModule> module : shared->audioModules ) {
         shared->status.moduleStatuses[moduleId] = module->status();
         moduleId++;
     }
-    shared->isWritingStatus = false;
 
-    // STATUS ->UI
-    shared->uiSetStatusCallback(shared->uiPtr, shared->status);
+    // STATUS ->UI (all)
+    shared->uiSetStatus(shared->uiPtr, shared->status);
 
     // INCREMENT TIME
     shared->time += bufferSize;

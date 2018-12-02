@@ -42,6 +42,7 @@ private:
     QList<AbstractWidget*> _moduleWidgets;
     void _setupUi();
     std::atomic<bool> _isWritingStatus{false};
+    std::atomic<bool> _isReadingStatus{false};
 
 private slots:
     void _refresh();
