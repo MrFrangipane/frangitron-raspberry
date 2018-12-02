@@ -30,6 +30,8 @@ SOURCES += \
     ../include/rtaudio/RtAudio.cpp \
     main.cpp \
     audio/engine.cpp \
+    audio/abstractmodule.cpp \
+    audio/_samplefilter.cpp \
     audio/levelmeter.cpp \
     audio/filter.cpp \
     audio/compressor.cpp \
@@ -37,29 +39,28 @@ SOURCES += \
     ui/abstractwidget.cpp \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
-    ui/compwidget.cpp \
-    audio/_samplefilter.cpp
+    ui/compwidget.cpp
 
 HEADERS += \
     ../include/nlohmann/json.hpp \
     ../include/rtaudio/RtAudio.h \
     typedefs.h \
     audio/engine.h \
+    audio/abstractmodule.h \
+    audio/_samplefilter.h \
     audio/levelmeter.h \
     audio/filter.h \
     audio/compressor.h \
     ui/helpers.h \
     ui/mainwindow.h \
+    ui/engineworker.h \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
-    ui/compwidget.h \
-    audio/abstractmodule.h \
-    ui/engineworker.h \
-    audio/_samplefilter.h
+    ui/compwidget.h
 
 FORMS += \
     ui/mainwindow.ui
 
 LIBS += -lpthread -lasound -lsndfile
-QMAKE_CXXFLAGS *= -O3
+QMAKE_CXXFLAGS *= -g -O0

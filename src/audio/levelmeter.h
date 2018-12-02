@@ -15,11 +15,11 @@ struct _LevelMeterStatus {
 class LevelMeter : public AbstractModule
 {
 public:
-    LevelMeter() : AbstractModule(0) { }
+    LevelMeter(const nFrame bufferSize = 0) : AbstractModule(bufferSize) { }
+    void stepComputations(Sample left, Sample right);
     Status const status() override;
     void update(Status /*status_*/) override { }
-    void process(Sample const * /*bufferIn*/, const nFrame /*time*/) override { }
-    void stepComputations(Sample left, Sample right);
+    void process(Sample const * bufferIn, const nFrame /*time*/) override;
 private:
     _LevelMeterStatus _status;
     void _endComputations();

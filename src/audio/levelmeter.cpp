@@ -23,6 +23,18 @@ Status const LevelMeter::status()
     return status_;
 }
 
+void LevelMeter::process(const Sample *bufferIn, const nFrame /*time*/)
+{
+    for( nFrame i = 0; i < _bufferSize; i++ ) {
+        _left = i * 2;
+        _right = _left + 1;
+
+        _bufferOut[_left] = bufferIn[_left];
+        _bufferOut[_right] = bufferIn[_right];
+        stepComputations(bufferIn[_left], bufferIn[_right]);
+    }
+}
+
 void LevelMeter::_endComputations()
 {
     _status.rmsInstantL = 10 * log(2.0 * _instantL / (float)_nStep);

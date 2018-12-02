@@ -36,25 +36,36 @@ void MainWindow::setupUi()
 {
     ui->setupUi(this);
 
+    // IN
     _moduleWidgets << new LevelMeterWidget();
-    _moduleWidgets <<  new FilterWidget();
-    _moduleWidgets << new CompWidget();
-    _moduleWidgets << new LevelMeterWidget();
-
     connect(_moduleWidgets[0], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    connect(_moduleWidgets[1], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    connect(_moduleWidgets[2], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    connect(_moduleWidgets[3], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-
     _moduleWidgets[0]->setProperty("displayName", "IN");
-    _moduleWidgets[1]->setProperty("displayName", "IN FILTER");
-    _moduleWidgets[2]->setProperty("displayName", "IN COMP");
-    _moduleWidgets[3]->setProperty("displayName", "MASTER");
-
     ui->layoutPatch->addWidget(_moduleWidgets[0], 0, 0, 2, 1);
+
+    // IN FILTER
+    _moduleWidgets <<  new FilterWidget();
+    connect(_moduleWidgets[1], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
+    _moduleWidgets[1]->setProperty("displayName", "IN FILTER");
     ui->layoutPatch->addWidget(_moduleWidgets[1], 0, 1);
+
+    // IN COMP
+    _moduleWidgets << new CompWidget();
+    connect(_moduleWidgets[2], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
+    _moduleWidgets[2]->setProperty("displayName", "IN COMP");
     ui->layoutPatch->addWidget(_moduleWidgets[2], 1, 1);
+
+    // MASTER
+    _moduleWidgets << new LevelMeterWidget();
+    connect(_moduleWidgets[3], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
+    _moduleWidgets[3]->setProperty("displayName", "MASTER");
     ui->layoutPatch->addWidget(_moduleWidgets[3], 0, 3, 2, 1);
+
+    // HACKY POTTER (Sliders for dev mode) ---
+    ui->widgetDevMode->setVisible(false);
+    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
+        ui->widgetDevMode->setVisible(true);
+        resize(width(), height() + 200);
+    } // -------------------------------------
 }
 
 void MainWindow::_selectedChanged()
@@ -82,9 +93,10 @@ void MainWindow::_refresh()
     if( !_status.moduleStatuses[1].empty() )
         _status.moduleStatuses[1]["cutoff"] = ((float)ui->sliderEnc1->value() / 500.0) - 1.0;
 
-    if( !_status.moduleStatuses[2].empty() )
+    if( !_status.moduleStatuses[2].empty() ) {
         _status.moduleStatuses[2]["threshold"] = ((float)ui->sliderEnc2->value() / 10.0) - 100.0;
+        _status.moduleStatuses[2]["ratio"] = fmax((int)_moduleWidgets[2]->isSelected() * 10.0, 1.0);
+    }
 
     _audioWorker->update(_status);
 }
-

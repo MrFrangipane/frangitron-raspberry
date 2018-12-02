@@ -21,6 +21,7 @@ public:
     explicit AbstractWidget(QWidget *parent = nullptr) : QWidget(parent) { }
     void update_(const Status status_);
     void desselect() { _selected = false; QWidget::update(); }
+    bool isSelected() { return _selected; }
 
 protected:
     Status _status;

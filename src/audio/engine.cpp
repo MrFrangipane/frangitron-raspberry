@@ -6,11 +6,6 @@ void Engine::_setAudioDeviceIndex()
     interfaceNames.push_back("pisound");
     interfaceNames.push_back("Fireface");
 
-    // HACKY POTTER (to work with Fireface UCX) ---
-    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
-        _bufferSize = 30;
-    } // ------------------------------------------
-
     RtAudio* audio;
 
     try {
@@ -22,7 +17,7 @@ void Engine::_setAudioDeviceIndex()
         return;
     }
 
-    std::cout << std::endl << "AudioMidi : Available Devices" << std::endl;
+    std::cout << std::endl << "Available Devices :" << std::endl;
 
     RtAudio::DeviceInfo device_infos;
 
@@ -51,57 +46,52 @@ void Engine::_setAudioDeviceIndex()
 
 void Engine::start()
 {
-    // AUDIO DEVICES
-    _setAudioDeviceIndex();
+    // HACKY POTTER (to work with Fireface UCX) ---
+    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
+        _bufferSize = 60;
+    } // ------------------------------------------
 
-    // SHARED
-    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter()));
+    // MODULES
+    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+    _shared.status.moduleStatuses.push_back(_shared.modules[0]->status());
+    _shared.wires.push_back(-1);  // Input
+
     _shared.modules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
+    _shared.status.moduleStatuses.push_back(_shared.modules[1]->status());
+    _shared.wires.push_back(0);  // Level Meter
+
     _shared.modules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
-    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter()));
+    _shared.status.moduleStatuses.push_back(_shared.modules[2]->status());
+    _shared.wires.push_back(1);  // Filter
 
-    _shared.status.moduleStatuses.push_back(Status());
-    _shared.status.moduleStatuses.push_back(Status());
-    _shared.status.moduleStatuses.push_back(Status());
-    _shared.status.moduleStatuses.push_back(Status());
+    _shared.modules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+    _shared.status.moduleStatuses.push_back(_shared.modules[3]->status());
+    _shared.wires.push_back(2);  // Compressor
 
-    // HACKY POTTER (Until Midi is back) ---
-    // Filter at 0
-    Status s = _shared.modules[1]->status();
-    s["cutoff"] = 0;
-    _shared.modules[1]->update(s);
-
-    // Comp at -20.0
-    s = _shared.modules[2]->status();
-    s["threshold"] = -20.0;
-    _shared.modules[2]->update(s);
-    // -------------------------------------
-
-    // NEW DAC
+    // AUDIO DEVICE
+    _setAudioDeviceIndex();
     try
     {
         _audio = new RtAudio();
     }
     catch (RtAudioError &error)
     {
-        std::cout << "AudioMidi : Error while allocating Audio" << std::endl;
+        std::cout << "Error while allocating Audio" << std::endl;
         std::cout << error.getMessage() << std::endl;
         return;
     }
 
-    // AUDIO IN
     RtAudio::StreamParameters _audioInParams;
     _audioInParams.deviceId = _deviceIndex;
     _audioInParams.nChannels = 2;
 
-    // AUDIO OUT
     RtAudio::StreamParameters _audioOutParams;
     _audioOutParams.deviceId = _deviceIndex;
     _audioOutParams.nChannels = 2;
 
     try
     {
-        std::cout << "AudioMidi : Opening audio device " <<
+        std::cout << "Opening audio device " <<
                      "(" << _deviceIndex << ") " <<
                      "and setting callback : " <<
                    _audio->getDeviceInfo(_deviceIndex).name <<
@@ -126,62 +116,76 @@ void Engine::start()
       }
       catch (RtAudioError &error)
       {
-          std::cout << "AudioMidi : Error while opening audio device and setting callback" << std::endl;
+          std::cout << "Error while opening audio device and setting callback" << std::endl;
           std::cout << error.getMessage() << std::endl;
       }
 }
 
 EngineStatus Engine::status()
 {
-    while( _shared.is_updating.load() ) { }
+    while( _shared.isUpdating.load() ) { }
     return _shared.status;
 }
 
 void Engine::update(EngineStatus status_)
 {
-    while( _shared.is_updating.load() ) { }
+    while( _shared.isUpdating.load() ) { }
+    _shared.isUpdating.store(true);
     _shared.status = status_;
+    _shared.isUpdating.store(false);
 }
 
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
 {
     // INIT
-    int i;
+    int moduleId = 0;
+    int inputId = -2;
+    int masterId = 0;
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
     EngineShared* shared = (EngineShared*)userData;
 
     // STATUS -> MODULES
-    i = 0;
-    shared->is_updating.store(true);
+    moduleId = 0;
+    while( shared->isUpdating.load() ) { }
+    shared->isUpdating.store(true);
     for( Status status : shared->status.moduleStatuses ) {
         if( !status.empty() )
-            shared->modules[i]->update(status);
-        i++;
+            shared->modules[moduleId]->update(status);
+        moduleId++;
     }
-    shared->is_updating.store(false);
+    shared->isUpdating.store(false);
 
     // PROCESS
-    shared->modules[1]->process(ioIn, shared->time);
-    shared->modules[2]->process(shared->modules[1]->output(), shared->time);
+    moduleId = 0;
+    for( std::shared_ptr<AbstractModule> module : shared->modules ) {
+        inputId = shared->wires[moduleId];
 
+        if( inputId == -1 ) {  // Audio Input
+            module->process(ioIn, shared->time);
+        }
+        else if( inputId >= 0 ) {  // Other modules
+           module->process(shared->modules[inputId]->output(), shared->time);
+        }
+
+        moduleId++;
+    }
+
+    masterId = shared->modules.size() - 1;
     for( nFrame i = 0; i < bufferSize; i++ ) {
-        std::dynamic_pointer_cast<LevelMeter>(shared->modules[0])->stepComputations(ioIn[i * 2], ioIn[i * 2 + 1]);
-
-        ioOut[i * 2] = shared->modules[2]->output()[i * 2];
-        ioOut[i * 2 + 1] = shared->modules[2]->output()[i * 2 + 1];
-
-        std::dynamic_pointer_cast<LevelMeter>(shared->modules[3])->stepComputations(ioOut[i * 2], ioOut[i * 2 + 1]);
+        ioOut[i * 2] = shared->modules[masterId]->output()[i * 2];
+        ioOut[i * 2 + 1] = shared->modules[masterId]->output()[i * 2 + 1];
     }
 
     // MODULES -> STATUS
-    shared->is_updating.store(true);
-    i = 0;
+    while( shared->isUpdating.load() ) { }
+    shared->isUpdating.store(true);
+    moduleId = 0;
     for( std::shared_ptr<AbstractModule> module : shared->modules ) {
-        shared->status.moduleStatuses[i] = module->status();
-        i++;
+        shared->status.moduleStatuses[moduleId] = module->status();
+        moduleId++;
     }
-    shared->is_updating.store(false);
+    shared->isUpdating.store(false);
 
     // INCREMENT TIME
     shared->time += bufferSize;

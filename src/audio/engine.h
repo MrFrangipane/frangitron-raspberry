@@ -23,15 +23,16 @@ struct EngineStatus {
 struct EngineShared {
     nFrame time = 0;
     std::vector<std::shared_ptr<AbstractModule>> modules;
-    std::atomic_bool is_updating;
+    std::atomic_bool isUpdating;
     EngineStatus status;
+    std::vector<int> wires;
 };
 
 
 class Engine
 {
 public:
-    Engine() { _shared.is_updating.store(false); }
+    Engine() { _shared.isUpdating.store(false); }
     void start();
     EngineStatus status();
     void update(EngineStatus status_);

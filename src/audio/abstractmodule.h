@@ -7,12 +7,12 @@
 class AbstractModule
 {
 public:
-    AbstractModule(const nFrame bufferSize = 0) :
+    AbstractModule(const nFrame bufferSize) :
         _bufferSize(bufferSize)
     {
         _bufferOut.reserve(bufferSize * 2);
     }
-    virtual Status const status() { return Status(); std::cout << "JEAN"; }
+    virtual Status const status() { return Status(); }
     virtual void update(Status /*status_*/) { }
     virtual void process(Sample const * /*bufferIn*/, const nFrame /*time*/) { }
     Sample const * output() { return _bufferOut.data(); }
