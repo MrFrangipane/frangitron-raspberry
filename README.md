@@ -41,11 +41,21 @@ _This will avoid program launch when connecting through ssh to pull and build_
 - https://scribles.net/silent-boot-up-on-raspbian-stretch/
 - https://scribles.net/customizing-boot-up-screen-on-raspberry-pi/
 
-#### 7" LCD touchscreen brightness
+#### 7" LCD touchscreen
+
+- Brightness
 
 ```bash
 /sys/class/backlight/rpi_backlight/brightness
 ```
+
+- No blanking
+
+```bash
+sudo nano /boot/cmdline.txt
+```
+
+Add `consoleblank=0` to turn screen blanking off completely
 
 #### Force turbo
 
