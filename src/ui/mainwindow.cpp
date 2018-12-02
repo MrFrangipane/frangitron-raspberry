@@ -67,6 +67,10 @@ void MainWindow::_setupUi()
     _moduleWidgets[3]->setProperty("displayName", "MASTER");
     ui->layoutPatch->addWidget(_moduleWidgets[3], 0, 3, 2, 1);
 
+    // END STRETCH
+    ui->layoutPatch->addWidget(new QWidget(), 0, ui->layoutPatch->columnCount());
+    ui->layoutPatch->setColumnStretch(ui->layoutPatch->columnCount() - 1, 10);
+
     // HACKY POTTER (Sliders for dev mode) ---
     ui->widgetDevMode->setVisible(false);
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {

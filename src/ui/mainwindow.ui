@@ -187,7 +187,7 @@ QSlider::sub-page:vertical {
    <item row="0" column="0">
     <layout class="QGridLayout" name="layoutPatch">
      <property name="topMargin">
-      <number>20</number>
+      <number>0</number>
      </property>
     </layout>
    </item>
