@@ -27,7 +27,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     static EngineStatus engineStatusCallback(void * thisPtr) { return ((MainWindow*)thisPtr)->engineStatus(); }
-    EngineStatus engineStatus() { return _engineStatus; }
+    EngineStatus const engineStatus() { return _engineStatus; }
 
 private:
     Ui::MainWindow *ui;

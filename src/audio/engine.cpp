@@ -121,9 +121,8 @@ void Engine::start()
       }
 }
 
-EngineStatus Engine::status()
+EngineStatus const Engine::status()
 {
-    while( _shared.updatingEngineStatus.load() ) { }
     return _shared.status;
 }
 
@@ -172,13 +171,11 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // MODULES -> STATUS
-    shared->updatingEngineStatus.store(true);
     moduleId = 0;
     for( std::shared_ptr<AbstractModule> module : shared->modules ) {
         shared->status.moduleStatuses[moduleId] = module->status();
         moduleId++;
     }
-    shared->updatingEngineStatus.store(false);
 
     // INCREMENT TIME
     shared->time += bufferSize;

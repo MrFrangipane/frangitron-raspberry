@@ -20,7 +20,7 @@ struct EngineStatus {
 };
 
 
-typedef EngineStatus(*EngineStatusCallback)(void* /*calleePtr*/);
+typedef EngineStatus(*EngineStatusCallback)(void* /*uiPtr*/);
 
 
 struct EngineShared {
@@ -30,16 +30,15 @@ struct EngineShared {
     std::vector<int> wires;
     EngineStatusCallback uiEngineStatusCallback;
     void* uiPtr;
-    std::atomic_bool updatingEngineStatus;
 };
 
 
 class Engine
 {
 public:
-    Engine() { _shared.updatingEngineStatus.store(false); }
+    Engine() { }
     void start();
-    EngineStatus status();
+    EngineStatus const status();
     void setStatusCallback(void * uiPtr, EngineStatusCallback callback) { _shared.uiPtr = uiPtr; _shared.uiEngineStatusCallback = callback; }
 private:
     RtAudio* _audio = nullptr;
