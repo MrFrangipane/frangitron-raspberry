@@ -86,7 +86,9 @@ void MainWindow::_selectedChanged()
 
 void MainWindow::_refresh()
 {
+    _isWritingStatus = true;
     _engineStatus = _audioWorker->status();
+    _isWritingStatus = false;
     if( _engineStatus.moduleStatuses.empty() ) return;
 
     // STATUS -> UI
