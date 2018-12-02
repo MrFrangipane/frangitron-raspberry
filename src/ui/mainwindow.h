@@ -27,13 +27,15 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    static EngineStatus engineStatusCallback(void * thisPtr) { return ((MainWindow*)thisPtr)->engineStatus(); }
-    EngineStatus engineStatus() const;
+    static EngineStatus callbackGetStatus(void * thisPtr);
+    static void callbackSetStatus(void * thisPtr, EngineStatus status);
+    EngineStatus getEngineStatus() const;
+    void setEngineStatus(EngineStatus status);
 
 private:
     Ui::MainWindow *ui;
-    QThread* _audioThread = nullptr;
-    EngineWorker* _audioWorker = nullptr;
+    QThread* _engineThread = nullptr;
+    EngineWorker* _engineWorker = nullptr;
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
     EngineStatus _engineStatus;

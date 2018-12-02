@@ -121,12 +121,6 @@ void Engine::start()
       }
 }
 
-EngineStatus Engine::status() const
-{
-    while( _shared.isWritingStatus ) { }
-    return _shared.status;
-}
-
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
 {
     // INIT
@@ -140,7 +134,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // UI -> STATUS
     shared->isWritingStatus = true;
     moduleId = 0;
-    EngineStatus uiEngineStatus = shared->uiEngineStatusCallback(shared->uiPtr);
+    EngineStatus uiEngineStatus = shared->uiGetStatusCallback(shared->uiPtr);
     for( Status status : uiEngineStatus.moduleStatuses ) {
         shared->status.moduleStatuses[moduleId] = status;
         moduleId++;
@@ -184,6 +178,9 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
     shared->isWritingStatus = false;
+
+    // STATUS ->UI
+    shared->uiSetStatusCallback(shared->uiPtr, shared->status);
 
     // INCREMENT TIME
     shared->time += bufferSize;

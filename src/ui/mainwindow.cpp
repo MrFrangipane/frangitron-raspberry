@@ -8,16 +8,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {    
     _setupUi();
 
-    _audioThread = new QThread();
-    _audioThread->setObjectName("AudioMidi");
-    _audioWorker = new EngineWorker();
-    _audioWorker->moveToThread(_audioThread);
-    _audioWorker->setStatusCallback(this, MainWindow::engineStatusCallback);
-    connect(_audioThread, SIGNAL(started()), _audioWorker, SLOT(process()));
-    connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(quit()));
-    connect(_audioWorker, SIGNAL(finished()), _audioWorker, SLOT(deleteLater()));
-    connect(_audioWorker, SIGNAL(finished()), _audioThread, SLOT(deleteLater()));
-    _audioThread->start();
+    _engineThread = new QThread();
+    _engineThread->setObjectName("AudioMidi");
+    _engineWorker = new EngineWorker();
+    _engineWorker->moveToThread(_engineThread);
+    _engineWorker->setStatusCallbacks(this, MainWindow::callbackGetStatus, MainWindow::callbackSetStatus);
+    connect(_engineThread, SIGNAL(started()), _engineWorker, SLOT(process()));
+    connect(_engineWorker, SIGNAL(finished()), _engineThread, SLOT(quit()));
+    connect(_engineWorker, SIGNAL(finished()), _engineWorker, SLOT(deleteLater()));
+    connect(_engineWorker, SIGNAL(finished()), _engineThread, SLOT(deleteLater()));
+    _engineThread->start();
 
     QThread::currentThread()->setPriority(QThread::LowPriority);
 
@@ -33,11 +33,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-EngineStatus MainWindow::engineStatus() const
+// CALLBACK MECHANISM
+EngineStatus MainWindow::callbackGetStatus(void * thisPtr) {
+    return ((MainWindow*)thisPtr)->getEngineStatus();
+}
+
+void MainWindow::callbackSetStatus(void *thisPtr, EngineStatus status) {
+    ((MainWindow*)thisPtr)->setEngineStatus(status);
+}
+
+EngineStatus MainWindow::getEngineStatus() const
 {
     while( _isWritingStatus ) { }
     return _engineStatus;
 }
+
+void MainWindow::setEngineStatus(EngineStatus status)
+{
+    while( _isWritingStatus ) { }
+    _engineStatus = status;
+}
+// ------------------
 
 void MainWindow::_setupUi()
 {
@@ -64,7 +80,7 @@ void MainWindow::_setupUi()
     // MASTER
     _moduleWidgets << new LevelMeterWidget();
     connect(_moduleWidgets[3], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    _moduleWidgets[3]->setProperty("displayName", "MASTER");
+    _moduleWidgets[3]->setProperty("displayName", "OUT");
     ui->layoutPatch->addWidget(_moduleWidgets[3], 0, 3, 2, 1);
 
     // END STRETCH
@@ -90,9 +106,6 @@ void MainWindow::_selectedChanged()
 
 void MainWindow::_refresh()
 {
-    _isWritingStatus = true;
-    _engineStatus = _audioWorker->status();
-    _isWritingStatus = false;
     if( _engineStatus.moduleStatuses.empty() ) return;
 
     // STATUS -> UI

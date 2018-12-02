@@ -9,8 +9,9 @@ class EngineWorker : public QObject
     Q_OBJECT
 public:
     explicit EngineWorker(QObject *parent = nullptr) : QObject(parent) {}
-    EngineStatus status() const { return _engine.status(); }
-    void setStatusCallback(void * uiPtr, EngineStatusCallback callback) { _engine.setStatusCallback(uiPtr, callback); }
+    void setStatusCallbacks(void * uiPtr, GetStatusCallback callbackGet, SetStatusCallback callbackSet) {
+        _engine.setStatusCallbacks(uiPtr, callbackGet, callbackSet);
+    }
 private:
     Engine _engine;
 
