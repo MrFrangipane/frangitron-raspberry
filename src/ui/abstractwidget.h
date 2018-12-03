@@ -1,6 +1,7 @@
 #ifndef ABSTRACTWIDGET_H
 #define ABSTRACTWIDGET_H
 
+#include <atomic>
 #include "typedefs.h"
 #include <QObject>
 #include <QApplication>
@@ -37,6 +38,8 @@ signals:
 private:
     bool _selected = false;
     virtual void paint_(QRect /*rect*/) { }
+    std::atomic<bool> _isWritingStatus{false};
+    std::atomic<bool> _isReadingStatus{false};
 };
 
 #endif // ABSTRACTWIDGET_H

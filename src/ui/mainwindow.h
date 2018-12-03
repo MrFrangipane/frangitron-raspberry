@@ -29,7 +29,7 @@ public:
     ~MainWindow();
     static EngineStatus callbackGetStatus(void * thisPtr);
     static void callbackSetStatus(void * thisPtr, EngineStatus status);
-    EngineStatus getEngineStatus() const;
+    EngineStatus getEngineStatus();
     void setEngineStatus(EngineStatus status);
 
 private:
@@ -41,8 +41,7 @@ private:
     EngineStatus _engineStatus;
     QList<AbstractWidget*> _moduleWidgets;
     void _setupUi();
-    std::atomic<bool> _isWritingStatus{false};
-    std::atomic<bool> _isReadingStatus{false};
+    std::atomic<bool> _isStatusLocked{false};
 
 private slots:
     void _refresh();

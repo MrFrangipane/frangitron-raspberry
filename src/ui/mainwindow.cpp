@@ -42,18 +42,24 @@ void MainWindow::callbackSetStatus(void *thisPtr, EngineStatus status) {
     ((MainWindow*)thisPtr)->setEngineStatus(status);
 }
 
-EngineStatus MainWindow::getEngineStatus() const
+EngineStatus MainWindow::getEngineStatus()
 {
-    while( _isWritingStatus ) { }
-    return _engineStatus;
+    while( _isStatusLocked ) { }
+
+    _isStatusLocked = true;
+    EngineStatus engineStatus = _engineStatus;
+    _isStatusLocked = false;
+
+    return engineStatus;
 }
 
-void MainWindow::setEngineStatus(EngineStatus status)
+void MainWindow::setEngineStatus(EngineStatus engineStatus)
 {
-    while( _isReadingStatus ) { }
-    _isWritingStatus = true;
-    _engineStatus = status;
-    _isWritingStatus = false;
+    while( _isStatusLocked ) { }
+
+    _isStatusLocked = true;
+    _engineStatus = engineStatus;
+    _isStatusLocked = false;
 }
 // ------------------
 
@@ -110,10 +116,10 @@ void MainWindow::_refresh()
 {
     if( _engineStatus.moduleStatuses.empty() ) return;
 
-    while( _isWritingStatus ) { }
-    _isReadingStatus = true;
+    while( _isStatusLocked ) { }
+    _isStatusLocked = true;
     EngineStatus engineStatus = _engineStatus;
-    _isReadingStatus = false;
+    _isStatusLocked = false;
 
     // STATUS -> UI
     int i = 0;
@@ -131,8 +137,8 @@ void MainWindow::_refresh()
     }
 
     // UI -> STATUS
-    while( _isWritingStatus ) { }
-    _isWritingStatus = true;
+    while( _isStatusLocked ) { }
+    _isStatusLocked = true;
     _engineStatus = engineStatus;
-    _isWritingStatus = false;
+    _isStatusLocked = false;
 }

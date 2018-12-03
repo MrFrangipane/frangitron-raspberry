@@ -4,7 +4,10 @@
 void AbstractWidget::update_(Status const status)
 {
     if( status.empty() ) return;
+    while( _isReadingStatus ) { }
+    _isWritingStatus = true;
     _status = status;
+    _isWritingStatus = false;
     QWidget::update();
 }
 
@@ -53,7 +56,10 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     painter.drawText(rectName, Qt::AlignCenter, property("displayName").toString());
 
     // ACTUAL PAINT
+    while( _isWritingStatus ) { }
+    _isReadingStatus = true;
     paint_(rectContent);
+    _isReadingStatus = false;
 }
 
 void AbstractWidget::mousePressEvent(QMouseEvent *event) {
