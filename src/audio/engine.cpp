@@ -132,9 +132,11 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     EngineShared* shared = (EngineShared*)userData;
 
     // UI -> STATUS (all)
+    /*
     EngineStatus engineStatus = shared->uiGetStatus(shared->uiPtr);
     if( !engineStatus.moduleStatuses.empty() )
         shared->status = engineStatus;
+    */
 
     // STATUS -> MODULES (parameters)
     moduleId = 0;
