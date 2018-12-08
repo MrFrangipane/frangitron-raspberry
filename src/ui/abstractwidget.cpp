@@ -43,8 +43,6 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
         rectContent = event->rect().adjusted(9, 30, -10, -10);
     }
 
-    //fillRect(painter, rectContent, Qt::blue);
-
     // FRAME
     if( _selected ) {
         painter.setBrush(Qt::NoBrush);

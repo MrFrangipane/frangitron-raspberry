@@ -14,6 +14,7 @@
 
 #define UI_FRAMERATE 30
 #define UI_OUTMETER_HEIGHT 60
+#define UI_SHAFT_WIDTH 6
 
 typedef uint_fast32_t nFrame;
 typedef float Sample; // PiSound supports only up to 32 bits

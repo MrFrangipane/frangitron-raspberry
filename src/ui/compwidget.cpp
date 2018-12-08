@@ -5,29 +5,31 @@ void CompWidget::paint_(QRect rect)
     QPainter painter(this);
     painter.setRenderHints(QPainter::RenderHint::Antialiasing);
 
-    if( rect.width() >= rect.height() ) rect.setWidth(rect.height());
-    else if(rect.width() < rect.height() ) rect.setHeight(rect.width());
+    QRect rect_ = rect;
 
-    rect.adjust(10, 10, -10, -10);
+    if( rect_.width() >= rect_.height() ) rect_.setWidth(rect_.height());
+    else if(rect_.width() < rect_.height() ) rect_.setHeight(rect_.width());
+    rect_.adjust(10, 10, -10, -10);
+    rect_.moveCenter(rect.center());
 
     // BASE
-    drawArc(painter, rect, Qt::darkGray, 8.0, 0.0, 1.0);
+    drawArc(painter, rect_, Qt::darkGray, 8.0, 0.0, 1.0);
 
     // LEVEL
-    drawArc(painter, rect, Qt::red, 8.0, 1.0, _status.params[6].value);
+    drawArc(painter, rect_, Qt::red, 8.0, 1.0, _status.params[6].value);
 
     // METER IN
-    drawArc(painter, rect.adjusted(8, 8, -8, -8), Qt::white, 4.0, 0.0, fmax(1.0 + _status.params[7].value / 100.0, 0.0));
+    drawArc(painter, rect_.adjusted(8, 8, -8, -8), Qt::white, 4.0, 0.0, fmax(1.0 + _status.params[7].value / 100.0, 0.0));
 
     // TRESHOLD
     if( _status.params[5].value ) {  // Gate
-        drawShaft(painter, rect.adjusted(8, 8, -8, -8), Qt::red, 4.0, 1.0 + _status.params[3].value / 100.0);
+        drawShaft(painter, rect_.adjusted(8, 8, -8, -8), Qt::red, UI_SHAFT_WIDTH, 1.0 + _status.params[3].value / 100.0);
     }
     else {
-        drawShaft(painter, rect.adjusted(8, 8, -8, -8), Qt::white, 4.0, 1.0 + _status.params[3].value / 100.0);
+        drawShaft(painter, rect_.adjusted(8, 8, -8, -8), Qt::white, UI_SHAFT_WIDTH, 1.0 + _status.params[3].value / 100.0);
     }
 
     // RATIO
-    rect.adjust(-5, -5, 5, 5);
-    drawShaft(painter, rect, Qt::red, 4.0, 1.0 / _status.params[2].value, 0.85);
+    rect_.adjust(-5, -5, 5, 5);
+    drawShaft(painter, rect_, Qt::red, UI_SHAFT_WIDTH, 1.0 / _status.params[2].value, 0.85);
 }

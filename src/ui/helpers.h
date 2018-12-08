@@ -69,4 +69,16 @@ inline void fillRect(QPainter& painter, QRect rect, QColor color) {
     painter.setPen(penBackup);
 }
 
+inline void fillCircle(QPainter& painter, QRect rect, QColor color, float radius) {
+    QBrush brushBackup = painter.brush();
+    QPen penBackup = painter.pen();
+
+    painter.setBrush(color);
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(rect.center(), (int)((float)rect.width() * radius * 0.5), (int)((float)rect.height() * radius * 0.5));
+
+    painter.setBrush(brushBackup);
+    painter.setPen(penBackup);
+}
+
 #endif // HELPERS_H
