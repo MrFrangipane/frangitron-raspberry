@@ -3,6 +3,8 @@
 
 #include <atomic>
 #include <QList>
+#include <QLabel>
+#include <QSlider>
 #include <QWidget>
 #include <QThread>
 #include <QString>
@@ -39,7 +41,11 @@ private:
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
     EngineStatus _engineStatus;
-    QList<AbstractWidget*> _moduleWidgets;
+    int _selectedModule = -1;
+    QList<AbstractWidget*> _modules;
+    QList<QLabel*> _paramNames;
+    QList<QLabel*> _paramValues;
+    QList<QSlider*> _paramSliders;
     void _setupUi();
     std::atomic<bool> _isStatusLocked{false};
 

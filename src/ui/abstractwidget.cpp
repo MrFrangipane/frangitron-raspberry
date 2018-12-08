@@ -1,9 +1,9 @@
 #include "abstractwidget.h"
 
 
-void AbstractWidget::update_(Status const status)
+void AbstractWidget::update_(const ModuleStatus status)
 {
-    if( status.empty() ) return;
+    if( status.params[0].name.empty() ) return;
     while( _isReadingStatus ) { }
     _isWritingStatus = true;
     _status = status;

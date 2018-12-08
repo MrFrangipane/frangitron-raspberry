@@ -21,8 +21,8 @@ public:
         _lowPassR(_SampleFilterMode::LOWPASS),
         _hiPassL(_SampleFilterMode::HIPASS),
         _hiPassR(_SampleFilterMode::HIPASS) { }
-    Status const status() override;
-    void update(Status status_) override;
+    ModuleStatus const status() override;
+    void update(ModuleStatus status_) override;
     void process(Sample const * bufferIn, const nFrame /*time*/) override;
 private:
     FilterMode _mode = FilterMode::PASSTHROUGH;

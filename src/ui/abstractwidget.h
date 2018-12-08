@@ -20,12 +20,12 @@ class AbstractWidget : public QWidget
     Q_OBJECT
 public:
     explicit AbstractWidget(QWidget *parent = nullptr) : QWidget(parent) { }
-    void update_(const Status status);
+    void update_(const ModuleStatus status);
     void desselect() { _selected = false; QWidget::update(); }
     bool isSelected() { return _selected; }
 
 protected:
-    Status _status;
+    ModuleStatus _status;
     int _minimumWidth = -1;
     int _minimumHeight = -1;
     void paintEvent(QPaintEvent *event) override;

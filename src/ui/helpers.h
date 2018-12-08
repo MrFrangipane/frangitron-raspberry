@@ -31,7 +31,7 @@ inline void drawArc(QPainter& painter, QRect rect, QColor color, float width, fl
     painter.setPen(penBackup);
 }
 
-inline void drawShaft(QPainter& painter, QRect rect, QColor color, float width, float value) {
+inline void drawShaft(QPainter& painter, QRect rect, QColor color, float width, float value, float start = 0.0, float end = 1.0) {
     QBrush brushBackup = painter.brush();
     QPen penBackup = painter.pen();
     QPen penArc = painter.pen();
@@ -47,10 +47,10 @@ inline void drawShaft(QPainter& painter, QRect rect, QColor color, float width, 
     painter.setBrush(Qt::NoBrush);
     painter.setPen(penArc);
     painter.drawLine(
-        rectAdjusted.center().x(),
-        rectAdjusted.center().y(),
-        rectAdjusted.center().x() + rectAdjusted.width() * std::cos(angle) * 0.5,
-        rectAdjusted.center().y() + rectAdjusted.height() * std::sin(angle) * 0.5
+        rectAdjusted.center().x() + rectAdjusted.width() * std::cos(angle) * 0.5 * start,
+        rectAdjusted.center().y() + rectAdjusted.height() * std::sin(angle) * 0.5 * start,
+        rectAdjusted.center().x() + rectAdjusted.width() * std::cos(angle) * 0.5 * end,
+        rectAdjusted.center().y() + rectAdjusted.height() * std::sin(angle) * 0.5 * end
     );
 
     painter.setBrush(brushBackup);

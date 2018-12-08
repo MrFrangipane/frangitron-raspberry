@@ -15,11 +15,6 @@
 #include "audio/compressor.h"
 
 
-struct EngineStatus {
-    std::vector<Status> moduleStatuses;
-};
-
-
 typedef EngineStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 

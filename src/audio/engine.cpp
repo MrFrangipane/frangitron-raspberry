@@ -53,19 +53,19 @@ void Engine::start()
 
     // MODULES
     _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.audioModules[0]->status());
+    _shared.status.modules[0] = _shared.audioModules[0]->status();
     _shared.audioWires.push_back(-1);  // Input
 
     _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.audioModules[1]->status());
+    _shared.status.modules[1] = _shared.audioModules[1]->status();
     _shared.audioWires.push_back(0);  // Level Meter
 
     _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.audioModules[2]->status());
+    _shared.status.modules[2] = _shared.audioModules[2]->status();
     _shared.audioWires.push_back(1);  // Filter
 
     _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
-    _shared.status.moduleStatuses.push_back(_shared.audioModules[3]->status());
+    _shared.status.modules[3] = _shared.audioModules[3]->status();
     _shared.audioWires.push_back(2);  // Compressor
 
     // AUDIO DEVICE
@@ -132,16 +132,14 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     EngineShared* shared = (EngineShared*)userData;
 
     // UI -> STATUS (all)
-    /*
     EngineStatus engineStatus = shared->uiGetStatus(shared->uiPtr);
-    if( !engineStatus.moduleStatuses.empty() )
+    if( !engineStatus.modules[0].params[0].name.empty() )
         shared->status = engineStatus;
-    */
 
     // STATUS -> MODULES (parameters)
     moduleId = 0;
-    for( Status status : shared->status.moduleStatuses ) {
-        if( !status.empty() )
+    for( ModuleStatus status : shared->status.modules ) {
+        if( !status.params[0].name.empty() )
             shared->audioModules[moduleId]->update(status);
         moduleId++;
     }
@@ -170,7 +168,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // MODULES -> STATUS (all)
     moduleId = 0;
     for( std::shared_ptr<AbstractModule> module : shared->audioModules ) {
-        shared->status.moduleStatuses[moduleId] = module->status();
+        shared->status.modules[moduleId] = module->status();
         moduleId++;
     }
 

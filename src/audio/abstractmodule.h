@@ -12,8 +12,8 @@ public:
     {
         _bufferOut.reserve(bufferSize * 2);
     }
-    virtual Status const status() { return Status(); }
-    virtual void update(Status /*status_*/) { }
+    virtual ModuleStatus const status() { return ModuleStatus(); }
+    virtual void update(ModuleStatus /*status_*/) { }
     virtual void process(Sample const * /*bufferIn*/, const nFrame /*time*/) { }
     Sample const * output() { return _bufferOut.data(); }
 

@@ -1,20 +1,21 @@
 #include "filter.h"
 
-void Filter::update(Status status_)
+void Filter::update(ModuleStatus status_)
 {
-    if( status_["cutoff"] < 0 ) {
+    // PARAMS[0] : CUTOFF
+    if( status_.params[0].value < 0 ) {
         _mode = FilterMode::LOWPASS;
-        _lowPassL.setCutoff(1.0 + status_["cutoff"]);
-        _lowPassR.setCutoff(1.0 + status_["cutoff"]);
+        _lowPassL.setCutoff(1.0 + status_.params[0].value);
+        _lowPassR.setCutoff(1.0 + status_.params[0].value);
         _hiPassL.setCutoff(0.0);
         _hiPassR.setCutoff(0.0);
     }
-    else if ( status_["cutoff"] > 0 ) {
+    else if ( status_.params[0].value > 0 ) {
         _mode = FilterMode::HIPASS;
         _lowPassL.setCutoff(1.0);
         _lowPassR.setCutoff(1.0);
-        _hiPassL.setCutoff(status_["cutoff"]);
-        _hiPassR.setCutoff(status_["cutoff"]);
+        _hiPassL.setCutoff(status_.params[0].value);
+        _hiPassR.setCutoff(status_.params[0].value);
     }
     else {
         _mode = FilterMode::PASSTHROUGH;
@@ -24,27 +25,30 @@ void Filter::update(Status status_)
         _hiPassR.setCutoff(0.0);
     }
 
-    _lowPassL.setResonance(status_["resonance"]);
-    _lowPassR.setResonance(status_["resonance"]);
-    _hiPassL.setResonance(status_["resonance"]);
-    _hiPassR.setResonance(status_["resonance"]);
+    // PARAMS[1] : RESONANCE
+    _lowPassL.setResonance(status_.params[1].value);
+    _lowPassR.setResonance(status_.params[1].value);
+    _hiPassL.setResonance(status_.params[1].value);
+    _hiPassR.setResonance(status_.params[1].value);
 }
 
-const Status Filter::status()
+const ModuleStatus Filter::status()
 {
-    Status status_;
+    ModuleStatus status_;
 
+    status_.params[0].name = "Cutoff";
     if( _mode == FilterMode::LOWPASS ) {
-        status_["cutoff"] = _lowPassL.cutoff() - 1.0;
+        status_.params[0].value = _lowPassL.cutoff() - 1.0;
     }
     else if( _mode == FilterMode::HIPASS ) {
-        status_["cutoff"] = _hiPassL.cutoff();
+        status_.params[0].value = _hiPassL.cutoff();
     }
     else {
-        status_["cutoff"] = 0.0;
+        status_.params[0].value = 0.0;
     }
 
-    status_["resonance"] = _hiPassL.resonance();
+    status_.params[1].name = "Resonance";
+    status_.params[1].value = _hiPassL.resonance();
 
     return status_;
 }

@@ -13,18 +13,18 @@ public:
         AbstractModule(bufferSize),
         _levelMeter(bufferSize)
     { }
-    Status const status() override;
-    void update(Status status_) override;
+    ModuleStatus const status() override;
+    void update(ModuleStatus status_) override;
     void process(Sample const * bufferIn, const nFrame /*time*/) override;
 private:
     nFrame _nCycles = 0;
     nFrame _time = 0;
     nFrame _nLerp = 0;
-    float _threshold = -50.0;
+    float _threshold = -64.0;
     float _attack = .08;
-    float _release = .06;
-    float _ratio = 10.0;
-    float _gain = 1.0;
+    float _release = .02;
+    float _ratio = 4.0;
+    float _gain = 4.0;
     float _level = 1.0;
     float _levelPrevious = 1.0;
     float _levelTarget = 1.0;

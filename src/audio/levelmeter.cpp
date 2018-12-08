@@ -11,14 +11,18 @@ void LevelMeter::stepComputations(Sample left, Sample right)
     }
 }
 
-Status const LevelMeter::status()
+ModuleStatus const LevelMeter::status()
 {
-    Status status_;
+    ModuleStatus status_;
 
-    status_["rmsL"] = _status.rmsL;
-    status_["rmsR"] = _status.rmsR;
-    status_["rmsInstantL"] = _status.rmsInstantL;
-    status_["rmsInstantR"] = _status.rmsInstantR;
+    status_.params[0].name = "rmsL";
+    status_.params[0].value = _status.rmsL;
+    status_.params[1].name = "rmsR";
+    status_.params[1].value = _status.rmsR;
+    status_.params[2].name  = "rmsInstantL";
+    status_.params[2].value = _status.rmsInstantL;
+    status_.params[3].name  = "rmsInstantR";
+    status_.params[3].value = _status.rmsInstantR;
 
     return status_;
 }
