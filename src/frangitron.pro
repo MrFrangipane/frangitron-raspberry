@@ -38,7 +38,8 @@ SOURCES += \
     ui/abstractwidget.cpp \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
-    ui/compwidget.cpp
+    ui/compwidget.cpp \
+    audio/_samplemeter.cpp
 
 HEADERS += \
     ../include/nlohmann/json.hpp \
@@ -56,7 +57,8 @@ HEADERS += \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
-    ui/compwidget.h
+    ui/compwidget.h \
+    audio/_samplemeter.h
 
 FORMS += \
     ui/mainwindow.ui

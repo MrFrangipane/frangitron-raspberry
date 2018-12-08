@@ -13,6 +13,7 @@
 #define COMPRESSOR_UPDATE_SAMPLE_COUNT 60
 
 #define UI_FRAMERATE 30
+#define UI_OUTMETER_HEIGHT 60
 
 typedef uint_fast32_t nFrame;
 typedef float Sample; // PiSound supports only up to 32 bits
@@ -37,6 +38,7 @@ struct ModuleParameter {
 
 struct ModuleStatus {
     ModuleParameter params[16];
+    ModuleParameter levelOut;
 };
 
 

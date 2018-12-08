@@ -4,15 +4,12 @@
 #include <cmath>
 #include "typedefs.h"
 #include "audio/abstractmodule.h"
-#include "audio/levelmeter.h"
+#include "audio/_samplemeter.h"
 
 class Compressor : public AbstractModule
 {
 public:
-    Compressor(const nFrame bufferSize = 0) :
-        AbstractModule(bufferSize),
-        _levelMeter(bufferSize)
-    { }
+    Compressor(const nFrame bufferSize = 0) : AbstractModule(bufferSize) { }
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
     void process(Sample const * bufferIn, const nFrame /*time*/) override;
@@ -28,9 +25,10 @@ private:
     float _level = 1.0;
     float _levelPrevious = 1.0;
     float _levelTarget = 1.0;
-    float _rmsMono = 0.0;
+    float _rmsIn = 0.0;
     bool _gate = false;
-    LevelMeter _levelMeter;
+    _SampleMeter _inMeterL;
+    _SampleMeter _inMeterR;
 };
 
 #endif // COMPRESSOR_H

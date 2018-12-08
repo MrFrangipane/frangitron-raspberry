@@ -2,6 +2,7 @@
 #define ABSTRACTMODULE_H
 
 #include "typedefs.h"
+#include "audio/_samplemeter.h"
 #include <iostream>
 
 class AbstractModule
@@ -23,6 +24,8 @@ protected:
     nFrame _time = 0;
     nFrame _left = 0;
     nFrame _right = 0;
+    _SampleMeter _outMeterL;
+    _SampleMeter _outMeterR;
 };
 
 #endif // ABSTRACTMODULE_H

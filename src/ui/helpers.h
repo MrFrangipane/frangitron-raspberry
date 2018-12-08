@@ -57,4 +57,16 @@ inline void drawShaft(QPainter& painter, QRect rect, QColor color, float width, 
     painter.setPen(penBackup);
 }
 
+inline void fillRect(QPainter& painter, QRect rect, QColor color) {
+    QBrush brushBackup = painter.brush();
+    QPen penBackup = painter.pen();
+
+    painter.setBrush(color);
+    painter.setPen(Qt::NoPen);
+    painter.drawRect(rect);
+
+    painter.setBrush(brushBackup);
+    painter.setPen(penBackup);
+}
+
 #endif // HELPERS_H

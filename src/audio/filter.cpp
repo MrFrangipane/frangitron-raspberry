@@ -50,6 +50,9 @@ const ModuleStatus Filter::status()
     status_.params[1].name = "Resonance";
     status_.params[1].value = _hiPassL.resonance();
 
+    status_.levelOut.name = "RmsOut";
+    status_.levelOut.value = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
+
     return status_;
 }
 
@@ -64,6 +67,9 @@ void Filter::process(Sample const * bufferIn, const nFrame /*time*/)
 
             _bufferOut[_left] = _lowPassL.process(bufferIn[_left]);
             _bufferOut[_right] = _lowPassR.process(bufferIn[_right]);
+
+            _outMeterL.stepCompute(_bufferOut[_left]);
+            _outMeterR.stepCompute(_bufferOut[_right]);
         }
         break;
 
@@ -74,6 +80,9 @@ void Filter::process(Sample const * bufferIn, const nFrame /*time*/)
 
             _bufferOut[_left] = _hiPassL.process(bufferIn[_left]);
             _bufferOut[_right] = _hiPassR.process(bufferIn[_right]);
+
+            _outMeterL.stepCompute(_bufferOut[_left]);
+            _outMeterR.stepCompute(_bufferOut[_right]);
         }
         break;
 
@@ -84,6 +93,9 @@ void Filter::process(Sample const * bufferIn, const nFrame /*time*/)
 
             _bufferOut[_left] = bufferIn[_left] * FEEDBACK_FACTOR;
             _bufferOut[_right] = bufferIn[_right] * FEEDBACK_FACTOR;
+
+            _outMeterL.stepCompute(_bufferOut[_left]);
+            _outMeterR.stepCompute(_bufferOut[_right]);
         }
         break;
 

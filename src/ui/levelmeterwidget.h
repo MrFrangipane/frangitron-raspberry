@@ -11,6 +11,7 @@ public:
         AbstractWidget(parent)
     {
         _minimumWidth = 60;
+        _drawMeter = false;
     }
 
 private:

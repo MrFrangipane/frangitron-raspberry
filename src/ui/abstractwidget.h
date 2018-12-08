@@ -2,7 +2,9 @@
 #define ABSTRACTWIDGET_H
 
 #include <atomic>
+#include <cmath>
 #include "typedefs.h"
+#include "ui/helpers.h"
 #include <QObject>
 #include <QApplication>
 #include <QFontMetrics>
@@ -28,6 +30,7 @@ protected:
     ModuleStatus _status;
     int _minimumWidth = -1;
     int _minimumHeight = -1;
+    bool _drawMeter = true;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     QSize minimumSizeHint() const;

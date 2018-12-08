@@ -11,8 +11,8 @@ public:
     explicit CompWidget(QWidget *parent = nullptr) :
         AbstractWidget(parent)
     {
-        _minimumWidth = 100;
-        _minimumHeight = 100;
+        _minimumWidth = 130;
+        _minimumHeight = 130;
     }
 
 private:

@@ -49,8 +49,11 @@ const ModuleStatus Compressor::status() {
     status_.params[6].name = "level";
     status_.params[6].value = _level;
 
-    status_.params[7].name = "Rms";
-    status_.params[7].value = std::fmax(_levelMeter.status().params[0].value, _levelMeter.status().params[1].value); // RmsL RmsR
+    status_.params[7].name = "RmsIn";
+    status_.params[7].value = fmax(_inMeterL.rms.average, _inMeterR.rms.average);
+
+    status_.levelOut.name = "RmsOut";
+    status_.levelOut.value = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
 
     return status_;
 }
@@ -68,12 +71,12 @@ void Compressor::process(Sample const * bufferIn, const nFrame /*time*/)
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         // TRESHOLD
         if( _nCycles > COMPRESSOR_UPDATE_SAMPLE_COUNT ) {
-            _rmsMono = fmax(_levelMeter.status().params[2].value, _levelMeter.status().params[3].value);
+            _rmsIn = fmax(_inMeterL.rms.instant, _inMeterR.rms.instant);
 
             _levelPrevious = _levelTarget;
             float increment = 0.0;
 
-            if( _rmsMono >= _threshold ) {
+            if( _rmsIn >= _threshold ) {
                 _gate = true;
                 increment = - COMPRESSOR_UPDATE_SAMPLE_COUNT / (_attack * SAMPLE_RATE);
             } else {
@@ -88,11 +91,17 @@ void Compressor::process(Sample const * bufferIn, const nFrame /*time*/)
         // APPLY
         _left = i * 2;
         _right = _left + 1;
-        _levelMeter.stepComputations(bufferIn[_left], bufferIn[_right]);
+
+        _inMeterL.stepCompute(bufferIn[_left]);
+        _inMeterR.stepCompute(bufferIn[_right]);
+
         _level = lerp(_levelPrevious, _levelTarget, (float)_nCycles / COMPRESSOR_UPDATE_SAMPLE_COUNT);
 
         _bufferOut[_left] = bufferIn[_left] * _level * _gain;
         _bufferOut[_right] = bufferIn[_right] * _level * _gain;
+
+        _outMeterL.stepCompute(_bufferOut[_left]);
+        _outMeterR.stepCompute(_bufferOut[_right]);
 
         _nCycles++;
     }
