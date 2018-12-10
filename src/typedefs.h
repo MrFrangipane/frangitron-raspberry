@@ -7,6 +7,7 @@
 #include <cstdint>
 
 #define SAMPLE_RATE 48000
+#define MAGIC_LEVEL_COEFF 100.0
 #define SECOND_PER_SAMPLE 0.000020833
 #define LEVEL_METER_RMS_SAMPLE_COUNT 60
 #define LEVEL_METER_AVERAGE_CYCLE_COUNT 15
@@ -15,6 +16,7 @@
 #define UI_FRAMERATE 30
 #define UI_OUTMETER_HEIGHT 60
 #define UI_SHAFT_WIDTH 6
+#define UI_LEVEL_MAGIC_COEFF 0.0045
 
 typedef uint_fast32_t nFrame;
 typedef float Sample; // PiSound supports only up to 32 bits

@@ -2,21 +2,24 @@
 
 double _SampleFilter::process(Sample input)
 {
+    // TWO POLE
     _buf0 += _realCutoff * (input - _buf0 + _feedbackAmount * (_buf0 - _buf2));
     _buf1 += _realCutoff * (_buf0 - _buf1);
+
+    // FOUR POLE
     _buf2 += _realCutoff * (_buf1 - _buf2);
     _buf3 += _realCutoff * (_buf2 - _buf3);
 
     switch (_mode)
     {
         case LOWPASS:
-            return _buf3 * FEEDBACK_FACTOR;
+            return _buf3 * ATTENUATION;
 
         case HIPASS:
-            return (input - _buf3) * FEEDBACK_FACTOR;
+            return (input - _buf3) * ATTENUATION;
 
         case BANDPASS:
-            return (_buf0 - _buf2) * FEEDBACK_FACTOR;
+            return (_buf0 - _buf2) * ATTENUATION;
 
         default:
             return 0.0;

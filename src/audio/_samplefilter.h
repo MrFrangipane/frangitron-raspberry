@@ -7,7 +7,7 @@
 #define REAL_CUTOFF_MIN 0.005
 #define REAL_CUTOFF_MAX 0.98
 #define FEEDBACK_MAX 1.2  // Resonance max = 0.5 * FEEDBACK_MAX
-#define FEEDBACK_FACTOR 0.18
+#define ATTENUATION 0.18
 
 enum _SampleFilterMode {
     LOWPASS = 0,
@@ -20,7 +20,7 @@ enum _SampleFilterMode {
 class _SampleFilter
 {
 public:
-    _SampleFilter(_SampleFilterMode mode = LOWPASS) :
+    _SampleFilter(_SampleFilterMode mode = _SampleFilterMode::LOWPASS) :
         _cutoff(1.0),
         _resonance(0.10),
         _realCutoff(REAL_CUTOFF_MAX),
@@ -39,7 +39,8 @@ public:
     float resonance() { return _resonance; }
     void setResonance(float resonance) { _resonance = resonance; _calculateFeedbackAmount(); }
     float feedback() { return _feedbackAmount; }
-    float overhead() { return 1.0 / fmax(1.0, FEEDBACK_FACTOR * _feedbackAmount); }
+    float overhead() { return 1.0 / fmax(1.0, ATTENUATION * _feedbackAmount); }
+    void setMode(_SampleFilterMode mode) { _mode = mode; }
 
 private:
     float _cutoff;

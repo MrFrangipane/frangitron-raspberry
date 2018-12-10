@@ -152,7 +152,7 @@ void MainWindow::_refresh()
     }
 
     // PARAMS
-    if( selectedModule == -1) {
+    if( selectedModule == -1 ) {
         _selectedModule = -1;
 
         for( int j = 0; j < 5; j++ ) {
