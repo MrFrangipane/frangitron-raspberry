@@ -29,6 +29,7 @@ _This will avoid program launch when connecting through ssh to pull and build_
 - http://www.martin-finke.de/blog/
 - https://forum.cockos.com/showthread.php?t=210390
 - https://lemariva.com/blog/2018/07/raspberry-pi-preempt-rt-patching-tutorial-for-kernel-4-14-y
+- http://c4dm.eecs.qmul.ac.uk/audioengineering/compressors/documents/Reiss-Tutorialondynamicrangecompression.pdf
 
 ## Notes
 

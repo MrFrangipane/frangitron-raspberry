@@ -15,9 +15,11 @@ _SampleMeter::_SampleMeter()
 void _SampleMeter::stepCompute(Sample sample)
 {
     _sample = sample;
-    _sample = _filter_low.process(_sample) * 5.556; // remove
-    _sample = _filter_hi.process(_sample) * 5.556;  // filters attenuation
-    _sample *= MAGIC_LEVEL_COEFF; // Sad magic coeff
+    if( _isWeighted ) {
+        _sample = _filter_low.process(_sample) * 5.556; // remove
+        _sample = _filter_hi.process(_sample) * 5.556;  // filters attenuation
+        _sample *= MAGIC_LEVEL_COEFF; // Sad magic coeff
+    }
 
     _instant += _sample * _sample;
     _nStep++;

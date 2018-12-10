@@ -9,7 +9,11 @@
 class Compressor : public AbstractModule
 {
 public:
-    Compressor(const nFrame bufferSize = 0) : AbstractModule(bufferSize) { }
+    Compressor(const nFrame bufferSize = 0) :
+        AbstractModule(bufferSize) {
+        _inMeterL.setWeighted(false);
+        _inMeterR.setWeighted(false);
+    }
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
     void process(Sample const * bufferIn, const nFrame /*time*/) override;

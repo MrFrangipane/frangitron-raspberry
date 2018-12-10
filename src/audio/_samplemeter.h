@@ -14,6 +14,7 @@ class _SampleMeter
 public:
     _SampleMeter();
     void stepCompute(Sample sample);
+    void setWeighted(bool isWeighted) { _isWeighted = isWeighted; }
     _SampleMeterStatus rms;
 
 private:
@@ -23,6 +24,7 @@ private:
     int _nAverage = 0;
     float _instant = 0.0;
     float _average = 0.0;
+    bool _isWeighted = true;
     _SampleFilter _filter_hi;
     _SampleFilter _filter_low;
 };
