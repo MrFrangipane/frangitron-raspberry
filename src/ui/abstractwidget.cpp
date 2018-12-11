@@ -4,10 +4,7 @@
 void AbstractWidget::update_(const ModuleStatus status)
 {
     if( status.params[0].name.empty() ) return;
-    while( _isReadingStatus ) { }
-    _isWritingStatus = true;
     _status = status;
-    _isWritingStatus = false;
     QWidget::update();
 }
 
@@ -74,10 +71,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     }
 
     // ACTUAL PAINT
-    while( _isWritingStatus ) { }
-    _isReadingStatus = true;
     paint_(rectContent);
-    _isReadingStatus = false;
 }
 
 void AbstractWidget::mousePressEvent(QMouseEvent *event) {

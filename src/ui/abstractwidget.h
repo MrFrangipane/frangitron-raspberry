@@ -1,7 +1,6 @@
 #ifndef ABSTRACTWIDGET_H
 #define ABSTRACTWIDGET_H
 
-#include <atomic>
 #include <cmath>
 #include "typedefs.h"
 #include "ui/helpers.h"
@@ -46,8 +45,6 @@ signals:
 
 private:
     bool _selected = false;
-    std::atomic<bool> _isWritingStatus{false};
-    std::atomic<bool> _isReadingStatus{false};
 };
 
 #endif // ABSTRACTWIDGET_H
