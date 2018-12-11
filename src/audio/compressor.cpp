@@ -47,8 +47,7 @@ const ModuleStatus Compressor::status() {
     status_.params[7].name = "RmsIn";
     status_.params[7].value = fmax(_inMeterL.rms.average, _inMeterR.rms.average);
 
-    status_.levelOut.name = "RmsOut";
-    status_.levelOut.value = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
+    status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
 
     return status_;
 }

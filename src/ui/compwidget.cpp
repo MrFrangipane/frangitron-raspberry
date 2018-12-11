@@ -31,7 +31,7 @@ void CompWidget::paint_(QRect rect)
 
     // RATIO
     rect_.adjust(-5, -5, 5, 5);
-    drawShaft(painter, rect_, Qt::red, UI_SHAFT_WIDTH, 1.0 / _status.params[2].value, 0.85);
+    drawShaft(painter, rect_, Qt::red, UI_SHAFT_WIDTH, 1.0 / _status.params[2].value, 0.90);
 }
 
 QString CompWidget::formatParameter(int paramId)

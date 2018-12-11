@@ -15,7 +15,7 @@
 
 #define UI_FRAMERATE 30
 #define UI_OUTMETER_HEIGHT 60
-#define UI_SHAFT_WIDTH 6
+#define UI_SHAFT_WIDTH 8
 #define UI_LEVEL_MAGIC_COEFF 0.0045
 
 typedef uint_fast32_t nFrame;
@@ -37,12 +37,10 @@ struct ModuleParameter {
     bool visible = false;
 };
 
-
 struct ModuleStatus {
     ModuleParameter params[16];
-    ModuleParameter levelOut;
+    float levelOut;
 };
-
 
 struct EngineStatus {
     ModuleStatus modules[16];

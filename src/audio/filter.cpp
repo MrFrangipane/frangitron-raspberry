@@ -59,8 +59,7 @@ const ModuleStatus Filter::status()
     status_.params[1].visible = true;
     status_.params[1].value = _hiPassL.resonance();
 
-    status_.levelOut.name = "RmsOut";
-    status_.levelOut.value = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
+    status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
 
     return status_;
 }

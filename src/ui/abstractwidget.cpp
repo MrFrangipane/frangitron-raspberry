@@ -70,7 +70,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     // METER OUT
     if( _drawMeter ) {
         fillRect(painter, rectOutMeter, Qt::darkGray);
-        fillRect(painter, rectOutMeter.adjusted(0, -_status.levelOut.value * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF, 0, 0), Qt::white);
+        fillRect(painter, rectOutMeter.adjusted(0, -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF, 0, 0), Qt::white);
     }
 
     // ACTUAL PAINT
