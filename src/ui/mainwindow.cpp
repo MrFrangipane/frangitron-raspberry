@@ -195,11 +195,11 @@ void MainWindow::_refresh()
         }
     }
     else if( selectedModule == _selectedModule ) {
-        for( int j = 0; j < 5; j++ ) {
-            if( !engineStatus.modules[selectedModule].params[j].visible ) continue;
+        for( int paramId = 0; paramId < 5; paramId++ ) {
+            if( !engineStatus.modules[selectedModule].params[paramId].visible ) continue;
 
-            engineStatus.modules[selectedModule].params[j].value = (float)_paramSliders[j]->value() / 1000.0;
-            _paramValues[j]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[j].format).arg(engineStatus.modules[selectedModule].params[j].value));
+            engineStatus.modules[selectedModule].params[paramId].value = (float)_paramSliders[paramId]->value() / 1000.0;
+            _paramValues[paramId]->setText(_modules[selectedModule]->formatParameter(paramId));
         }
     }
 

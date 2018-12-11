@@ -6,6 +6,7 @@
 #include "typedefs.h"
 #include "ui/helpers.h"
 #include <QObject>
+#include <QString>
 #include <QApplication>
 #include <QFontMetrics>
 #include <QSize>
@@ -25,6 +26,9 @@ public:
     void update_(const ModuleStatus status);
     void desselect() { _selected = false; QWidget::update(); }
     bool isSelected() { return _selected; }
+    virtual QString formatParameter(int paramId) {
+        return _parameterFormats[paramId].arg(QString::number(_status.params[paramId].value, 'f', 2));
+    }
 
 protected:
     ModuleStatus _status;
@@ -34,13 +38,14 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     QSize minimumSizeHint() const;
+    virtual void paint_(QRect /*rect*/) { }
+    QString _parameterFormats[5] = {"%1", "%1", "%1", "%1", "%1"};
 
 signals:
     void selectedChanged(bool isSelected);
 
 private:
     bool _selected = false;
-    virtual void paint_(QRect /*rect*/) { }
     std::atomic<bool> _isWritingStatus{false};
     std::atomic<bool> _isReadingStatus{false};
 };

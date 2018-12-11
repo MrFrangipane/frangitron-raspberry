@@ -30,7 +30,6 @@ inline float gain2dB(float gain) { return 20.0 * std::log10(gain); }
 
 struct ModuleParameter {
     std::string name = "";
-    std::string format = "%1";
     float value = 0.0;
     float min = 0.0;
     float max = 1.0;

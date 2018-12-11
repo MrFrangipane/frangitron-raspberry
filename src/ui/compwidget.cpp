@@ -33,3 +33,15 @@ void CompWidget::paint_(QRect rect)
     rect_.adjust(-5, -5, 5, 5);
     drawShaft(painter, rect_, Qt::red, UI_SHAFT_WIDTH, 1.0 / _status.params[2].value, 0.85);
 }
+
+QString CompWidget::formatParameter(int paramId)
+{
+    if( paramId < 2) { // Attack Release
+        return _parameterFormats[paramId].arg(QString::number((int)(_status.params[paramId].value * 1000)));
+    }
+    else if( paramId == 2) { // Ratio
+        return _parameterFormats[paramId].arg(QString::number(_status.params[paramId].value));
+    }
+
+    return AbstractWidget::formatParameter(paramId);
+}
