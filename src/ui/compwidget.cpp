@@ -16,7 +16,7 @@ void CompWidget::paint_(QRect rect)
     drawArc(painter, rect_, Qt::darkGray, 8.0, 0.0, 1.0);
 
     // LEVEL
-    drawArc(painter, rect_, Qt::red, 8.0, 1.0, _status.params[6].value);
+    drawArc(painter, rect_, Qt::red, 8.0, 1.0, 1.0 - (1.0 / _status.params[6].value - 1.0) / 9.0);
 
     // METER IN
     drawArc(painter, rect_.adjusted(8, 8, -8, -8), Qt::white, 4.0, 0.0, fmax(1.0 + _status.params[7].value / 100.0, 0.0));
@@ -31,7 +31,7 @@ void CompWidget::paint_(QRect rect)
 
     // RATIO
     rect_.adjust(-5, -5, 5, 5);
-    drawShaft(painter, rect_, Qt::red, UI_SHAFT_WIDTH, 1.0 / _status.params[2].value, 0.90);
+    drawShaft(painter, rect_, Qt::red, UI_SHAFT_WIDTH, 1.0 - (_status.params[2].value - 1.0) / 9.0, 0.90);
 }
 
 QString CompWidget::formatParameter(int paramId)
