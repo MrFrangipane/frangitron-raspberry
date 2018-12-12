@@ -245,9 +245,9 @@ void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message
 
     // IGNORE IF NOT CC
     if( message->size() != 3 ) return;
-    if((int)message[0] & 0xF0 != 176 ) return;
+    if((int)message->at(0) & 0xF0 != 176 ) return;
 
-    switch( (int)message[1] ) {
+    switch( (int)message->at(1) ) {
 
         // PUSHES
         case 20: {}
@@ -255,7 +255,7 @@ void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message
         case 22: {}
         case 23: {}
         case 24:
-            encoder = (int)message[1] - 20;
+            encoder = (int)message->at(1) - 20;
         break;
 
         // NRPN MSB
