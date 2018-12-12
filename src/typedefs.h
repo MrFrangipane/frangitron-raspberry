@@ -28,6 +28,11 @@ inline float dB2Gain(float dB) { return std::pow(10.0, dB / 20.0); }
 
 inline float gain2dB(float gain) { return 20.0 * std::log10(gain); }
 
+struct EncoderStatus {
+    bool isPressed = false;
+    int increment = 0;
+};
+
 struct ModuleParameter {
     std::string name = "";
     float value = 0.0;
@@ -43,7 +48,9 @@ struct ModuleStatus {
 };
 
 struct EngineStatus {
+    EncoderStatus encoders[5];
     ModuleStatus modules[16];
+    int selectedModule = -1;
 };
 
 #endif // TYPEDEFS_H

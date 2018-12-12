@@ -41,7 +41,6 @@ private:
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
     EngineStatus _engineStatus;
-    int _selectedModule = -1;
     QList<AbstractWidget*> _modules;
     QList<QLabel*> _paramNames;
     QList<QLabel*> _paramValues;

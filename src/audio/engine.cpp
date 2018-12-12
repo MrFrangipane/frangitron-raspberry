@@ -256,6 +256,8 @@ void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message
         case 23: {}
         case 24:
             encoder = (int)message->at(1) - 20;
+            shared->status.encoders[encoder].isPressed = (bool)((int)message->at(2) / 127);
+            std::cout << (bool)((int)message->at(2) / 127) << std::endl;
         break;
 
         // NRPN MSB
