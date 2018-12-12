@@ -39,7 +39,8 @@ SOURCES += \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
     ui/compwidget.cpp \
-    audio/_samplemeter.cpp
+    audio/_samplemeter.cpp \
+    ../include/rtmidi/RtMidi.cpp
 
 HEADERS += \
     ../include/nlohmann/json.hpp \
@@ -58,7 +59,8 @@ HEADERS += \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
     ui/compwidget.h \
-    audio/_samplemeter.h
+    audio/_samplemeter.h \
+    ../include/rtmidi/RtMidi.h
 
 FORMS += \
     ui/mainwindow.ui

@@ -12,36 +12,74 @@ void Engine::_setAudioDeviceIndex()
         audio = new RtAudio();
     }
     catch (RtAudioError &error) {
-        std::cout << "AudioMidi : Error while allocating Audio" << std::endl;
+        std::cout << "Engine : Error while allocating Audio" << std::endl;
         std::cout << error.getMessage() << std::endl;
         return;
     }
 
-    std::cout << std::endl << "Available Devices :" << std::endl;
+    std::cout << std::endl << "Available audio devices :" << std::endl;
 
     RtAudio::DeviceInfo device_infos;
 
-    for (unsigned int i = 0; i < audio->getDeviceCount(); i++)
-    {
+    for (unsigned int i = 0; i < audio->getDeviceCount(); i++) {
+
         device_infos = audio->getDeviceInfo(i);
         std::cout << i << " : " << device_infos.name <<
                     " duplex:" << device_infos.duplexChannels <<
                     " in:" << device_infos.inputChannels <<
                     " out:" << device_infos.outputChannels <<
                      std::endl;
-        for (auto interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++)
-        {
+
+        for (auto interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++) {
+
             if (device_infos.inputChannels != 0 &&
                 device_infos.outputChannels != 0 &&
-                device_infos.name.find(*interfaceName) != std::string::npos)
-            {
-                _deviceIndex = i;
-                return;
+                device_infos.name.find(*interfaceName) != std::string::npos) {
+                    _audioDeviceIndex = i;
+                    return;
             }
         }
     }
 
-    _deviceIndex = 0;
+    _audioDeviceIndex = 0;
+}
+
+void Engine::_setMidiDeviceIndex()
+{
+    RtMidiIn* midiIn;
+
+    try {
+        midiIn = new RtMidiIn();
+    }
+    catch( RtMidiError &error ) {
+        std::cout << "Engine : Error while allocating Midi" << std::endl;
+        std::cout << error.getMessage() << std::endl;
+        return;
+    }
+
+    std::cout << std::endl << "Available midi devices :" << std::endl;
+
+    std::string portName;
+
+    for( unsigned int i = 0; i < midiIn->getPortCount(); i++ ) {
+        try {
+            portName = midiIn->getPortName(i);
+        }
+        catch( RtMidiError &error ) {
+            std::cout << "Engine : Error while opening Midi port" << std::endl;
+            std::cout << error.getMessage() << std::endl;
+            continue;
+        }
+
+        std::cout << i << " : " << portName << std::endl;
+
+        if( portName.find("MIOS") != std::string::npos ) {
+            _midiDeviceIndex = i;
+            return;
+        }
+    }
+
+    _midiDeviceIndex = 0;
 }
 
 void Engine::start()
@@ -68,34 +106,54 @@ void Engine::start()
     _shared.status.modules[3] = _shared.audioModules[3]->status();
     _shared.audioWires.push_back(2);  // Compressor
 
+    // MIDI DEVICE
+    _setMidiDeviceIndex();
+    try {
+        _midi = new RtMidiIn();
+    }
+    catch( RtMidiError &error ) {
+        std::cout << "Error while allocating Midi" << std::endl;
+        std::cout << error.getMessage() << std::endl;
+        return;
+    }
+
+    try {
+        std::cout << "Opening midi port (" << _midiDeviceIndex << ") " <<
+                     "and setting callback : " << _midi->getPortName(_midiDeviceIndex) << std::endl;
+
+        _midi->openPort(_midiDeviceIndex);
+
+        _midi->setCallback(&_midiCallback, &_shared);
+        _midi->ignoreTypes(false, false, false);
+    }
+    catch( RtMidiError &error ) {
+        std::cout << "Error while opening midi port and setting callback" << std::endl;
+        std::cout << error.getMessage() << std::endl;
+        return;
+    }
+
     // AUDIO DEVICE
     _setAudioDeviceIndex();
-    try
-    {
+    try {
         _audio = new RtAudio();
     }
-    catch (RtAudioError &error)
-    {
+    catch( RtAudioError &error ) {
         std::cout << "Error while allocating Audio" << std::endl;
         std::cout << error.getMessage() << std::endl;
         return;
     }
 
     RtAudio::StreamParameters _audioInParams;
-    _audioInParams.deviceId = _deviceIndex;
+    _audioInParams.deviceId = _audioDeviceIndex;
     _audioInParams.nChannels = 2;
 
     RtAudio::StreamParameters _audioOutParams;
-    _audioOutParams.deviceId = _deviceIndex;
+    _audioOutParams.deviceId = _audioDeviceIndex;
     _audioOutParams.nChannels = 2;
 
-    try
-    {
-        std::cout << "Opening audio device " <<
-                     "(" << _deviceIndex << ") " <<
-                     "and setting callback : " <<
-                   _audio->getDeviceInfo(_deviceIndex).name <<
-                   std::endl;
+    try {
+        std::cout << "Opening audio device " << "(" << _audioDeviceIndex << ") " <<
+                     "and setting callback : " << _audio->getDeviceInfo(_audioDeviceIndex).name << std::endl;
 
         RtAudio::StreamOptions options;
         options.flags |= RTAUDIO_SCHEDULE_REALTIME;
@@ -114,8 +172,7 @@ void Engine::start()
 
         _audio->startStream();
       }
-      catch (RtAudioError &error)
-      {
+      catch( RtAudioError &error ) {
           std::cout << "Error while opening audio device and setting callback" << std::endl;
           std::cout << error.getMessage() << std::endl;
       }
@@ -179,4 +236,51 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     shared->time += bufferSize;
 
     return 0;
+}
+
+void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message, void *userData)
+{
+    int encoder = 0;
+    EngineShared* shared = (EngineShared*)userData;
+
+    // IGNORE IF NOT CC
+    if( message->size() != 3 ) return;
+    if((int)message[0] & 0xF0 != 176 ) return;
+
+    switch( (int)message[1] ) {
+
+        // PUSHES
+        case 20: {}
+        case 21: {}
+        case 22: {}
+        case 23: {}
+        case 24:
+            encoder = (int)message[1] - 20;
+        break;
+
+        // NRPN MSB
+        case 99:
+        break;
+
+        // NRPN LSB
+        case 98:
+        break;
+
+        // DECREASE
+        case 97:
+        break;
+
+        // INCREASE
+        case 96:
+        break;
+
+
+        default:
+        break;
+    }
+
+    std::cout << "Type: " << ((int)message->at(0) & 0xF0) <<
+                 " Note/CC: " << (int)message->at(1) <<
+                 " Velocity/Value: " << (double)message->at(2) <<
+                 std::endl;
 }

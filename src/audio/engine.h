@@ -8,6 +8,7 @@
 #include <cstring>
 #include <stdlib.h>
 #include "../include/rtaudio/RtAudio.h"
+#include "../include/rtmidi/RtMidi.h"
 #include "typedefs.h"
 #include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
@@ -40,7 +41,9 @@ public:
     }
 private:
     RtAudio* _audio = nullptr;
+    RtMidiIn* _midi = nullptr;
     void _setAudioDeviceIndex();
+    void _setMidiDeviceIndex();
     static int _audioCallback(
         void* bufferOut,
         void* bufferIn,
@@ -49,7 +52,13 @@ private:
         RtAudioStreamStatus status,
         void *userData
     );
-    unsigned int _deviceIndex = 0;
+    static void _midiCallback(
+        double deltaTime,
+        std::vector<unsigned char> *message,
+        void *userData
+    );
+    unsigned int _midiDeviceIndex = 0;
+    unsigned int _audioDeviceIndex = 0;
     unsigned int _bufferSize = 128;
     EngineShared _shared;
 };
