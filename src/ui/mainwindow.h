@@ -10,6 +10,7 @@
 #include <QString>
 #include <QTimer>
 #include "../include/nlohmann/json.hpp"
+#include "shared/structures.h"
 #include "engine/engine.h"
 #include "ui/engineworker.h"
 #include "ui/abstractwidget.h"
@@ -29,9 +30,9 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    static EngineStatus callbackGetStatus(void * thisPtr);
+    static UiStatus callbackGetStatus(void * thisPtr);
     static void callbackSetStatus(void * thisPtr, EngineStatus status);
-    EngineStatus getEngineStatus();
+    UiStatus getStatus();
     void setEngineStatus(EngineStatus status);
 
 private:
@@ -41,12 +42,13 @@ private:
     QTimer* _timerRefresh = nullptr;
     bool _started = false;
     EngineStatus _engineStatus;
+    UiStatus _uiStatus;
     QList<AbstractWidget*> _modules;
     QList<QLabel*> _paramNames;
     QList<QLabel*> _paramValues;
     QList<QSlider*> _paramSliders;
     void _setupUi();
-    std::atomic<bool> _isStatusLocked{false};
+    std::atomic<bool> _statusLocked{false};
 
 private slots:
     void _refresh();

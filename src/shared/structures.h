@@ -3,6 +3,7 @@
 
 #include <string>
 
+// SHARED
 struct EncoderStatus {
     bool isPressed = false;
     int increment = 0;
@@ -22,10 +23,22 @@ struct ModuleStatus {
     float levelOut;
 };
 
+// ENGINE
 struct EngineStatus {
     EncoderStatus encoders[5];
     ModuleStatus modules[16];
     int selectedModule = -1;
+};
+
+// UI
+struct UiStatus {
+    float sliderPosition[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    int selectedModule = -1;
+};
+
+// MIDI
+struct MidiStatus {
+    EncoderStatus encoders[5];
 };
 
 #endif // SHARED_H

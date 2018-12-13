@@ -17,7 +17,7 @@
 #include "audio/compressor.h"
 
 
-typedef EngineStatus(*GetStatusCallback)(void* /*uiPtr*/);
+typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 

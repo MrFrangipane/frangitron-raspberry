@@ -188,10 +188,19 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     Sample *ioOut = (Sample*)bufferOut;
     EngineShared* shared = (EngineShared*)userData;
 
-    // UI -> STATUS (all)
-    EngineStatus engineStatus = shared->uiGetStatus(shared->uiPtr);
-    if( !engineStatus.modules[0].params[0].name.empty() )
-        shared->status = engineStatus;
+    // UI STATUS
+    UiStatus uiStatus = shared->uiGetStatus(shared->uiPtr);
+    if( !uiStatus.selectedModule != -1 ) {
+
+        shared->status.selectedModule = uiStatus.selectedModule;
+
+        for( int paramId = 0; paramId < 5; paramId++ ) {
+            if( !shared->status.modules[uiStatus.selectedModule].params[paramId].visible ) continue;
+
+            shared->status.modules[uiStatus.selectedModule].params[paramId].value = uiStatus.sliderPosition[paramId];
+        }
+    }
+
 
     // STATUS -> MODULES (parameters)
     moduleId = 0;

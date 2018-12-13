@@ -34,32 +34,32 @@ MainWindow::~MainWindow()
 }
 
 // CALLBACK MECHANISM
-EngineStatus MainWindow::callbackGetStatus(void * thisPtr) {
-    return ((MainWindow*)thisPtr)->getEngineStatus();
+UiStatus MainWindow::callbackGetStatus(void * thisPtr) {
+    return ((MainWindow*)thisPtr)->getStatus();
 }
 
 void MainWindow::callbackSetStatus(void *thisPtr, EngineStatus status) {
     ((MainWindow*)thisPtr)->setEngineStatus(status);
 }
 
-EngineStatus MainWindow::getEngineStatus()
+UiStatus MainWindow::getStatus()
 {
-    while( _isStatusLocked ) { }
+    while( _statusLocked ) { }
 
-    _isStatusLocked = true;
-    EngineStatus engineStatus = _engineStatus;
-    _isStatusLocked = false;
+    _statusLocked = true;
+    UiStatus uiStatus = _uiStatus;
+    _statusLocked = false;
 
-    return engineStatus;
+    return uiStatus;
 }
 
 void MainWindow::setEngineStatus(EngineStatus engineStatus)
 {
-    while( _isStatusLocked ) { }
+    while( _statusLocked ) { }
 
-    _isStatusLocked = true;
+    _statusLocked = true;
     _engineStatus = engineStatus;
-    _isStatusLocked = false;
+    _statusLocked = false;
 }
 // ------------------
 
@@ -132,15 +132,17 @@ void MainWindow::_selectedChanged()
 
 void MainWindow::_refresh()
 {
-    if( _engineStatus.modules[0].params[0].name.empty() ) return;
+    // MEMBERS -> TEMP
+    while( _statusLocked ) { }
 
-    while( _isStatusLocked ) { }
-
-    _isStatusLocked = true;
+    _statusLocked = true;
     EngineStatus engineStatus = _engineStatus;
-    _isStatusLocked = false;
+    UiStatus uiStatus = _uiStatus;
+    _statusLocked = false;
 
-    // STATUS -> UI
+    if( engineStatus.modules[0].params[0].name.empty() ) return;
+
+    // ENGINE STATUS -> MODULE WIDGETS
     int selectedModule = -1;
     int i = 0;
     for( AbstractWidget* moduleWidget : _modules ) {
@@ -152,9 +154,10 @@ void MainWindow::_refresh()
         i++;
     }
 
-    // PARAMS
+    // ENGINE STATUS -> PARAMS
     if( selectedModule == -1 ) {
         engineStatus.selectedModule = -1;
+        uiStatus.selectedModule = -1;
 
         for( int paramId = 0; paramId < 5; paramId++ ) {
             _paramNames[paramId]->setText("");
@@ -170,6 +173,7 @@ void MainWindow::_refresh()
     }
     else if ( selectedModule != engineStatus.selectedModule ) {
         engineStatus.selectedModule = selectedModule;
+        uiStatus.selectedModule = selectedModule;
 
         for( int paramId = 0; paramId < 5; paramId++ ) {
             if( engineStatus.modules[selectedModule].params[paramId].visible )
@@ -206,15 +210,18 @@ void MainWindow::_refresh()
                 _paramNames[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
             }
 
-            engineStatus.modules[selectedModule].params[paramId].value = (float)_paramSliders[paramId]->value() / 1000.0;
             _paramValues[paramId]->setText(_modules[selectedModule]->formatParameter(paramId));
+
+            // UPDATE UI STATUS
+            uiStatus.sliderPosition[paramId] = (float)_paramSliders[paramId]->value() / 1000.0;
         }
     }
 
-    // UI -> STATUS
-    while( _isStatusLocked ) { }
+    // TEMP -> MEMBERS
+    while( _statusLocked ) { }
 
-    _isStatusLocked = true;
+    _statusLocked = true;
     _engineStatus = engineStatus;
-    _isStatusLocked = false;
+    _uiStatus = uiStatus;
+    _statusLocked = false;
 }
