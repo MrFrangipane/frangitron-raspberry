@@ -21,7 +21,7 @@ typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 
-struct EngineShared {
+struct SharedData {
     nFrame time = 0;
     std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;
@@ -61,7 +61,7 @@ private:
     unsigned int _midiDeviceIndex = 0;
     unsigned int _audioDeviceIndex = 0;
     unsigned int _bufferSize = 128;
-    EngineShared _shared;
+    SharedData _shared;
 };
 
 #endif // ENGINE_H

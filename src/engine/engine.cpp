@@ -186,7 +186,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     int masterId = 0;
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
-    EngineShared* shared = (EngineShared*)userData;
+    SharedData* shared = (SharedData*)userData;
 
     // UI STATUS
     UiStatus uiStatus = shared->uiGetStatus(shared->uiPtr);
@@ -250,7 +250,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message, void *userData)
 {
     int encoder = 0;
-    EngineShared* shared = (EngineShared*)userData;
+    SharedData* shared = (SharedData*)userData;
 
     // IGNORE IF NOT CC
     if( message->size() != 3 ) return;
@@ -265,7 +265,7 @@ void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message
         case 23: {}
         case 24:
             encoder = (int)message->at(1) - 20;
-            shared->status.encoders[encoder].isPressed = (bool)((int)message->at(2) / 127);
+            //shared->status.encoders[encoder].isPressed = (bool)((int)message->at(2) / 127);
             std::cout << (bool)((int)message->at(2) / 127) << std::endl;
         break;
 

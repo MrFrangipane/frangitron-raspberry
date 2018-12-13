@@ -156,6 +156,7 @@ void MainWindow::_refresh()
 
     // ENGINE STATUS -> PARAMS
     if( selectedModule == -1 ) {
+        // NO SELECTION
         engineStatus.selectedModule = -1;
         uiStatus.selectedModule = -1;
 
@@ -171,38 +172,40 @@ void MainWindow::_refresh()
             _paramSliders[paramId]->setEnabled(false);
         }
     }
-    else if ( selectedModule != engineStatus.selectedModule ) {
-        engineStatus.selectedModule = selectedModule;
-        uiStatus.selectedModule = selectedModule;
+    else {
+        // NEW SELECTION
+        if ( selectedModule != engineStatus.selectedModule ) {
+            engineStatus.selectedModule = selectedModule;
+            uiStatus.selectedModule = selectedModule;
 
-        for( int paramId = 0; paramId < 5; paramId++ ) {
-            if( engineStatus.modules[selectedModule].params[paramId].visible )
-            {
-                _paramNames[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
+            for( int paramId = 0; paramId < 5; paramId++ ) {
+                if( engineStatus.modules[selectedModule].params[paramId].visible )
+                {
+                    _paramNames[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
 
-                _paramSliders[paramId]->setMinimum(engineStatus.modules[selectedModule].params[paramId].min * 1000);
-                _paramSliders[paramId]->setMaximum(engineStatus.modules[selectedModule].params[paramId].max * 1000);
-                _paramSliders[paramId]->setSingleStep(engineStatus.modules[selectedModule].params[paramId].step * 1000);
-                _paramSliders[paramId]->setValue(engineStatus.modules[selectedModule].params[paramId].value * 1000);
-                _paramSliders[paramId]->setEnabled(true);
-            }
-            else {
-                _paramNames[paramId]->setText("");
+                    _paramSliders[paramId]->setMinimum(engineStatus.modules[selectedModule].params[paramId].min * 1000);
+                    _paramSliders[paramId]->setMaximum(engineStatus.modules[selectedModule].params[paramId].max * 1000);
+                    _paramSliders[paramId]->setSingleStep(engineStatus.modules[selectedModule].params[paramId].step * 1000);
+                    _paramSliders[paramId]->setValue(engineStatus.modules[selectedModule].params[paramId].value * 1000);
+                    _paramSliders[paramId]->setEnabled(true);
+                }
+                else {
+                    _paramNames[paramId]->setText("");
 
-                _paramValues[paramId]->setText("");
+                    _paramValues[paramId]->setText("");
 
-                _paramSliders[paramId]->setMinimum(0);
-                _paramSliders[paramId]->setMaximum(2);
-                _paramSliders[paramId]->setSingleStep(1);
-                _paramSliders[paramId]->setValue(1);
-                _paramSliders[paramId]->setEnabled(false);
+                    _paramSliders[paramId]->setMinimum(0);
+                    _paramSliders[paramId]->setMaximum(2);
+                    _paramSliders[paramId]->setSingleStep(1);
+                    _paramSliders[paramId]->setValue(1);
+                    _paramSliders[paramId]->setEnabled(false);
+                }
             }
         }
-    }
-    else if( selectedModule == engineStatus.selectedModule ) {
         for( int paramId = 0; paramId < 5; paramId++ ) {
             if( !engineStatus.modules[selectedModule].params[paramId].visible ) continue;
 
+            // ENGINE -> UI
             if( engineStatus.encoders[paramId].isPressed ) {
                 _paramNames[paramId]->setText(QString("*") + QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name) + QString("*"));
             }
