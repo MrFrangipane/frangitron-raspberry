@@ -6,7 +6,7 @@
 
 // SHARED
 struct EncoderStatus {
-    bool isPressed = false;
+    bool pressed = false;
     int increment = 0;
 };
 

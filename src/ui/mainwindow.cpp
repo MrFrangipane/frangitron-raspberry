@@ -37,6 +37,14 @@ void MainWindow::_setupUi()
 {
     ui->setupUi(this);
 
+    // HACKY POTTER (Sliders for dev mode) ---
+    ui->widgetDevMode->setVisible(false);
+    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
+        ui->widgetDevMode->setVisible(true);
+        resize(width(), height() + 200);
+    } // -------------------------------------
+
+    // INIT WIDGET LISTS
     _nameLabels.push_back(ui->labelEncName1);
     _nameLabels.push_back(ui->labelEncName2);
     _nameLabels.push_back(ui->labelEncName3);
@@ -82,13 +90,6 @@ void MainWindow::_setupUi()
     // END STRETCH
     ui->layoutPatch->addWidget(new QWidget(), 0, ui->layoutPatch->columnCount());
     ui->layoutPatch->setColumnStretch(ui->layoutPatch->columnCount() - 1, 10);
-
-    // HACKY POTTER (Sliders for dev mode) ---
-    ui->widgetDevMode->setVisible(false);
-    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
-        ui->widgetDevMode->setVisible(true);
-        resize(width(), height() + 200);
-    } // -------------------------------------
 }
 
 // CALLBACK MECHANISM
@@ -122,6 +123,8 @@ void MainWindow::_selectedChanged()
 
 void MainWindow::_refresh()
 {
+    QString text;
+
     // MEMBERS -> TEMP
     EngineStatus engineStatus = _engineStatus;
     UiStatus uiStatus = _uiStatus;
@@ -169,7 +172,8 @@ void MainWindow::_refresh()
             for( int paramId = 0; paramId < 5; paramId++ ) {
                 if( engineStatus.modules[selectedModule].params[paramId].visible )
                 {
-                    _nameLabels[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
+                    text = QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name);
+                    _nameLabels[paramId]->setText(text);
 
                     _sliders[paramId]->setMinimum(engineStatus.modules[selectedModule].params[paramId].min * 1000);
                     _sliders[paramId]->setMaximum(engineStatus.modules[selectedModule].params[paramId].max * 1000);
@@ -194,15 +198,20 @@ void MainWindow::_refresh()
                 }
             }
         }
+        // UPDATE STATUS
         for( int paramId = 0; paramId < 5; paramId++ ) {
             if( !engineStatus.modules[selectedModule].params[paramId].visible ) continue;
 
             // ENGINE -> UI
-            if( engineStatus.encoders[paramId].isPressed ) {
-                _nameLabels[paramId]->setText(QString("*") + QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name) + QString("*"));
+            if( engineStatus.encoders[paramId].pressed ) {
+                text = QString("*");
+                text += QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name);
+                text += QString("*");
+                _nameLabels[paramId]->setText(text);
             }
             else {
-                _nameLabels[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
+                text = QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name);
+                _nameLabels[paramId]->setText(text);
             }
 
             _valueLabels[paramId]->setText(_modules[selectedModule]->formatParameter(paramId));

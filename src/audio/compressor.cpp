@@ -7,35 +7,35 @@ const ModuleStatus Compressor::status() {
     status_.params[0].value = _attack;
     status_.params[0].min = 0.001;
     status_.params[0].max = 1.0;
-    status_.params[0].step = 0.001;
+    status_.params[0].step = 0.005;
     status_.params[0].visible = true;
 
     status_.params[1].name = "Release";
     status_.params[1].value = _release;
     status_.params[1].min = 0.001;
     status_.params[1].max = 1.0;
-    status_.params[1].step = 0.001;
+    status_.params[1].step = 0.005;
     status_.params[1].visible = true;
 
     status_.params[2].value = _ratio;
     status_.params[2].name = "Ratio";
     status_.params[2].min = 1.0;
     status_.params[2].max = 10.0;
-    status_.params[2].step = 1.0;
+    status_.params[2].step = -1.0;
     status_.params[2].visible = true;
 
     status_.params[3].name = "Threshold";
     status_.params[3].value = _threshold;
     status_.params[3].min = -100.0;
     status_.params[3].max = 0.0;
-    status_.params[3].step = 0.1;
+    status_.params[3].step = 0.5;
     status_.params[3].visible = true;
 
     status_.params[4].name = "Gain";
     status_.params[4].value = gain2dB(_gain);
     status_.params[4].min = -50.0;
     status_.params[4].max = 20.0;
-    status_.params[4].step = 0.1;
+    status_.params[4].step = 0.5;
     status_.params[4].visible = true;
 
     status_.params[5].name = "Gate";

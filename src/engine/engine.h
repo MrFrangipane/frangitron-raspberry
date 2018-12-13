@@ -64,7 +64,7 @@ private:
     );
     unsigned int _midiDeviceIndex = 0;
     unsigned int _audioDeviceIndex = 0;
-    unsigned int _bufferSize = 128;
+    unsigned int _bufferSize = BUFFER_SIZE;
     Shared _shared;
 };
 
