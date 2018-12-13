@@ -28,8 +28,10 @@ CONFIG += debug
 
 SOURCES += \
     ../include/rtaudio/RtAudio.cpp \
+    ../include/rtmidi/RtMidi.cpp \
     main.cpp \
-    audio/engine.cpp \
+    engine/engine.cpp \
+    audio/_samplemeter.cpp \
     audio/_samplefilter.cpp \
     audio/levelmeter.cpp \
     audio/filter.cpp \
@@ -38,29 +40,32 @@ SOURCES += \
     ui/abstractwidget.cpp \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
-    ui/compwidget.cpp \
-    audio/_samplemeter.cpp \
-    ../include/rtmidi/RtMidi.cpp
+    ui/compwidget.cpp
+
 
 HEADERS += \
     ../include/nlohmann/json.hpp \
     ../include/rtaudio/RtAudio.h \
-    typedefs.h \
-    audio/engine.h \
+    ../include/rtmidi/RtMidi.h \
+    shared/constants.h \
+    shared/typedefs.h \
+    shared/structures.h \
+    shared/audiohelpers.h \
+    shared/uihelpers.h \
+    engine/engine.h \
     audio/abstractmodule.h \
+    audio/_samplemeter.h \
     audio/_samplefilter.h \
     audio/levelmeter.h \
     audio/filter.h \
     audio/compressor.h \
-    ui/helpers.h \
     ui/mainwindow.h \
     ui/engineworker.h \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
-    ui/compwidget.h \
-    audio/_samplemeter.h \
-    ../include/rtmidi/RtMidi.h
+    ui/compwidget.h
+
 
 FORMS += \
     ui/mainwindow.ui

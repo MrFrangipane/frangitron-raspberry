@@ -10,7 +10,7 @@
 #include <QString>
 #include <QTimer>
 #include "../include/nlohmann/json.hpp"
-#include "audio/engine.h"
+#include "engine/engine.h"
 #include "ui/engineworker.h"
 #include "ui/abstractwidget.h"
 #include "ui/levelmeterwidget.h"

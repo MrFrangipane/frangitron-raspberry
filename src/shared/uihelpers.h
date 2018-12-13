@@ -1,5 +1,5 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef UIHELPERS_H
+#define UIHELPERS_H
 
 #include <cmath>
 #include <QRect>
@@ -81,4 +81,4 @@ inline void fillCircle(QPainter& painter, QRect rect, QColor color, float radius
     painter.setPen(penBackup);
 }
 
-#endif // HELPERS_H
+#endif // UIHELPERS_H

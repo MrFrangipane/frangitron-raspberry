@@ -1,7 +1,7 @@
 #ifndef COMPWIDGET_H
 #define COMPWIDGET_H
 
-#include "ui/helpers.h"
+#include "shared/uihelpers.h"
 #include "ui/abstractwidget.h"
 #include "audio/compressor.h"
 

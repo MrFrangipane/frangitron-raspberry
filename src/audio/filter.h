@@ -1,7 +1,7 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-#include "typedefs.h"
+#include "shared/typedefs.h"
 #include "audio/abstractmodule.h"
 #include "audio/_samplefilter.h"
 

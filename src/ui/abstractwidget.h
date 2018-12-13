@@ -2,8 +2,10 @@
 #define ABSTRACTWIDGET_H
 
 #include <cmath>
-#include "typedefs.h"
-#include "ui/helpers.h"
+#include "shared/constants.h"
+#include "shared/typedefs.h"
+#include "shared/structures.h"
+#include "shared/uihelpers.h"
 #include <QObject>
 #include <QString>
 #include <QApplication>

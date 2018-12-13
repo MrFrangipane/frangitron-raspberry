@@ -1,7 +1,9 @@
 #ifndef _SAMPLEMETER_H
 #define _SAMPLEMETER_H
 
-#include "typedefs.h"
+#include "shared/constants.h"
+#include "shared/typedefs.h"
+#include "shared/audiohelpers.h"
 #include "_samplefilter.h"
 
 struct _SampleMeterStatus {

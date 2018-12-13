@@ -2,7 +2,7 @@
 #define _SAMPLEFILTER_H
 
 #include <cmath>
-#include "typedefs.h"
+#include "shared/typedefs.h"
 
 #define REAL_CUTOFF_MIN 0.005
 #define REAL_CUTOFF_MAX 0.98

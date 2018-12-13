@@ -1,9 +1,9 @@
 #ifndef ABSTRACTMODULE_H
 #define ABSTRACTMODULE_H
 
-#include "typedefs.h"
+#include "shared/typedefs.h"
+#include "shared/structures.h"
 #include "audio/_samplemeter.h"
-#include <iostream>
 
 class AbstractModule
 {

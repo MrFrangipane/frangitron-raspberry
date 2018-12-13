@@ -2,7 +2,7 @@
 #define ENGINEWORKER_H
 
 #include <QObject>
-#include "audio/engine.h"
+#include "engine/engine.h"
 
 class EngineWorker : public QObject
 {

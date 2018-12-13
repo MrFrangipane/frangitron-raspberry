@@ -2,7 +2,7 @@
 #define LEVELMETER_H
 
 #include "cmath"
-#include "typedefs.h"
+#include "shared/typedefs.h"
 #include "audio/_samplemeter.h"
 #include "audio/abstractmodule.h"
 

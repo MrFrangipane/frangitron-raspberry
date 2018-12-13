@@ -9,7 +9,8 @@
 #include <stdlib.h>
 #include "../include/rtaudio/RtAudio.h"
 #include "../include/rtmidi/RtMidi.h"
-#include "typedefs.h"
+#include "shared/constants.h"
+#include "shared/typedefs.h"
 #include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
 #include "audio/filter.h"

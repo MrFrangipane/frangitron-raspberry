@@ -2,7 +2,7 @@
 #define COMPRESSOR_H
 
 #include <cmath>
-#include "typedefs.h"
+#include "shared/typedefs.h"
 #include "audio/abstractmodule.h"
 #include "audio/_samplemeter.h"
 
