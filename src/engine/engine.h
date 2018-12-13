@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include <atomic>
+#include <cmath>
 #include <vector>
 #include <memory>
 #include <iostream>
@@ -21,7 +22,7 @@ typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 
-struct SharedData {
+struct Shared {
     nFrame time = 0;
     std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;
@@ -29,6 +30,9 @@ struct SharedData {
     void* uiPtr;
     GetStatusCallback uiGetStatus;
     SetStatusCallback uiSetStatus;
+    int midi_msb = -1;
+    int midi_lsb = -1;
+    nFrame uiPreviousFrame = 0;
 };
 
 
@@ -61,7 +65,7 @@ private:
     unsigned int _midiDeviceIndex = 0;
     unsigned int _audioDeviceIndex = 0;
     unsigned int _bufferSize = 128;
-    SharedData _shared;
+    Shared _shared;
 };
 
 #endif // ENGINE_H

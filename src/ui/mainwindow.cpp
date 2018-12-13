@@ -33,57 +33,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// CALLBACK MECHANISM
-UiStatus MainWindow::callbackGetStatus(void * thisPtr) {
-    return ((MainWindow*)thisPtr)->getStatus();
-}
-
-void MainWindow::callbackSetStatus(void *thisPtr, EngineStatus status) {
-    ((MainWindow*)thisPtr)->setEngineStatus(status);
-}
-
-UiStatus MainWindow::getStatus()
-{
-    while( _statusLocked ) { }
-
-    _statusLocked = true;
-    UiStatus uiStatus = _uiStatus;
-    _statusLocked = false;
-
-    return uiStatus;
-}
-
-void MainWindow::setEngineStatus(EngineStatus engineStatus)
-{
-    while( _statusLocked ) { }
-
-    _statusLocked = true;
-    _engineStatus = engineStatus;
-    _statusLocked = false;
-}
-// ------------------
-
 void MainWindow::_setupUi()
 {
     ui->setupUi(this);
 
-    _paramNames.push_back(ui->labelEncName1);
-    _paramNames.push_back(ui->labelEncName2);
-    _paramNames.push_back(ui->labelEncName3);
-    _paramNames.push_back(ui->labelEncName4);
-    _paramNames.push_back(ui->labelEncName5);
+    _nameLabels.push_back(ui->labelEncName1);
+    _nameLabels.push_back(ui->labelEncName2);
+    _nameLabels.push_back(ui->labelEncName3);
+    _nameLabels.push_back(ui->labelEncName4);
+    _nameLabels.push_back(ui->labelEncName5);
 
-    _paramValues.push_back(ui->labelEncValue1);
-    _paramValues.push_back(ui->labelEncValue2);
-    _paramValues.push_back(ui->labelEncValue3);
-    _paramValues.push_back(ui->labelEncValue4);
-    _paramValues.push_back(ui->labelEncValue5);
+    _valueLabels.push_back(ui->labelEncValue1);
+    _valueLabels.push_back(ui->labelEncValue2);
+    _valueLabels.push_back(ui->labelEncValue3);
+    _valueLabels.push_back(ui->labelEncValue4);
+    _valueLabels.push_back(ui->labelEncValue5);
 
-    _paramSliders.push_back(ui->sliderEnc1);
-    _paramSliders.push_back(ui->sliderEnc2);
-    _paramSliders.push_back(ui->sliderEnc3);
-    _paramSliders.push_back(ui->sliderEnc4);
-    _paramSliders.push_back(ui->sliderEnc5);
+    _sliders.push_back(ui->sliderEnc1);
+    _sliders.push_back(ui->sliderEnc2);
+    _sliders.push_back(ui->sliderEnc3);
+    _sliders.push_back(ui->sliderEnc4);
+    _sliders.push_back(ui->sliderEnc5);
 
     // IN
     _modules << new LevelMeterWidget();
@@ -121,6 +91,26 @@ void MainWindow::_setupUi()
     } // -------------------------------------
 }
 
+// CALLBACK MECHANISM
+UiStatus MainWindow::callbackGetStatus(void * thisPtr) {
+    return ((MainWindow*)thisPtr)->getStatus();
+}
+
+void MainWindow::callbackSetStatus(void *thisPtr, EngineStatus status) {
+    ((MainWindow*)thisPtr)->setEngineStatus(status);
+}
+
+UiStatus MainWindow::getStatus()
+{
+    return _uiStatus;
+}
+
+void MainWindow::setEngineStatus(EngineStatus engineStatus)
+{
+    _engineStatus = engineStatus;
+}
+// ------------------
+
 void MainWindow::_selectedChanged()
 {
     for( AbstractWidget* moduleWidget : _modules ) {
@@ -133,12 +123,10 @@ void MainWindow::_selectedChanged()
 void MainWindow::_refresh()
 {
     // MEMBERS -> TEMP
-    while( _statusLocked ) { }
-
-    _statusLocked = true;
     EngineStatus engineStatus = _engineStatus;
     UiStatus uiStatus = _uiStatus;
-    _statusLocked = false;
+
+    uiStatus.frame += 1;
 
     if( engineStatus.modules[0].params[0].name.empty() ) return;
 
@@ -157,48 +145,52 @@ void MainWindow::_refresh()
     // ENGINE STATUS -> PARAMS
     if( selectedModule == -1 ) {
         // NO SELECTION
-        engineStatus.selectedModule = -1;
         uiStatus.selectedModule = -1;
 
         for( int paramId = 0; paramId < 5; paramId++ ) {
-            _paramNames[paramId]->setText("");
+            _nameLabels[paramId]->setText("");
 
-            _paramValues[paramId]->setText("");
+            _valueLabels[paramId]->setText("");
 
-            _paramSliders[paramId]->setMinimum(0);
-            _paramSliders[paramId]->setMaximum(2);
-            _paramSliders[paramId]->setSingleStep(1);
-            _paramSliders[paramId]->setValue(1);
-            _paramSliders[paramId]->setEnabled(false);
+            _sliders[paramId]->setMinimum(0);
+            _sliders[paramId]->setMaximum(2);
+            _sliders[paramId]->setSingleStep(1);
+            _sliders[paramId]->setValue(1);
+            _sliders[paramId]->setEnabled(false);
+
+            _previousValues[paramId] = 0.0;
         }
     }
     else {
         // NEW SELECTION
-        if ( selectedModule != engineStatus.selectedModule ) {
-            engineStatus.selectedModule = selectedModule;
+        if ( selectedModule != uiStatus.selectedModule ) {
             uiStatus.selectedModule = selectedModule;
 
             for( int paramId = 0; paramId < 5; paramId++ ) {
                 if( engineStatus.modules[selectedModule].params[paramId].visible )
                 {
-                    _paramNames[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
+                    _nameLabels[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
 
-                    _paramSliders[paramId]->setMinimum(engineStatus.modules[selectedModule].params[paramId].min * 1000);
-                    _paramSliders[paramId]->setMaximum(engineStatus.modules[selectedModule].params[paramId].max * 1000);
-                    _paramSliders[paramId]->setSingleStep(engineStatus.modules[selectedModule].params[paramId].step * 1000);
-                    _paramSliders[paramId]->setValue(engineStatus.modules[selectedModule].params[paramId].value * 1000);
-                    _paramSliders[paramId]->setEnabled(true);
+                    _sliders[paramId]->setMinimum(engineStatus.modules[selectedModule].params[paramId].min * 1000);
+                    _sliders[paramId]->setMaximum(engineStatus.modules[selectedModule].params[paramId].max * 1000);
+                    _sliders[paramId]->setSingleStep(engineStatus.modules[selectedModule].params[paramId].step * 1000);
+                    _sliders[paramId]->setValue(engineStatus.modules[selectedModule].params[paramId].value * 1000);
+                    _sliders[paramId]->setEnabled(true);
+
+                    _previousValues[paramId] = _sliders[paramId]->value();
                 }
                 else {
-                    _paramNames[paramId]->setText("");
+                    _nameLabels[paramId]->setText("");
 
-                    _paramValues[paramId]->setText("");
+                    _valueLabels[paramId]->setText("");
 
-                    _paramSliders[paramId]->setMinimum(0);
-                    _paramSliders[paramId]->setMaximum(2);
-                    _paramSliders[paramId]->setSingleStep(1);
-                    _paramSliders[paramId]->setValue(1);
-                    _paramSliders[paramId]->setEnabled(false);
+                    _sliders[paramId]->setMinimum(0);
+                    _sliders[paramId]->setMaximum(2);
+                    _sliders[paramId]->setSingleStep(1);
+                    _sliders[paramId]->setValue(1);
+                    _sliders[paramId]->setEnabled(false);
+
+                    _previousValues[paramId] = 0.0;
                 }
             }
         }
@@ -207,24 +199,29 @@ void MainWindow::_refresh()
 
             // ENGINE -> UI
             if( engineStatus.encoders[paramId].isPressed ) {
-                _paramNames[paramId]->setText(QString("*") + QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name) + QString("*"));
+                _nameLabels[paramId]->setText(QString("*") + QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name) + QString("*"));
             }
             else {
-                _paramNames[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
+                _nameLabels[paramId]->setText(QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name));
             }
 
-            _paramValues[paramId]->setText(_modules[selectedModule]->formatParameter(paramId));
+            _valueLabels[paramId]->setText(_modules[selectedModule]->formatParameter(paramId));
 
-            // UPDATE UI STATUS
-            uiStatus.sliderPosition[paramId] = (float)_paramSliders[paramId]->value() / 1000.0;
+            // SLIDER MOVED
+            float sliderValue = _sliders[paramId]->value();
+            if( _previousValues[paramId] != sliderValue ) {
+                uiStatus.paramIncrements[paramId] = (float)(sliderValue - _previousValues[paramId]) / 1000.0;
+                _previousValues[paramId] = sliderValue;
+            }
+            // SLIDER NOT MOVED
+            else {
+                uiStatus.paramIncrements[paramId] = 0.0;
+                _sliders[paramId]->setValue(engineStatus.modules[selectedModule].params[paramId].value * 1000);
+                _previousValues[paramId] = _sliders[paramId]->value();
+            }
         }
     }
 
     // TEMP -> MEMBERS
-    while( _statusLocked ) { }
-
-    _statusLocked = true;
-    _engineStatus = engineStatus;
     _uiStatus = uiStatus;
-    _statusLocked = false;
 }

@@ -2,6 +2,7 @@
 #define SHARED_H
 
 #include <string>
+#include "shared/typedefs.h"
 
 // SHARED
 struct EncoderStatus {
@@ -32,8 +33,9 @@ struct EngineStatus {
 
 // UI
 struct UiStatus {
-    float sliderPosition[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    float paramIncrements[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
     int selectedModule = -1;
+    nFrame frame = 0;
 };
 
 // MIDI

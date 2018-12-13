@@ -186,21 +186,41 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     int masterId = 0;
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
-    SharedData* shared = (SharedData*)userData;
+    Shared* shared = (Shared*)userData;
 
     // UI STATUS
     UiStatus uiStatus = shared->uiGetStatus(shared->uiPtr);
-    if( !uiStatus.selectedModule != -1 ) {
+    if( uiStatus.selectedModule != -1 ) {
+        if( shared->uiPreviousFrame != uiStatus.frame ) {
+            shared->uiPreviousFrame = uiStatus.frame;
 
-        shared->status.selectedModule = uiStatus.selectedModule;
+            shared->status.selectedModule = uiStatus.selectedModule;
 
-        for( int paramId = 0; paramId < 5; paramId++ ) {
-            if( !shared->status.modules[uiStatus.selectedModule].params[paramId].visible ) continue;
+            for( int paramId = 0; paramId < 5; paramId++ ) {
+                if( !shared->status.modules[uiStatus.selectedModule].params[paramId].visible ) continue;
 
-            shared->status.modules[uiStatus.selectedModule].params[paramId].value = uiStatus.sliderPosition[paramId];
+                float value = shared->status.modules[uiStatus.selectedModule].params[paramId].value;
+                float increment = uiStatus.paramIncrements[paramId];
+                float min = shared->status.modules[uiStatus.selectedModule].params[paramId].min;
+                float max = shared->status.modules[uiStatus.selectedModule].params[paramId].max;
+                shared->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+            }
         }
     }
 
+    // MIDI
+    for( int paramId = 0; paramId < 5; paramId++ ) {
+        if( shared->status.encoders[paramId].increment != 0 ) {
+
+            float value = shared->status.modules[uiStatus.selectedModule].params[paramId].value;
+            float increment = shared->status.encoders[paramId].increment * shared->status.modules[shared->status.selectedModule].params[paramId].step;
+            float min = shared->status.modules[uiStatus.selectedModule].params[paramId].min;
+            float max = shared->status.modules[uiStatus.selectedModule].params[paramId].max;
+            shared->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+
+            shared->status.encoders[paramId].increment = 0;
+        }
+    }
 
     // STATUS -> MODULES (parameters)
     moduleId = 0;
@@ -250,7 +270,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message, void *userData)
 {
     int encoder = 0;
-    SharedData* shared = (SharedData*)userData;
+    Shared* shared = (Shared*)userData;
 
     // IGNORE IF NOT CC
     if( message->size() != 3 ) return;
@@ -265,33 +285,39 @@ void Engine::_midiCallback(double deltaTime, std::vector<unsigned char> *message
         case 23: {}
         case 24:
             encoder = (int)message->at(1) - 20;
-            //shared->status.encoders[encoder].isPressed = (bool)((int)message->at(2) / 127);
+            shared->status.encoders[encoder].isPressed = (bool)((int)message->at(2) / 127);
             std::cout << (bool)((int)message->at(2) / 127) << std::endl;
         break;
 
         // NRPN MSB
         case 99:
+            shared->midi_msb = (int)message->at(2);
         break;
 
         // NRPN LSB
         case 98:
+            shared->midi_lsb = (int)message->at(2);
         break;
 
         // DECREASE
         case 97:
+            encoder = (shared->midi_lsb << 7) | shared->midi_msb;
+            shared->status.encoders[encoder].increment = -1;
+
+            shared->midi_msb = -1;
+            shared->midi_lsb = -1;
         break;
 
         // INCREASE
         case 96:
-        break;
+            encoder = (shared->midi_lsb << 7) | shared->midi_msb;
+            shared->status.encoders[encoder].increment = 1;
 
+            shared->midi_msb = -1;
+            shared->midi_lsb = -1;
+        break;
 
         default:
         break;
     }
-
-    std::cout << "Type: " << ((int)message->at(0) & 0xF0) <<
-                 " Note/CC: " << (int)message->at(1) <<
-                 " Velocity/Value: " << (double)message->at(2) <<
-                 std::endl;
 }

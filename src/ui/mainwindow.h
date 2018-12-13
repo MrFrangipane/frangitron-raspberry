@@ -44,9 +44,10 @@ private:
     EngineStatus _engineStatus;
     UiStatus _uiStatus;
     QList<AbstractWidget*> _modules;
-    QList<QLabel*> _paramNames;
-    QList<QLabel*> _paramValues;
-    QList<QSlider*> _paramSliders;
+    QList<QLabel*> _nameLabels;
+    QList<QLabel*> _valueLabels;
+    QList<QSlider*> _sliders;
+    float _previousValues[5] = {0, 0, 0, 0, 0};
     void _setupUi();
     std::atomic<bool> _statusLocked{false};
 
