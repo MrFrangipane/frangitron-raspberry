@@ -71,4 +71,11 @@ FORMS += \
     ui/mainwindow.ui
 
 LIBS += -lpthread -lasound -lsndfile
-QMAKE_CXXFLAGS *= -g -O3
+
+linux {
+    contains(QMAKE_HOST.arch, arm.*): {
+        QMAKE_CXXFLAGS *= -g -O3
+    } else {
+        QMAKE_CXXFLAGS *= -g -O0
+    }
+}
