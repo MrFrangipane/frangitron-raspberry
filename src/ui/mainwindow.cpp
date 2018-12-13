@@ -131,8 +131,6 @@ void MainWindow::_refresh()
 
     uiStatus.frame += 1;
 
-    if( engineStatus.modules[0].params[0].name.empty() ) return;
-
     // ENGINE STATUS -> MODULE WIDGETS
     int selectedModule = -1;
     int i = 0;

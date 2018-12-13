@@ -227,7 +227,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // STATUS -> MODULES
     moduleId = 0;
     for( ModuleStatus status : shared->status.modules ) {
-        if( !status.params[0].name.empty() )
+        if( !shared->status.modules[moduleId].empty )
             shared->audioModules[moduleId]->update(status);
         moduleId++;
     }

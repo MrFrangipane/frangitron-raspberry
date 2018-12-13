@@ -20,6 +20,7 @@ struct ModuleParameter {
 };
 
 struct ModuleStatus {
+    bool empty = true;
     ModuleParameter params[16];
     float levelOut;
 };

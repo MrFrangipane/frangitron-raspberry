@@ -1,7 +1,17 @@
 #include "compressor.h"
 
+void Compressor::update(ModuleStatus status) {
+    _threshold = status.params[3].value;
+    _attack = status.params[0].value;
+    _release = status.params[1].value;
+    _ratio = (int)status.params[2].value;
+    _gain = dB2Gain(status.params[4].value);
+}
+
 const ModuleStatus Compressor::status() {
     ModuleStatus status_;
+
+    status_.empty = false;
 
     status_.params[0].name = "Attack";
     status_.params[0].value = _attack;
@@ -50,14 +60,6 @@ const ModuleStatus Compressor::status() {
     status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
 
     return status_;
-}
-
-void Compressor::update(ModuleStatus status) {
-    _threshold = status.params[3].value;
-    _attack = status.params[0].value;
-    _release = status.params[1].value;
-    _ratio = (int)status.params[2].value;
-    _gain = dB2Gain(status.params[4].value);
 }
 
 void Compressor::process(Sample const * bufferIn, const nFrame /*time*/)

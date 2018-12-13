@@ -2,20 +2,20 @@
 
 void Filter::update(ModuleStatus status_)
 {
-    // PARAMS[0] : CUTOFF
-    if( status_.params[0].value < 0 ) {
+    // PARAMS[1] : CUTOFF
+    if( status_.params[1].value < 0 ) {
         _mode = FilterMode::LOWPASS;
-        _lowPassL.setCutoff(1.0 + status_.params[0].value);
-        _lowPassR.setCutoff(1.0 + status_.params[0].value);
+        _lowPassL.setCutoff(1.0 + status_.params[1].value);
+        _lowPassR.setCutoff(1.0 + status_.params[1].value);
         _hiPassL.setCutoff(0.0);
         _hiPassR.setCutoff(0.0);
     }
-    else if ( status_.params[0].value > 0 ) {
+    else if ( status_.params[1].value > 0 ) {
         _mode = FilterMode::HIPASS;
         _lowPassL.setCutoff(1.0);
         _lowPassR.setCutoff(1.0);
-        _hiPassL.setCutoff(status_.params[0].value);
-        _hiPassR.setCutoff(status_.params[0].value);
+        _hiPassL.setCutoff(status_.params[1].value);
+        _hiPassR.setCutoff(status_.params[1].value);
     }
     else {
         _mode = FilterMode::PASSTHROUGH;
@@ -25,39 +25,41 @@ void Filter::update(ModuleStatus status_)
         _hiPassR.setCutoff(0.0);
     }
 
-    // PARAMS[1] : RESONANCE
-    _lowPassL.setResonance(status_.params[1].value);
-    _lowPassR.setResonance(status_.params[1].value);
-    _hiPassL.setResonance(status_.params[1].value);
-    _hiPassR.setResonance(status_.params[1].value);
+    // PARAMS[3] : RESONANCE
+    _lowPassL.setResonance(status_.params[3].value);
+    _lowPassR.setResonance(status_.params[3].value);
+    _hiPassL.setResonance(status_.params[3].value);
+    _hiPassR.setResonance(status_.params[3].value);
 }
 
 const ModuleStatus Filter::status()
 {
     ModuleStatus status_;
 
-    status_.params[0].name = "Cutoff";
-    status_.params[0].min = -1.0;
-    status_.params[0].max = 1.0;
-    status_.params[0].step = 0.01;
-    status_.params[0].visible = true;
+    status_.empty = false;
+
+    status_.params[1].name = "Cutoff";
+    status_.params[1].min = -1.0;
+    status_.params[1].max = 1.0;
+    status_.params[1].step = 0.01;
+    status_.params[1].visible = true;
 
     if( _mode == FilterMode::LOWPASS ) {
-        status_.params[0].value = _lowPassL.cutoff() - 1.0;
+        status_.params[1].value = _lowPassL.cutoff() - 1.0;
     }
     else if( _mode == FilterMode::HIPASS ) {
-        status_.params[0].value = _hiPassL.cutoff();
+        status_.params[1].value = _hiPassL.cutoff();
     }
     else {
-        status_.params[0].value = 0.0;
+        status_.params[1].value = 0.0;
     }
 
-    status_.params[1].name = "Resonance";
-    status_.params[1].min = 0.0;
-    status_.params[1].max = 0.6;
-    status_.params[1].step = 0.003;
-    status_.params[1].visible = true;
-    status_.params[1].value = _hiPassL.resonance();
+    status_.params[3].name = "Resonance";
+    status_.params[3].min = 0.0;
+    status_.params[3].max = 0.6;
+    status_.params[3].step = 0.003;
+    status_.params[3].visible = true;
+    status_.params[3].value = _hiPassL.resonance();
 
     status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
 

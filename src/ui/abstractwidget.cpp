@@ -3,7 +3,6 @@
 
 void AbstractWidget::update_(const ModuleStatus status)
 {
-    if( status.params[0].name.empty() ) return;
     _status = status;
     QWidget::update();
 }

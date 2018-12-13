@@ -17,15 +17,15 @@ void FilterWidget::paint_(QRect rect)
     drawArc(painter, rect_, Qt::darkGray, 8.0, 0.0, 1.0);
 
     // CUTOFF
-    drawShaft(painter, rect_, Qt::darkGray, UI_SHAFT_WIDTH, _status.params[0].value / 2.0 + 0.5);
+    drawShaft(painter, rect_, Qt::darkGray, UI_SHAFT_WIDTH, _status.params[1].value / 2.0 + 0.5);
 
-    if( _status.params[0].value > 0) {
-        drawArc(painter, rect_, Qt::white, 8.0, _status.params[0].value, 1.0);
+    if( _status.params[1].value > 0) {
+        drawArc(painter, rect_, Qt::white, 8.0, _status.params[1].value, 1.0);
     }
     else {
-        drawArc(painter, rect_, Qt::white, 8.0, 0.0, 1.0 + _status.params[0].value);
+        drawArc(painter, rect_, Qt::white, 8.0, 0.0, 1.0 + _status.params[1].value);
     }
 
     // Resonance
-    fillCircle(painter, rect_, Qt::white, lerp(0.2, 0.8, _status.params[1].value));
+    fillCircle(painter, rect_, Qt::white, lerp(0.2, 0.8, _status.params[3].value));
 }
