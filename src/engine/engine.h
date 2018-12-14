@@ -12,6 +12,7 @@
 #include "../include/rtmidi/RtMidi.h"
 #include "shared/constants.h"
 #include "shared/typedefs.h"
+#include "midi/encoder.h"
 #include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
 #include "audio/filter.h"
@@ -32,6 +33,7 @@ struct Shared {
     SetStatusCallback uiSetStatus;
     int midi_msb = -1;
     int midi_lsb = -1;
+    Encoder midi_encoders[5];
     nFrame uiPreviousFrame = 0;
 };
 

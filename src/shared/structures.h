@@ -7,7 +7,6 @@
 // SHARED
 struct EncoderStatus {
     bool pressed = false;
-    int increment = 0;
 };
 
 struct ModuleParameter {
@@ -27,9 +26,9 @@ struct ModuleStatus {
 
 // ENGINE
 struct EngineStatus {
-    EncoderStatus encoders[5];
     ModuleStatus modules[16];
     int selectedModule = -1;
+    EncoderStatus encoders[5];
 };
 
 // UI
@@ -37,11 +36,6 @@ struct UiStatus {
     float paramIncrements[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
     int selectedModule = -1;
     nFrame frame = 0;
-};
-
-// MIDI
-struct MidiStatus {
-    EncoderStatus encoders[5];
 };
 
 #endif // SHARED_H

@@ -186,85 +186,88 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     int masterId = 0;
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
-    Shared* shared = (Shared*)userData;
+    Shared* s = (Shared*)userData;
 
     // UI STATUS
-    UiStatus uiStatus = shared->uiGetStatus(shared->uiPtr);
+    UiStatus uiStatus = s->uiGetStatus(s->uiPtr);
     if( uiStatus.selectedModule != -1 ) {
-        if( shared->uiPreviousFrame != uiStatus.frame ) {
-            shared->uiPreviousFrame = uiStatus.frame;
+        if( s->uiPreviousFrame != uiStatus.frame ) {
+            s->uiPreviousFrame = uiStatus.frame;
 
-            shared->status.selectedModule = uiStatus.selectedModule;
+            s->status.selectedModule = uiStatus.selectedModule;
 
             for( int paramId = 0; paramId < 5; paramId++ ) {
-                if( !shared->status.modules[uiStatus.selectedModule].params[paramId].visible ) continue;
+                if( !s->status.modules[uiStatus.selectedModule].params[paramId].visible ) continue;
 
-                float value = shared->status.modules[uiStatus.selectedModule].params[paramId].value;
-                float min = shared->status.modules[uiStatus.selectedModule].params[paramId].min;
-                float max = shared->status.modules[uiStatus.selectedModule].params[paramId].max;
+                float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
+                float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
+                float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
                 float increment = uiStatus.paramIncrements[paramId];
-                shared->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+                s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
             }
         }
     }
 
     // MIDI
     for( int paramId = 0; paramId < 5; paramId++ ) {
-        if( shared->status.encoders[paramId].increment != 0 ) {
 
-            float value = shared->status.modules[uiStatus.selectedModule].params[paramId].value;
-            float min = shared->status.modules[uiStatus.selectedModule].params[paramId].min;
-            float max = shared->status.modules[uiStatus.selectedModule].params[paramId].max;
-            float increment = shared->status.encoders[paramId].increment;
-            increment *= shared->status.modules[shared->status.selectedModule].params[paramId].step;
-            increment *= ((int)shared->status.encoders[paramId].pressed * (MIDI_PUSHED_FACTOR - 1)) + 1;
-            shared->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+        s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time);
 
-            shared->status.encoders[paramId].increment = 0;
+        if( s->midi_encoders[paramId].increment(s->time) != 0 ) {
+
+            float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
+            float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
+            float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
+            float increment = s->midi_encoders[paramId].increment(s->time);
+            increment *= s->status.modules[s->status.selectedModule].params[paramId].step;
+            increment *= ((int)s->midi_encoders[paramId].pressed(s->time) * (MIDI_PUSHED_FACTOR - 1)) + 1;
+            s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+
+            s->midi_encoders[paramId].setIncrement(0, s->time);
         }
     }
 
     // STATUS -> MODULES
     moduleId = 0;
-    for( ModuleStatus status : shared->status.modules ) {
-        if( !shared->status.modules[moduleId].empty )
-            shared->audioModules[moduleId]->update(status);
+    for( ModuleStatus status : s->status.modules ) {
+        if( !s->status.modules[moduleId].empty )
+            s->audioModules[moduleId]->update(status);
         moduleId++;
     }
 
     // PROCESS
     moduleId = 0;
-    for( std::shared_ptr<AbstractModule> module : shared->audioModules ) {
-        inputId = shared->audioWires[moduleId];
+    for( std::shared_ptr<AbstractModule> module : s->audioModules ) {
+        inputId = s->audioWires[moduleId];
 
         if( inputId == -1 ) {  // Hardware Input
-            module->process(ioIn, shared->time);
+            module->process(ioIn, s->time);
         }
         else if( inputId >= 0 ) {  // Module Input
-           module->process(shared->audioModules[inputId]->output(), shared->time);
+           module->process(s->audioModules[inputId]->output(), s->time);
         }
 
         moduleId++;
     }
 
-    masterId = shared->audioModules.size() - 1;
+    masterId = s->audioModules.size() - 1;
     for( nFrame i = 0; i < bufferSize; i++ ) {
-        ioOut[i * 2] = shared->audioModules[masterId]->output()[i * 2];
-        ioOut[i * 2 + 1] = shared->audioModules[masterId]->output()[i * 2 + 1];
+        ioOut[i * 2] = s->audioModules[masterId]->output()[i * 2];
+        ioOut[i * 2 + 1] = s->audioModules[masterId]->output()[i * 2 + 1];
     }
 
     // MODULES -> STATUS
     moduleId = 0;
-    for( std::shared_ptr<AbstractModule> module : shared->audioModules ) {
-        shared->status.modules[moduleId] = module->status();
+    for( std::shared_ptr<AbstractModule> module : s->audioModules ) {
+        s->status.modules[moduleId] = module->status();
         moduleId++;
     }
 
     // STATUS -> UI
-    shared->uiSetStatus(shared->uiPtr, shared->status);
+    s->uiSetStatus(s->uiPtr, s->status);
 
     // INCREMENT TIME
-    shared->time += bufferSize;
+    s->time += bufferSize;
 
     return 0;
 }
@@ -287,7 +290,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
         case 23: {}
         case 24:
             encoder = (int)message->at(1) - 20;
-            shared->status.encoders[encoder].pressed = (bool)((int)message->at(2) / 127);
+            shared->midi_encoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time);
         break;
 
         // NRPN MSB
@@ -303,7 +306,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
         // DECREASE
         case 97:
             encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-            shared->status.encoders[encoder].increment = -1;
+            shared->midi_encoders[encoder].setIncrement(-1, shared->time);
 
             shared->midi_msb = -1;
             shared->midi_lsb = -1;
@@ -312,7 +315,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
         // INCREASE
         case 96:
             encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-            shared->status.encoders[encoder].increment = 1;
+            shared->midi_encoders[encoder].setIncrement(1, shared->time);
 
             shared->midi_msb = -1;
             shared->midi_lsb = -1;

@@ -40,7 +40,8 @@ SOURCES += \
     ui/abstractwidget.cpp \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
-    ui/compwidget.cpp
+    ui/compwidget.cpp \
+    midi/encoder.cpp
 
 
 HEADERS += \
@@ -64,7 +65,8 @@ HEADERS += \
     ui/abstractwidget.h \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
-    ui/compwidget.h
+    ui/compwidget.h \
+    midi/encoder.h
 
 
 FORMS += \
