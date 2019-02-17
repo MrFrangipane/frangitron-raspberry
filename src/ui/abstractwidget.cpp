@@ -74,8 +74,8 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
 }
 
 void AbstractWidget::mousePressEvent(QMouseEvent *event) {
-    if( event->button() == Qt::LeftButton ) {
-        _selected = !_selected;
+    if( event->button() == Qt::LeftButton && !_selected) {
+        _selected = true;
         emit selectedChanged(_selected);
         QWidget::update();
     }
