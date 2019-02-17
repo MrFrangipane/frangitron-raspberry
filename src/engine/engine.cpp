@@ -96,15 +96,15 @@ void Engine::start()
 
     _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
     _shared.status.modules[1] = _shared.audioModules[1]->status();
-    _shared.audioWires.push_back(0);  // Level Meter
+    _shared.audioWires.push_back(0);  // Filter
 
     _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
     _shared.status.modules[2] = _shared.audioModules[2]->status();
-    _shared.audioWires.push_back(1);  // Filter
+    _shared.audioWires.push_back(1);  // Comp
 
     _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
     _shared.status.modules[3] = _shared.audioModules[3]->status();
-    _shared.audioWires.push_back(2);  // Compressor
+    _shared.audioWires.push_back(2);  // Output
 
     // MIDI DEVICE
     _setMidiDeviceIndex();
