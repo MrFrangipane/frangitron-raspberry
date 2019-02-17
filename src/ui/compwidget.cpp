@@ -8,8 +8,10 @@ void CompWidget::paint_(QRect rect)
     QRect rect_ = rect;
 
     // "SQUARE" (with aspect ratio correction)
-    if( (float)rect_.width() >= (float)rect_.height() * UI_ASPECT_RATIO) rect_.setWidth((int)((float)rect_.height() * UI_ASPECT_RATIO));
-    else if((float)rect_.width() < (float)rect_.height() * UI_ASPECT_RATIO ) rect_.setHeight((int)((float)rect_.width() / UI_ASPECT_RATIO));
+    //if( (float)rect_.width() >= (float)rect_.height() * UI_ASPECT_RATIO) rect_.setWidth((int)((float)rect_.height() * UI_ASPECT_RATIO));
+    //else if((float)rect_.width() < (float)rect_.height() * UI_ASPECT_RATIO ) rect_.setHeight((int)((float)rect_.width() / UI_ASPECT_RATIO));
+    if( rect_.width() >= rect_.height() ) rect_.setWidth(rect_.height());
+    else if( rect_.width() < rect_.height() ) rect_.setHeight(rect_.width());
     rect_.adjust(10, 10, -10, -10);
     rect_.moveCenter(rect.center());
 
