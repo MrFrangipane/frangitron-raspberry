@@ -46,6 +46,10 @@ void Engine::_setAudioDeviceIndex()
 
 void Engine::_setMidiDeviceIndex()
 {
+    std::vector<std::string> interfaceNames;
+    interfaceNames.push_back("MIOS");
+    interfaceNames.push_back("Fireface");
+
     RtMidiIn* midiIn;
 
     try {
@@ -73,9 +77,11 @@ void Engine::_setMidiDeviceIndex()
 
         std::cout << i << " : " << portName << std::endl;
 
-        if( portName.find("MIOS") != std::string::npos ) {
-            _midiDeviceIndex = i;
-            return;
+        for (auto interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++) {
+            if( portName.find(*interfaceName) != std::string::npos ) {
+                _midiDeviceIndex = i;
+                return;
+            }
         }
     }
 
@@ -211,19 +217,19 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // MIDI
     for( int paramId = 0; paramId < 5; paramId++ ) {
 
-        s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time);
+        s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
 
-        if( s->midi_encoders[paramId].increment(s->time) != 0 ) {
+        if( s->midi_encoders[paramId].increment(s->time.engine_frame()) != 0 ) {
 
             float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
             float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
             float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
-            float increment = s->midi_encoders[paramId].increment(s->time);
+            float increment = s->midi_encoders[paramId].increment(s->time.engine_frame());
             increment *= s->status.modules[s->status.selectedModule].params[paramId].step;
-            increment *= ((int)s->midi_encoders[paramId].pressed(s->time) * (MIDI_PUSHED_FACTOR - 1)) + 1;
+            increment *= ((int)s->midi_encoders[paramId].pressed(s->time.engine_frame()) * (MIDI_PUSHED_FACTOR - 1)) + 1;
             s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
 
-            s->midi_encoders[paramId].setIncrement(0, s->time);
+            s->midi_encoders[paramId].setIncrement(0, s->time.engine_frame());
         }
     }
 
@@ -241,10 +247,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         inputId = s->audioWires[moduleId];
 
         if( inputId == -1 ) {  // Hardware Input
-            module->process(ioIn, s->time);
+            module->process(ioIn, s->time.engine_frame());
         }
         else if( inputId >= 0 ) {  // Module Input
-           module->process(s->audioModules[inputId]->output(), s->time);
+           module->process(s->audioModules[inputId]->output(), s->time.engine_frame());
         }
 
         moduleId++;
@@ -264,10 +270,15 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // STATUS -> UI
+    s->status.clock.bar = s->time.bar();
+    s->status.clock.seconds = s->time.seconds();
+    s->status.clock.sequence_step = s->time.sequence_step();
+    s->status.clock.is_playing = s->time.is_playing();
+
     s->uiSetStatus(s->uiPtr, s->status);
 
     // INCREMENT TIME
-    s->time += bufferSize;
+    s->time.increment_frame(bufferSize);
 
     return 0;
 }
@@ -276,6 +287,21 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
 {
     int encoder = 0;
     Shared* shared = (Shared*)userData;
+
+//    unsigned int nBytes = message->size();
+//    for ( unsigned int i=0; i<nBytes; i++ )
+//      std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
+//    if ( nBytes > 0 )
+//    std::cout << "stamp = " << deltaTime << std::endl;
+
+    // TIMING
+    if( message->at(0) == 250 ) shared->time.start();
+    if( message->at(0) == 252 ) shared->time.stop();
+    if( message->at(0) == 251 ) shared->time.resume();
+
+    if( message->at(0) == 248 && shared->time.is_playing() ) { // Midi Clock Pulse
+        shared->time.increment_ppqn(1);
+    }
 
     // IGNORE IF NOT CC
     if( message->size() != 3 ) return;
@@ -290,7 +316,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
         case 23: {}
         case 24:
             encoder = (int)message->at(1) - 20;
-            shared->midi_encoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time);
+            shared->midi_encoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time.engine_frame());
         break;
 
         // NRPN MSB
@@ -306,7 +332,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
         // DECREASE
         case 97:
             encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-            shared->midi_encoders[encoder].setIncrement(-1, shared->time);
+            shared->midi_encoders[encoder].setIncrement(-1, shared->time.engine_frame());
 
             shared->midi_msb = -1;
             shared->midi_lsb = -1;
@@ -315,7 +341,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
         // INCREASE
         case 96:
             encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-            shared->midi_encoders[encoder].setIncrement(1, shared->time);
+            shared->midi_encoders[encoder].setIncrement(1, shared->time.engine_frame());
 
             shared->midi_msb = -1;
             shared->midi_lsb = -1;

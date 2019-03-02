@@ -9,6 +9,7 @@
 #include <QThread>
 #include <QString>
 #include <QTimer>
+#include <QTime>
 #include "../include/nlohmann/json.hpp"
 #include "shared/structures.h"
 #include "engine/engine.h"

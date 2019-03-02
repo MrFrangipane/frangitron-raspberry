@@ -24,11 +24,19 @@ struct ModuleStatus {
     float levelOut;
 };
 
+struct ClockStatus {
+    bool is_playing = false;
+    double seconds = 0.0;
+    double bar = 0;
+    nSequenceStep sequence_step = 0;
+};
+
 // ENGINE
 struct EngineStatus {
     ModuleStatus modules[16];
     int selectedModule = -1;
     EncoderStatus encoders[5];
+    ClockStatus clock;
 };
 
 // UI

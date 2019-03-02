@@ -12,6 +12,7 @@
 #include "../include/rtmidi/RtMidi.h"
 #include "shared/constants.h"
 #include "shared/typedefs.h"
+#include "shared/masterclock.h"
 #include "midi/encoder.h"
 #include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
@@ -24,7 +25,7 @@ typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 
 struct Shared {
-    nFrame time = 0;
+    MasterClock time;
     std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;
     std::vector<int> audioWires;

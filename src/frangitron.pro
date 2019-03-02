@@ -41,7 +41,9 @@ SOURCES += \
     ui/levelmeterwidget.cpp \
     ui/filterwidget.cpp \
     ui/compwidget.cpp \
-    midi/encoder.cpp
+    midi/encoder.cpp \
+    shared/masterclock.cpp \
+    ui/sequencerwidget.cpp
 
 
 HEADERS += \
@@ -66,7 +68,9 @@ HEADERS += \
     ui/levelmeterwidget.h \
     ui/filterwidget.h \
     ui/compwidget.h \
-    midi/encoder.h
+    midi/encoder.h \
+    shared/masterclock.h \
+    ui/sequencerwidget.h
 
 
 FORMS += \

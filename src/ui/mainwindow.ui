@@ -73,144 +73,8 @@ QSlider::sub-page:vertical {
   <property name="background" stdset="0">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="50,0,0,0" columnstretch="0">
-   <item row="2" column="0">
-    <layout class="QGridLayout" name="layoutEncoders">
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="verticalSpacing">
-      <number>0</number>
-     </property>
-     <item row="1" column="0">
-      <widget class="QLabel" name="labelEncValue1">
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderValue</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="labelEncName1">
-       <property name="text">
-        <string>Encoder 1</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="labelEncName2">
-       <property name="text">
-        <string>Encoder 2</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QLabel" name="labelEncValue4">
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderValue</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="labelEncName3">
-       <property name="text">
-        <string>Encoder 3</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="labelEncValue3">
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderValue</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QLabel" name="labelEncName4">
-       <property name="text">
-        <string>Encoder 4</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="labelEncValue2">
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderValue</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5">
-      <widget class="QLabel" name="labelEncName5">
-       <property name="text">
-        <string>Encoder 5</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="5">
-      <widget class="QLabel" name="labelEncValue5">
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="style" stdset="0">
-        <string>encoderValue</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="layoutPatch">
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="exit">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>40</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>EXIT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="50,0,0,0" columnstretch="10,0,0,0">
+   <item row="3" column="0" colspan="4">
     <widget class="QWidget" name="widgetDevMode" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -332,12 +196,211 @@ QSlider::sub-page:vertical {
      </layout>
     </widget>
    </item>
+   <item row="2" column="0" colspan="4">
+    <layout class="QGridLayout" name="layoutEncoders">
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="verticalSpacing">
+      <number>0</number>
+     </property>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelEncValue1">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelEncName1">
+       <property name="text">
+        <string>Encoder 1</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="labelEncName2">
+       <property name="text">
+        <string>Encoder 2</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLabel" name="labelEncValue4">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="labelEncName3">
+       <property name="text">
+        <string>Encoder 3</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="labelEncValue3">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QLabel" name="labelEncName4">
+       <property name="text">
+        <string>Encoder 4</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="labelEncValue2">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QLabel" name="labelEncName5">
+       <property name="text">
+        <string>Encoder 5</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5">
+      <widget class="QLabel" name="labelEncValue5">
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="style" stdset="0">
+        <string>encoderValue</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" colspan="4">
+    <layout class="QGridLayout" name="layoutPatch">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="4">
+    <layout class="QHBoxLayout" name="layoutInfos">
+     <item>
+      <widget class="SequencerWidget" name="sequencer" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>465</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="infos_left">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>00:00:09:264 s </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="infos_right">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>85</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>4515.3 bar</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="exit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: darkred;</string>
+       </property>
+       <property name="text">
+        <string>EXIT</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <tabstops>
-  <tabstop>exit</tabstop>
- </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>SequencerWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/sequencerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
