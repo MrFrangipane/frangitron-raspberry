@@ -8,7 +8,7 @@ void SequencerWidget::paintEvent(QPaintEvent *event)
     int page = (_step / 16) % 4;
 
     // COMPUTE RECTS
-    int cell_width = event->rect().width() / 22;
+    int cell_width = event->rect().width() / 21;
     int cell_height = event->rect().height();
     int top = (cell_height - cell_width) / 2;
 

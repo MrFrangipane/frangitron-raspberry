@@ -313,6 +313,12 @@ QSlider::sub-page:vertical {
     <layout class="QHBoxLayout" name="layoutInfos">
      <item>
       <widget class="SequencerWidget" name="sequencer" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>465</width>
@@ -324,7 +330,7 @@ QSlider::sub-page:vertical {
      <item>
       <widget class="QLabel" name="infos_left">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -346,14 +352,14 @@ QSlider::sub-page:vertical {
      <item>
       <widget class="QLabel" name="infos_right">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>85</width>
+         <width>90</width>
          <height>0</height>
         </size>
        </property>
@@ -373,7 +379,7 @@ QSlider::sub-page:vertical {
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>40</height>
+         <height>30</height>
         </size>
        </property>
        <property name="styleSheet">
