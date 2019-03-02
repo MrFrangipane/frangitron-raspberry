@@ -69,6 +69,26 @@ inline void fillRect(QPainter& painter, QRect rect, QColor color) {
     painter.setPen(penBackup);
 }
 
+
+inline void drawRect(QPainter& painter, QRect rect, QColor color, float width) {
+    QBrush brushBackup = painter.brush();
+    QPen penBackup = painter.pen();
+
+    QPen pen = painter.pen();
+    pen.setCapStyle(Qt::SquareCap);
+    pen.setStyle(Qt::SolidLine);
+    pen.setColor(color);
+    pen.setWidth(width);
+
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(pen);
+    painter.drawRect(rect);
+
+    painter.setBrush(brushBackup);
+    painter.setPen(penBackup);
+}
+
+
 inline void fillCircle(QPainter& painter, QRect rect, QColor color, float radius) {
     QBrush brushBackup = painter.brush();
     QPen penBackup = painter.pen();
@@ -82,12 +102,19 @@ inline void fillCircle(QPainter& painter, QRect rect, QColor color, float radius
 }
 
 
-inline void drawCircle(QPainter& painter, QRect rect, QColor color, float radius) {
+inline void drawCircle(QPainter& painter, QRect rect, QColor color, float radius, float width) {
     QBrush brushBackup = painter.brush();
     QPen penBackup = painter.pen();
 
+    QPen pen = painter.pen();
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setStyle(Qt::SolidLine);
+    pen.setColor(color);
+    pen.setWidth(width);
+
     painter.setBrush(Qt::NoBrush);
-    painter.setPen(color);
+    painter.setPen(pen);
+
     painter.drawEllipse(rect.center(), (int)((float)rect.width() * radius * 0.5), (int)((float)rect.height() * radius * 0.5));
 
     painter.setBrush(brushBackup);

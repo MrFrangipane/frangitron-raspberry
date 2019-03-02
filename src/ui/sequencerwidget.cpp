@@ -21,14 +21,14 @@ void SequencerWidget::paintEvent(QPaintEvent *event)
             cell_width
         );
 
-
-
-        if( i == step ) fillCircle(painter, cell, Qt::white, .8);
-        else if( i % 4 == 0 ) fillCircle(painter, cell, Qt::lightGray, .6);
-        else fillCircle(painter, cell, Qt::darkGray, .4);
+        if( i == step && i % 4 == 0 ) fillCircle(painter, cell, Qt::white, .8);
+        else if( i == step && i % 4 != 0 ) fillCircle(painter, cell, Qt::white, .6);
+        else if( i % 4 == 0 ) drawCircle(painter, cell, Qt::white, .6, 2);
+        else drawCircle(painter, cell, Qt::darkGray, .4, 2);
     }
 
     // PAGES
+    painter.setRenderHint(QPainter::Antialiasing, false);
     for( int i = 0; i < 4; i++ ) {
         if( i == page ) painter.setBrush(Qt::white);
         else painter.setBrush(Qt::NoBrush);
@@ -40,7 +40,7 @@ void SequencerWidget::paintEvent(QPaintEvent *event)
             cell_width
         );
 
-        if( i == page ) fillCircle(painter, cell, Qt::white, .8);
-        else fillCircle(painter, cell, Qt::darkGray, .5);
+        if( i == page ) fillRect(painter, cell.adjusted(3, 3, -3, -3), Qt::white);
+        else drawRect(painter, cell.adjusted(3, 3, -3, -3), Qt::darkGray, 2);
     }
 }

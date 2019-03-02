@@ -23,7 +23,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
 
     // COMPUTE RECTS
     QRect rectFrame = event->rect().adjusted(3, 3, -3, -3);
-    QRect rectName = event->rect().adjusted(3, 3, -3, -event->rect().height() + 25);
+    QRect rectName = QRect(rectFrame.left(), rectFrame.top(), rectFrame.width(), 25);
     QRect rectOutMeter;
     QRect rectContent;
     if( _drawMeter )
@@ -66,7 +66,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     // METER OUT
     if( _drawMeter ) {
         fillRect(painter, rectOutMeter, Qt::darkGray);
-        fillRect(painter, rectOutMeter.adjusted(0, -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF, 0, 0), Qt::white);
+        fillRect(painter, rectOutMeter.adjusted(0, std::fmin(rectOutMeter.height(), -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF), 0, 0), Qt::white);
     }
 
     // ACTUAL PAINT
