@@ -14,7 +14,11 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget {
+   <string notr="true">* {
+	font-size: 12px;
+}
+
+QWidget {
 	color: white;
 	background-color: rgb(23, 23, 23);
 }
@@ -310,61 +314,42 @@ QSlider::sub-page:vertical {
     </layout>
    </item>
    <item row="1" column="0" colspan="4">
-    <layout class="QHBoxLayout" name="layoutInfos">
+    <layout class="QHBoxLayout" name="layoutInfos" stretch="0,0,0">
      <item>
       <widget class="SequencerWidget" name="sequencer" native="true">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>465</width>
+         <width>505</width>
          <height>0</height>
         </size>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="infos_left">
+      <widget class="QLabel" name="labelTime">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>120</width>
+         <width>180</width>
          <height>0</height>
         </size>
        </property>
        <property name="text">
-        <string>00:00:09:264 s </string>
+        <string>00:00:09:264 s 4515.3 bar</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="infos_right">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>90</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>4515.3 bar</string>
        </property>
       </widget>
      </item>
