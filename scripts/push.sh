@@ -9,7 +9,7 @@ echo '--     Push to Origin     --'
 git push origin master
 
 echo '--  SSH Pull and Compile  --'
-ssh pi@192.168.1.15 '. ~/frangitron-raspberry/scripts/build.sh'
+ssh pi@192.168.1.14 '. ~/frangitron-raspberry/scripts/build.sh'
 
 echo '== DONE =='
 
