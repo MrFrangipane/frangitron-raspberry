@@ -4,7 +4,7 @@ ModuleStatus const LevelMeter::status()
 {
     ModuleStatus status_;
 
-    status_.empty = false; // Will be updated by engine
+    status_.empty = false; // Will not get updated by engine
 
     status_.params[0].name = "rmsL";
     status_.params[0].value = _meterL.rms.average;
@@ -14,24 +14,12 @@ ModuleStatus const LevelMeter::status()
     status_.params[2].value = _meterL.rms.instant;
     status_.params[3].name  = "rmsInstantR";
     status_.params[3].value = _meterR.rms.instant;
-
-    status_.params[4].name  = "clip tresh";
-    status_.params[4].visible = true;
-    status_.params[4].min = -500.0;
-    status_.params[4].max = 0.0;
-    status_.params[4].value = _clip_tresh;
-
     status_.params[5].name  = "is_clipping";
     status_.params[5].min = 0.0;
     status_.params[5].max = 1.0;
     status_.params[5].value = (float)_is_clipping;
 
     return status_;
-}
-
-
-void LevelMeter::update(ModuleStatus status) {
-    _clip_tresh = status.params[4].value;
 }
 
 
@@ -51,7 +39,7 @@ void LevelMeter::process(const Sample *bufferIn, const nFrame /*time*/)
         _meterL.stepCompute(bufferIn[_left]);
         _meterR.stepCompute(bufferIn[_right]);
 
-        if( _meterL.rms.instant >= _clip_tresh || _meterR.rms.instant >= _clip_tresh ) {
+        if( _meterL.rms.instant >= CLIPPING_THRESOLD || _meterR.rms.instant >= CLIPPING_THRESOLD ) {
             _is_clipping = true;
         }
 

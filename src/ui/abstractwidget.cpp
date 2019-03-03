@@ -70,7 +70,11 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     // METER OUT
     if( _drawMeter ) {
         fillRect(painter, rectOutMeter, _darkGrey);
-        fillRect(painter, rectOutMeter.adjusted(0, std::fmin(rectOutMeter.height(), -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF), 0, 0), Qt::white);
+        if( _status.params[5].value > 0 ) { // Clipping
+            fillRect(painter, rectOutMeter.adjusted(0, std::fmin(rectOutMeter.height(), -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF), 0, 0), Qt::red);
+        } else {
+            fillRect(painter, rectOutMeter.adjusted(0, std::fmin(rectOutMeter.height(), -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF), 0, 0), Qt::white);
+        }
     }
 
     // ACTUAL PAINT
