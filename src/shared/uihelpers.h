@@ -8,6 +8,7 @@
 #include <QPen>
 #include <QBrush>
 
+
 inline void drawArc(QPainter& painter, QRect rect, QColor color, float width, float start, float end) {
     QBrush brushBackup = painter.brush();
     QPen penBackup = painter.pen();

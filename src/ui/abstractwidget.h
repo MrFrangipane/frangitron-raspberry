@@ -7,6 +7,7 @@
 #include "shared/structures.h"
 #include "shared/uihelpers.h"
 #include <QObject>
+#include <QColor>
 #include <QString>
 #include <QApplication>
 #include <QFontMetrics>
@@ -41,6 +42,7 @@ protected:
     QSize minimumSizeHint() const;
     virtual void paint_(QRect /*rect*/) { }
     QString _parameterFormats[5] = {"%1", "%1", "%1", "%1", "%1"};
+    QColor _darkGrey = QColor(60, 60, 60);
 
 signals:
     void selectedChanged(bool isSelected);

@@ -22,7 +22,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing, true);
 
     // COMPUTE RECTS
-    QRect rectFrame = event->rect().adjusted(3, 3, -3, -3);
+    QRect rectFrame = event->rect();
     QRect rectName = QRect(rectFrame.left(), rectFrame.top(), rectFrame.width(), 25);
     QRect rectOutMeter;
     QRect rectContent;
@@ -41,31 +41,24 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
 
     // FRAME
     if( _selected ) {
-        painter.setBrush(Qt::NoBrush);
-        painter.setPen(QPen(Qt::white, 3.0));
+        drawRect(painter, rectFrame, Qt::white, 2.0);
     } else {
-        painter.setBrush(Qt::NoBrush);
-        painter.setPen(QPen(Qt::darkGray, 3.0));
+        drawRect(painter, rectFrame, _darkGrey, 1.0);
     }
-    painter.drawRoundedRect(rectFrame, 5.0, 5.0);
 
     // NAME
     if( _selected ) {
-        painter.setBrush(Qt::white);
-        painter.setPen(Qt::NoPen);
-        painter.drawRect(rectName);
+        fillRect(painter, rectName, Qt::white);
         painter.setPen(Qt::black);
     } else {
-        painter.setBrush(Qt::darkGray);
-        painter.setPen(Qt::NoPen);
-        painter.drawRect(rectName);
+        fillRect(painter, rectName, _darkGrey);
         painter.setPen(Qt::white);
     }
     painter.drawText(rectName, Qt::AlignCenter, property("displayName").toString());
 
     // METER OUT
     if( _drawMeter ) {
-        fillRect(painter, rectOutMeter, Qt::darkGray);
+        fillRect(painter, rectOutMeter, _darkGrey);
         fillRect(painter, rectOutMeter.adjusted(0, std::fmin(rectOutMeter.height(), -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF), 0, 0), Qt::white);
     }
 
