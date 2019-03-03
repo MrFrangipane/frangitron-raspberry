@@ -13,10 +13,13 @@
 #define MIDI_CLICKED_TIME_TRESHOLD 128 // Audio frames
 
 #define UI_FRAMERATE 30
-#define UI_OUTMETER_HEIGHT 60
+#define UI_OUTMETER_HEIGHT 40
+#define UI_OUTMETER_WIDTH 6
+#define UI_MARGIN 6
+#define UI_TITLE_HEIGHT 25
 #define UI_ARC_WIDTH 4
 #define UI_SHAFT_WIDTH 4
 #define UI_LEVEL_MAGIC_COEFF 0.0045
-#define UI_ASPECT_RATIO 0.96 // Official RaspberryPi touchscreen
+#define UI_ASPECT_RATIO 0.95 // Official RaspberryPi touchscreen
 
 #endif // CONSTANTS_H

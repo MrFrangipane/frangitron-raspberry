@@ -10,7 +10,7 @@ public:
     explicit LevelMeterWidget(QWidget *parent = nullptr) :
         AbstractWidget(parent)
     {
-        _minimumWidth = 60;
+        _minimumWidth = 40;
         _drawMeter = false;
     }
 

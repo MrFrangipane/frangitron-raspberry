@@ -23,20 +23,31 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
 
     // COMPUTE RECTS
     QRect rectFrame = event->rect();
-    QRect rectName = QRect(rectFrame.left(), rectFrame.top(), rectFrame.width(), 25);
+    QRect rectName = QRect(rectFrame.left(), rectFrame.top(), rectFrame.width(), UI_TITLE_HEIGHT);
     QRect rectOutMeter;
     QRect rectContent;
     if( _drawMeter )
     {
-        rectContent = event->rect().adjusted(9, 30, -22, -10);
-
-        rectOutMeter = event->rect().adjusted(event->rect().width() - 17, 30, -9, -10);
-        rectOutMeter.setHeight(std::min(rectOutMeter.height(), UI_OUTMETER_HEIGHT));
-        rectOutMeter.moveTop(rectContent.top() + (rectContent.height() - rectOutMeter.height()) / 2);
-
+        rectContent = event->rect().adjusted(
+            UI_MARGIN,
+            UI_MARGIN + UI_TITLE_HEIGHT,
+            -UI_MARGIN - UI_MARGIN - UI_OUTMETER_WIDTH,
+            -UI_MARGIN
+        );
+        rectOutMeter = QRect(
+            rectContent.right() + UI_MARGIN,
+            rectContent.top() + (rectContent.height() - UI_OUTMETER_HEIGHT) / 2,
+            UI_OUTMETER_WIDTH,
+            UI_OUTMETER_HEIGHT
+        );
     }
     else {
-        rectContent = event->rect().adjusted(9, 30, -10, -10);
+        rectContent = event->rect().adjusted(
+            UI_MARGIN,
+            UI_MARGIN + UI_TITLE_HEIGHT,
+            -UI_MARGIN,
+            -UI_MARGIN
+        );
     }
 
     // FRAME

@@ -34,10 +34,10 @@ void SequencerWidget::paintEvent(QPaintEvent *event)
         else painter.setBrush(Qt::NoBrush);
 
         QRect cell(
-            cell_width * (i + 17),
-            top,
+            cell_width * (i + 16.5),
+            top + 3,
             cell_width,
-            cell_width
+            cell_width - 6
         );
 
         if( i == page ) fillRect(painter, cell.adjusted(5, 5, -5, -5), Qt::white);
