@@ -52,9 +52,9 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
 
     // FRAME
     if( _selected ) {
-        drawRect(painter, rectFrame, Qt::white, 2.0);
+        drawRect(painter, rectFrame, Qt::white, UI_LINE_WIDTH);
     } else {
-        drawRect(painter, rectFrame, _darkGrey, 1.0);
+        drawRect(painter, rectFrame, _darkGrey, UI_LINE_WIDTH);
     }
 
     // NAME

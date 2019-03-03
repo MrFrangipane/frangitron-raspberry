@@ -11,7 +11,7 @@ void Compressor::update(ModuleStatus status) {
 const ModuleStatus Compressor::status() {
     ModuleStatus status_;
 
-    status_.empty = false;
+    status_.empty = false; // Will be updated by engine
 
     status_.params[0].name = "Attacke";
     status_.params[0].value = _attack;

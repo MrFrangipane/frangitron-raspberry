@@ -209,27 +209,28 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
                 float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
                 float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
                 float increment = uiStatus.paramIncrements[paramId];
+
                 s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
             }
         }
-    }
 
-    // MIDI
-    for( int paramId = 0; paramId < 5; paramId++ ) {
+    // ENCODERS
+        for( int paramId = 0; paramId < 5; paramId++ ) {
 
-        s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
+            s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
 
-        if( s->midi_encoders[paramId].increment(s->time.engine_frame()) != 0 ) {
+            if( s->midi_encoders[paramId].increment(s->time.engine_frame()) != 0 ) {
 
-            float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
-            float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
-            float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
-            float increment = s->midi_encoders[paramId].increment(s->time.engine_frame());
-            increment *= s->status.modules[s->status.selectedModule].params[paramId].step;
-            increment *= ((int)s->midi_encoders[paramId].pressed(s->time.engine_frame()) * (MIDI_PUSHED_FACTOR - 1)) + 1;
-            s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+                float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
+                float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
+                float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
+                float increment = s->midi_encoders[paramId].increment(s->time.engine_frame());
+                increment *= s->status.modules[s->status.selectedModule].params[paramId].step;
+                increment *= ((int)s->midi_encoders[paramId].pressed(s->time.engine_frame()) * (MIDI_PUSHED_FACTOR - 1)) + 1;
 
-            s->midi_encoders[paramId].setIncrement(0, s->time.engine_frame());
+                s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+                s->midi_encoders[paramId].setIncrement(0, s->time.engine_frame());
+            }
         }
     }
 
