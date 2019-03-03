@@ -17,8 +17,8 @@ ModuleStatus const LevelMeter::status()
 
     status_.params[4].name  = "clip tresh";
     status_.params[4].visible = true;
-    status_.params[4].min = 0.0;
-    status_.params[4].max = 1.0;
+    status_.params[4].min = -500.0;
+    status_.params[4].max = 0.0;
     status_.params[4].value = _clip_tresh;
 
     status_.params[5].name  = "is_clipping";
@@ -51,7 +51,7 @@ void LevelMeter::process(const Sample *bufferIn, const nFrame /*time*/)
         _meterL.stepCompute(bufferIn[_left]);
         _meterR.stepCompute(bufferIn[_right]);
 
-        if( bufferIn[_left] >= _clip_tresh || bufferIn[_right] >= _clip_tresh ) {
+        if( _meterL.rms.instant >= _clip_tresh || _meterR.rms.instant >= _clip_tresh ) {
             _is_clipping = true;
         }
 
