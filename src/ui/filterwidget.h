@@ -7,7 +7,11 @@
 class FilterWidget : public AbstractWidget
 {
 public:
-    explicit FilterWidget(QWidget *parent = nullptr) : AbstractWidget(parent) { }
+    explicit FilterWidget(QWidget *parent = nullptr) :
+        AbstractWidget(parent) {
+        _minimumWidth = 80;
+        _minimumHeight = 105;  // 25 px Title
+    }
 
 private:
     void paint_(QRect rect) override;

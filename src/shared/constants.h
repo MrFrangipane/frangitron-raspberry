@@ -14,8 +14,9 @@
 
 #define UI_FRAMERATE 30
 #define UI_OUTMETER_HEIGHT 60
-#define UI_SHAFT_WIDTH 8
+#define UI_ARC_WIDTH 3
+#define UI_SHAFT_WIDTH 3
 #define UI_LEVEL_MAGIC_COEFF 0.0045
-#define UI_ASPECT_RATIO 0.96 // Official RaspberryPi toutchscreen
+#define UI_ASPECT_RATIO 0.96 // Official RaspberryPi touchscreen
 
 #endif // CONSTANTS_H
