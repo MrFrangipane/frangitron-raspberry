@@ -11,7 +11,6 @@ void CompWidget::paint_(QRect rect)
     if( (float)rect_.width() >= (float)rect_.height() * UI_ASPECT_RATIO) rect_.setWidth((int)((float)rect_.height() * UI_ASPECT_RATIO));
     else if((float)rect_.width() < (float)rect_.height() * UI_ASPECT_RATIO ) rect_.setHeight((int)((float)rect_.width() / UI_ASPECT_RATIO));
     rect_.moveCenter(rect.center());
-
     QRect arcRect = rect_.adjusted(2, 2, -2, -2);
 
     // BASE

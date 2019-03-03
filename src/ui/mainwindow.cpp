@@ -67,7 +67,7 @@ void MainWindow::_setupUi()
     _modules << new LevelMeterWidget();
     connect(_modules[0], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
     _modules[0]->setProperty("displayName", "IN");
-    ui->layoutPatch->addWidget(_modules[0], 0, 0, 2, 1);
+    ui->layoutPatch->addWidget(_modules[0], 0, 0, 3, 1);
 
     // IN FILTER
     _modules <<  new FilterWidget();
@@ -81,15 +81,19 @@ void MainWindow::_setupUi()
     _modules[2]->setProperty("displayName", "IN COMP");
     ui->layoutPatch->addWidget(_modules[2], 1, 1);
 
+    // BEFORE MASTER STRETCH
+    ui->layoutPatch->addWidget(new QWidget(), 0, ui->layoutPatch->columnCount());
+    ui->layoutPatch->setColumnStretch(ui->layoutPatch->columnCount() - 1, 10);
+
     // MASTER
     _modules << new LevelMeterWidget();
     connect(_modules[3], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
     _modules[3]->setProperty("displayName", "OUT");
-    ui->layoutPatch->addWidget(_modules[3], 0, 3, 2, 1);
+    ui->layoutPatch->addWidget(_modules[3], 0, 3, 3, 1);
 
-    // END STRETCH
-    ui->layoutPatch->addWidget(new QWidget(), 0, ui->layoutPatch->columnCount());
-    ui->layoutPatch->setColumnStretch(ui->layoutPatch->columnCount() - 1, 10);
+    // HACK STRETCH
+    ui->layoutPatch->addWidget(new QWidget(), 2, ui->layoutPatch->rowCount() - 1);
+    ui->layoutPatch->setRowStretch(ui->layoutPatch->rowCount() - 1, 10);
 }
 
 // CALLBACK MECHANISM

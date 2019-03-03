@@ -10,8 +10,8 @@ class CompWidget : public AbstractWidget
 public:
     explicit CompWidget(QWidget *parent = nullptr) :
         AbstractWidget(parent) {
-        _minimumWidth = 80;
-        _minimumHeight = 105;  // 25 px Title
+        _minimumWidth = 100;
+        _minimumHeight = _minimumWidth + 25;  // 25 px Title
         _parameterFormats[0] = "%1 ms";
         _parameterFormats[1] = "%1 ms";
         _parameterFormats[2] = "1:%1";

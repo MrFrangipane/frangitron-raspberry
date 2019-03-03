@@ -12,6 +12,7 @@ void FilterWidget::paint_(QRect rect)
     if( (float)rect_.width() >= (float)rect_.height() * UI_ASPECT_RATIO) rect_.setWidth((int)((float)rect_.height() * UI_ASPECT_RATIO));
     else if((float)rect_.width() < (float)rect_.height() * UI_ASPECT_RATIO ) rect_.setHeight((int)((float)rect_.width() / UI_ASPECT_RATIO));
     rect_.moveCenter(rect.center());
+    rect_.adjust(2, 2, -2, -2);  // unifies with margin used in comp for ratio display
 
     // BASE
     drawArc(painter, rect_, Qt::darkGray, UI_ARC_WIDTH, 0.0, 1.0);

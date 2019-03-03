@@ -40,7 +40,7 @@ void SequencerWidget::paintEvent(QPaintEvent *event)
             cell_width
         );
 
-        if( i == page ) fillRect(painter, cell.adjusted(3, 3, -3, -3), Qt::white);
-        else drawRect(painter, cell.adjusted(3.5, 3.5, -3.5, -3.5), Qt::darkGray, 1);
+        if( i == page ) fillRect(painter, cell.adjusted(5, 5, -5, -5), Qt::white);
+        else drawRect(painter, cell.adjusted(5, 5, -5, -5), Qt::darkGray, 1);
     }
 }
