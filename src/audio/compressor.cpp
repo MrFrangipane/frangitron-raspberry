@@ -58,6 +58,7 @@ const ModuleStatus Compressor::status() {
     status_.params[7].value = fmax(_inMeterL.rms.average, _inMeterR.rms.average);
 
     status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
+    status_.is_clipping = _outMeterL.isClipping() || _outMeterR.isClipping();
 
     return status_;
 }

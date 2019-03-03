@@ -22,6 +22,7 @@ struct ModuleStatus {
     bool empty = true;
     ModuleParameter params[16];
     float levelOut;
+    bool is_clipping;
 };
 
 struct ClockStatus {

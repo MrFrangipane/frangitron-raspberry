@@ -62,6 +62,7 @@ const ModuleStatus Filter::status()
     status_.params[3].value = _hiPassL.resonance();
 
     status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
+    status_.is_clipping = _outMeterL.isClipping() || _outMeterR.isClipping();
 
     return status_;
 }

@@ -17,6 +17,7 @@ public:
     _SampleMeter();
     void stepCompute(Sample sample);
     void setWeighted(bool isWeighted) { _isWeighted = isWeighted; }
+    bool isClipping() { return _is_clipping; }
     _SampleMeterStatus rms;
 
 private:
@@ -24,9 +25,11 @@ private:
     Sample _sample;
     int _nStep = 0;
     int _nAverage = 0;
-    float _instant = 0.0;
+    float _sum = 0.0;
     float _average = 0.0;
     bool _isWeighted = true;
+    bool _is_clipping = false;
+    int _clip_persist_counter = 0;
     _SampleFilter _filter_hi;
     _SampleFilter _filter_low;
 };
