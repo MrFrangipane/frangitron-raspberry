@@ -15,7 +15,7 @@
 #define MIDI_CLICKED_TIME_TRESHOLD 128 // Audio frames
 
 #define UI_FRAMERATE 30
-#define UI_MARGIN 6
+#define UI_MARGIN 8
 #define UI_ARC_WIDTH 4
 #define UI_LINE_WIDTH 2
 #define UI_SHAFT_WIDTH 4
