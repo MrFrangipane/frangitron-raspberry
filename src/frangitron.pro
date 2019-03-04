@@ -43,7 +43,8 @@ SOURCES += \
     ui/compwidget.cpp \
     midi/encoder.cpp \
     shared/masterclock.cpp \
-    ui/sequencerwidget.cpp
+    ui/sequencerwidget.cpp \
+    audio/_aweighting.cpp
 
 
 HEADERS += \
@@ -70,7 +71,8 @@ HEADERS += \
     ui/compwidget.h \
     midi/encoder.h \
     shared/masterclock.h \
-    ui/sequencerwidget.h
+    ui/sequencerwidget.h \
+    audio/_aweighting.h
 
 
 FORMS += \

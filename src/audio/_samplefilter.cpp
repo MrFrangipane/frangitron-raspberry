@@ -1,6 +1,6 @@
 #include "_samplefilter.h"
 
-double _SampleFilter::process(Sample input)
+Sample _SampleFilter::process(Sample input)
 {
     // TWO POLE
     _buf0 += _realCutoff * (input - _buf0 + _feedbackAmount * (_buf0 - _buf2));
@@ -13,13 +13,13 @@ double _SampleFilter::process(Sample input)
     switch (_mode)
     {
         case LOWPASS:
-            return _buf3 * ATTENUATION;
+            return _buf3;
 
         case HIPASS:
-            return (input - _buf3) * ATTENUATION;
+            return (input - _buf3);
 
         case BANDPASS:
-            return (_buf0 - _buf2) * ATTENUATION;
+            return (_buf0 - _buf2);
 
         default:
             return 0.0;

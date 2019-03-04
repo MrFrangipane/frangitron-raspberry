@@ -18,11 +18,11 @@ private:
     nFrame _nCycles = 0;
     nFrame _time = 0;
     nFrame _nLerp = 0;
-    float _threshold = -60.0;
-    float _attack = .05;
-    float _release = .015;
-    float _ratio = 5.0;
-    float _gain = 4.0;
+    float _threshold = 0.0;
+    float _attack = .080;
+    float _release = .200;
+    float _ratio = 1.0;
+    float _gain = 1.0;
     float _level = 1.0;
     float _levelPrevious = 1.0;
     float _levelTarget = 1.0;

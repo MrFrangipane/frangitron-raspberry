@@ -19,6 +19,8 @@
 #include "audio/filter.h"
 #include "audio/compressor.h"
 
+#include "audio/_aweighting.h"
+
 
 typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
@@ -36,6 +38,8 @@ struct Shared {
     int midi_lsb = -1;
     Encoder midi_encoders[5];
     nFrame uiPreviousFrame = 0;
+    _AWeighting temp_a_weighting_L;
+    _AWeighting temp_a_weighting_R;
 };
 
 

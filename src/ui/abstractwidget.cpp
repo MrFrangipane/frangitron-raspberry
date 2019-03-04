@@ -34,7 +34,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     QRect rectFrame = event->rect();
     QRect rectName = QRect(rectFrame.left(), rectFrame.top(), rectFrame.width(), UI_TITLE_HEIGHT);
     QRect rectOutMeter;
-    QRect rectContent;
+    QRect rectContent;   
     if( _drawMeter )
     {
         rectContent = event->rect().adjusted(

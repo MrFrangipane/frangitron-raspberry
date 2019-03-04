@@ -102,8 +102,8 @@ void Filter::process(Sample const * bufferIn, const nFrame /*time*/)
             _left = i * 2;
             _right = _left + 1;
 
-            _bufferOut[_left] = bufferIn[_left] * ATTENUATION;
-            _bufferOut[_right] = bufferIn[_right] * ATTENUATION;
+            _bufferOut[_left] = bufferIn[_left];
+            _bufferOut[_right] = bufferIn[_right];
 
             _outMeterL.stepCompute(_bufferOut[_left]);
             _outMeterR.stepCompute(_bufferOut[_right]);

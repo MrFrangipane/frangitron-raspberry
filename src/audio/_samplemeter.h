@@ -4,7 +4,8 @@
 #include "shared/constants.h"
 #include "shared/typedefs.h"
 #include "shared/audiohelpers.h"
-#include "_samplefilter.h"
+#include "_aweighting.h"
+
 
 struct _SampleMeterStatus {
     float average = 0.0;
@@ -14,7 +15,7 @@ struct _SampleMeterStatus {
 class _SampleMeter
 {
 public:
-    _SampleMeter();
+    _SampleMeter() { }
     void stepCompute(Sample sample);
     void setWeighted(bool isWeighted) { _isWeighted = isWeighted; }
     bool isClipping() { return _is_clipping; }
@@ -30,8 +31,7 @@ private:
     bool _isWeighted = true;
     bool _is_clipping = false;
     int _clip_persist_counter = 0;
-    _SampleFilter _filter_hi;
-    _SampleFilter _filter_low;
+    _AWeighting _a_weighting;
 };
 
 #endif // _SAMPLEMETER_H
