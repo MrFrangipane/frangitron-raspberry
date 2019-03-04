@@ -10,9 +10,18 @@ void AbstractWidget::update_(const ModuleStatus status)
 QSize AbstractWidget::minimumSizeHint() const
 {
     QFontMetrics metrics(QApplication::font());
+    int title_width = metrics.width(property("displayName").toString());
+    int content_width;
+
+    if( _drawMeter ) {
+        content_width = UI_MARGIN + _contentMinimumWidth + UI_MARGIN + UI_OUTMETER_WIDTH + UI_MARGIN;
+    } else {
+        content_width = UI_MARGIN + _contentMinimumWidth + UI_MARGIN;
+    }
+
     return QSize(
-        std::max(metrics.width(property("displayName").toString()) + 15, _minimumWidth),
-        std::max(40, _minimumHeight)
+        std::max(UI_MIN_CONTENT_SIZE, std::max(title_width, content_width)),
+        std::max(UI_MIN_CONTENT_SIZE, UI_TITLE_HEIGHT + UI_MARGIN + _contentMinimumHeight + UI_MARGIN)
     );
 }
 

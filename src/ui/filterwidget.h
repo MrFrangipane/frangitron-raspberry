@@ -9,8 +9,8 @@ class FilterWidget : public AbstractWidget
 public:
     explicit FilterWidget(QWidget *parent = nullptr) :
         AbstractWidget(parent) {
-        _minimumWidth = 100;
-        _minimumHeight = _minimumWidth + 25;  // 25 px Title
+        _contentMinimumWidth = 70;
+        _contentMinimumHeight = _contentMinimumWidth;
     }
 
 private:

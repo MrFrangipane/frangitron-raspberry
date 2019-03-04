@@ -8,9 +8,7 @@ class LevelMeterWidget : public AbstractWidget
 {
 public:
     explicit LevelMeterWidget(QWidget *parent = nullptr) :
-        AbstractWidget(parent)
-    {
-        _minimumWidth = 40;
+        AbstractWidget(parent) {
         _drawMeter = false;
     }
 

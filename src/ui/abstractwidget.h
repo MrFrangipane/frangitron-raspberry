@@ -34,8 +34,8 @@ public:
 
 protected:
     ModuleStatus _status;
-    int _minimumWidth = -1;
-    int _minimumHeight = -1;
+    int _contentMinimumWidth = -1;
+    int _contentMinimumHeight = -1;
     bool _drawMeter = true;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
