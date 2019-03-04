@@ -18,8 +18,7 @@
 #include "audio/levelmeter.h"
 #include "audio/filter.h"
 #include "audio/compressor.h"
-
-#include "audio/_aweighting.h"
+#include "audio/kicksynth.h"
 
 
 typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
@@ -40,6 +39,7 @@ struct Shared {
     nFrame uiPreviousFrame = 0;
     _AWeighting temp_a_weighting_L;
     _AWeighting temp_a_weighting_R;
+    bool midi_note_on[128];
 };
 
 

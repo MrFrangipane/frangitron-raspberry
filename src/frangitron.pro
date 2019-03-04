@@ -44,7 +44,10 @@ SOURCES += \
     midi/encoder.cpp \
     shared/masterclock.cpp \
     ui/sequencerwidget.cpp \
-    audio/_aweighting.cpp
+    audio/_aweighting.cpp \
+    audio/kicksynth.cpp \
+    audio/_adr.cpp \
+    ui/kickwidget.cpp
 
 
 HEADERS += \
@@ -72,7 +75,10 @@ HEADERS += \
     midi/encoder.h \
     shared/masterclock.h \
     ui/sequencerwidget.h \
-    audio/_aweighting.h
+    audio/_aweighting.h \
+    audio/kicksynth.h \
+    audio/_adr.h \
+    ui/kickwidget.h
 
 
 FORMS += \

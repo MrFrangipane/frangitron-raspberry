@@ -81,15 +81,21 @@ void MainWindow::_setupUi()
     _modules[2]->setProperty("displayName", "IN COMP");
     ui->layoutPatch->addWidget(_modules[2], 1, 1);
 
+    // KICK
+    _modules << new KickWidget();
+    connect(_modules[3], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
+    _modules[3]->setProperty("displayName", "KICK");
+    ui->layoutPatch->addWidget(_modules[3], 0, 2);
+
     // BEFORE MASTER STRETCH
-    ui->layoutPatch->addWidget(new QWidget(), 0, ui->layoutPatch->columnCount());
-    ui->layoutPatch->setColumnStretch(ui->layoutPatch->columnCount() - 1, 10);
+    ui->layoutPatch->addWidget(new QWidget(), 0, 3);
+    ui->layoutPatch->setColumnStretch(3, 10);
 
     // MASTER
     _modules << new LevelMeterWidget();
-    connect(_modules[3], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    _modules[3]->setProperty("displayName", "OUT");
-    ui->layoutPatch->addWidget(_modules[3], 0, 3, 3, 1);
+    connect(_modules[4], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
+    _modules[4]->setProperty("displayName", "OUT");
+    ui->layoutPatch->addWidget(_modules[4], 0, 4, 3, 1);
 
     // HACK STRETCH
     ui->layoutPatch->addWidget(new QWidget(), 2, ui->layoutPatch->rowCount() - 1);

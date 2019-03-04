@@ -18,6 +18,7 @@
 #include "ui/levelmeterwidget.h"
 #include "ui/filterwidget.h"
 #include "ui/compwidget.h"
+#include "ui/kickwidget.h"
 
 
 namespace Ui {

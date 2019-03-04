@@ -1,6 +1,7 @@
 #include "compressor.h"
 
-void Compressor::update(ModuleStatus status) {
+void Compressor::update(ModuleStatus status)
+{
     _threshold = status.params[3].value;
     _attack = status.params[0].value;
     _release = status.params[1].value;
@@ -8,7 +9,8 @@ void Compressor::update(ModuleStatus status) {
     _gain = dB2Gain(status.params[4].value);
 }
 
-const ModuleStatus Compressor::status() {
+const ModuleStatus Compressor::status()
+{
     ModuleStatus status_;
 
     status_.empty = false; // Will be updated by engine

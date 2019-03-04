@@ -108,9 +108,13 @@ void Engine::start()
     _shared.status.modules[2] = _shared.audioModules[2]->status();
     _shared.audioWires.push_back(1);  // Comp
 
-    _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+    _shared.audioModules.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
     _shared.status.modules[3] = _shared.audioModules[3]->status();
-    _shared.audioWires.push_back(2);  // Output
+    _shared.audioWires.push_back(2);  // Kick
+
+    _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+    _shared.status.modules[4] = _shared.audioModules[4]->status();
+    _shared.audioWires.push_back(3);  // Out
 
     // MIDI DEVICE
     _setMidiDeviceIndex();
@@ -242,6 +246,16 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
 
+    // NOTE ON
+    for( int note = 0; note < 128; note++ ) {
+        if( s->midi_note_on[36] ) {
+            s->midi_note_on[36] = false;
+
+            masterId = s->audioModules.size() - 2; // hacky gate the kick
+            s->audioModules[masterId]->gate(s->time.engine_frame());
+        }
+    }
+
     // PROCESS
     moduleId = 0;
     for( std::shared_ptr<AbstractModule> module : s->audioModules ) {
@@ -289,11 +303,10 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     int encoder = 0;
     Shared* shared = (Shared*)userData;
 
+    // DEBUG COUT
 //    unsigned int nBytes = message->size();
 //    for ( unsigned int i=0; i<nBytes; i++ )
-//      std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
-//    if ( nBytes > 0 )
-//    std::cout << "stamp = " << deltaTime << std::endl;
+//      std::cout << "Byte " << i << " = " << (int)message->at(i) << ", " << std::endl;
 
     // TIMING
     if( message->at(0) == 250 ) shared->time.start();
@@ -304,51 +317,58 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
         shared->time.increment_ppqn(1);
     }
 
-    // IGNORE IF NOT CC
-    if( message->size() != 3 ) return;
-    if(((int)message->at(0) & 0xF0) != 176 ) return;
+    // NOTE ON
+    if( message->at(0) >= 144 && message->at(0) <= 159) {
+        //std::cout << "Note on : " << (int)message->at(1) << " vel: " << (int)message->at(2) << " chan: " << (int)message->at(0) - 143 << std::endl;
+        if( (int)message->at(2) )
+            shared->midi_note_on[(int)message->at(1)] = true;
+    }
 
-    switch( (int)message->at(1) ) {
+    // CONTROL CHANGE
+    if( message->at(0) >= 176 && message->at(0) <= 191) {
 
-        // PUSHES
-        case 20: {}
-        case 21: {}
-        case 22: {}
-        case 23: {}
-        case 24:
-            encoder = (int)message->at(1) - 20;
-            shared->midi_encoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time.engine_frame());
-        break;
+        switch( (int)message->at(1) ) {
 
-        // NRPN MSB
-        case 99:
-            shared->midi_msb = (int)message->at(2);
-        break;
+            // PUSHES
+            case 20: {}
+            case 21: {}
+            case 22: {}
+            case 23: {}
+            case 24:
+                encoder = (int)message->at(1) - 20;
+                shared->midi_encoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time.engine_frame());
+            break;
 
-        // NRPN LSB
-        case 98:
-            shared->midi_lsb = (int)message->at(2);
-        break;
+            // NRPN MSB
+            case 99:
+                shared->midi_msb = (int)message->at(2);
+            break;
 
-        // DECREASE
-        case 97:
-            encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-            shared->midi_encoders[encoder].setIncrement(-1, shared->time.engine_frame());
+            // NRPN LSB
+            case 98:
+                shared->midi_lsb = (int)message->at(2);
+            break;
 
-            shared->midi_msb = -1;
-            shared->midi_lsb = -1;
-        break;
+            // DECREASE
+            case 97:
+                encoder = (shared->midi_lsb << 7) | shared->midi_msb;
+                shared->midi_encoders[encoder].setIncrement(-1, shared->time.engine_frame());
 
-        // INCREASE
-        case 96:
-            encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-            shared->midi_encoders[encoder].setIncrement(1, shared->time.engine_frame());
+                shared->midi_msb = -1;
+                shared->midi_lsb = -1;
+            break;
 
-            shared->midi_msb = -1;
-            shared->midi_lsb = -1;
-        break;
+            // INCREASE
+            case 96:
+                encoder = (shared->midi_lsb << 7) | shared->midi_msb;
+                shared->midi_encoders[encoder].setIncrement(1, shared->time.engine_frame());
 
-        default:
-        break;
+                shared->midi_msb = -1;
+                shared->midi_lsb = -1;
+            break;
+
+            default:
+            break;
+        }
     }
 }
