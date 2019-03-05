@@ -46,8 +46,8 @@ SOURCES += \
     ui/sequencerwidget.cpp \
     audio/_aweighting.cpp \
     audio/kicksynth.cpp \
-    audio/_adr.cpp \
-    ui/kickwidget.cpp
+    ui/kickwidget.cpp \
+    audio/_envelope.cpp
 
 
 HEADERS += \
@@ -77,8 +77,8 @@ HEADERS += \
     ui/sequencerwidget.h \
     audio/_aweighting.h \
     audio/kicksynth.h \
-    audio/_adr.h \
-    ui/kickwidget.h
+    ui/kickwidget.h \
+    audio/_envelope.h
 
 
 FORMS += \

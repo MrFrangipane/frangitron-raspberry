@@ -368,7 +368,8 @@ QSlider::sub-page:vertical {
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: darkred;</string>
+        <string notr="true">background-color: darkred;
+border: 0px;</string>
        </property>
        <property name="text">
         <string>EXIT</string>
