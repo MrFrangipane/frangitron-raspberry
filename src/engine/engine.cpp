@@ -190,6 +190,7 @@ void Engine::start()
     }
 
     // OUTPUT FILE
+    /*
     _shared.output_file = SndfileHandle(
         "/tmp/frangitron_out.wav",
         SFM_WRITE,
@@ -201,7 +202,7 @@ void Engine::start()
     if( _shared.output_file.error() != 0) {
         std::cout << " Output file " << _shared.output_file.strError() << std::endl;
     }
-
+    */
     // READY
     _shared.ready = true;
 }
@@ -305,9 +306,11 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // OUTPUT FILE
+    /*
     if( s->output_file.error() == SF_ERR_NO_ERROR ) {
         s->output_file.write(ioOut, bufferSize * 2);
     }
+    */
 
     // MODULES -> STATUS
     moduleId = 0;
