@@ -3,7 +3,7 @@
 
 
 #include "ui/abstractwidget.h"
-#include "audio/kicksynth.h".h"
+#include "audio/kicksynth.h"
 
 
 class KickWidget : public AbstractWidget

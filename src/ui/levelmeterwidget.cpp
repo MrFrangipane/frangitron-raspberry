@@ -1,19 +1,38 @@
 #include "levelmeterwidget.h"
+#include <iostream>
+
 
 void LevelMeterWidget::paint_(QRect rect)
 {
     QPainter painter(this);
     painter.setPen(Qt::NoPen);
 
-    // clipping
-    if( _status.params[5].value > 0 ) {
-        painter.setBrush(Qt::red);
+    // METERS
+    QRect meterRect = rect.adjusted(0, 0, -UI_LEVEL_HANDLE_SIZE, 0);
+
+    float left = std::fmin(meterRect.height(), -_status.params[5].value * UI_LEVEL_MAGIC_COEFF * meterRect.height());
+    float right = std::fmin(meterRect.height(), -_status.params[6].value * UI_LEVEL_MAGIC_COEFF * meterRect.height());
+
+    QColor color;
+    if( _status.params[9].value > 0 ) { // clipping
+        color = Qt::red;
     } else {
-        painter.setBrush(Qt::white);
+        color = Qt::white;
     }
 
-    // rmsL
-    painter.drawRect(rect.adjusted(0, -_status.params[0].value * UI_LEVEL_MAGIC_COEFF * rect.height(), -rect.width() / 2, 0));
-    // rmsR
-    painter.drawRect(rect.adjusted(rect.width() / 2, -_status.params[1].value * UI_LEVEL_MAGIC_COEFF * rect.height(), 0, 0));
+    fillRect(painter, meterRect.adjusted(0, left, -meterRect.width() / 2, 0), color);
+    fillRect(painter, meterRect.adjusted(meterRect.width() / 2, right, 0, 0), color);
+
+    // LEVEL HANDLE
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
+    float level = (_status.params[2].value - 6.0) / 66.0;
+    float top = rect.top() - level * (rect.height() - UI_LEVEL_HANDLE_SIZE);
+    QRect levelRect = QRect(meterRect.right(), top, UI_LEVEL_HANDLE_SIZE, UI_LEVEL_HANDLE_SIZE);
+
+    if( _status.params[10].value > 0 ) { // locked
+        drawTriangle(painter, levelRect, Qt::darkGray, UI_LINE_WIDTH);
+    } else {
+        fillTriangle(painter, levelRect, Qt::white);
+    }
 }

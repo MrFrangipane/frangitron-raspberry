@@ -5,6 +5,7 @@
 #include <QRect>
 #include <QColor>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPen>
 #include <QBrush>
 
@@ -120,6 +121,52 @@ inline void drawCircle(QPainter& painter, QRect rect, QColor color, float radius
     painter.setPen(pen);
 
     painter.drawEllipse(rect.center(), (int)((float)rect.width() * radius * 0.5), (int)((float)rect.height() * radius * 0.5));
+
+    painter.setBrush(brushBackup);
+    painter.setPen(penBackup);
+}
+
+
+inline void drawTriangle(QPainter& painter, QRect rect, QColor color, float width) {
+    QBrush brushBackup = painter.brush();
+    QPen penBackup = painter.pen();
+
+    QPen pen = painter.pen();
+    pen.setCapStyle(Qt::FlatCap);
+    pen.setStyle(Qt::SolidLine);
+    pen.setColor(color);
+    pen.setWidth(width);
+
+    painter.setPen(pen);
+    painter.setBrush(Qt::NoBrush);
+
+    QPainterPath triangle;
+    triangle.moveTo(rect.topRight());
+    triangle.lineTo(rect.bottomRight());
+    triangle.lineTo(rect.left(), rect.top() + rect.height() / 2);
+    triangle.lineTo(rect.topRight());
+
+    painter.drawPath(triangle);
+
+    painter.setBrush(brushBackup);
+    painter.setPen(penBackup);
+}
+
+
+inline void fillTriangle(QPainter& painter, QRect rect, QColor color) {
+    QBrush brushBackup = painter.brush();
+    QPen penBackup = painter.pen();
+
+    painter.setBrush(color);
+    painter.setPen(Qt::NoPen);
+
+    QPainterPath triangle;
+    triangle.moveTo(rect.topRight());
+    triangle.lineTo(rect.bottomRight());
+    triangle.lineTo(rect.left(), rect.top() + rect.height() / 2);
+    triangle.lineTo(rect.topRight());
+
+    painter.fillPath(triangle, color);
 
     painter.setBrush(brushBackup);
     painter.setPen(penBackup);

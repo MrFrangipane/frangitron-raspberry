@@ -96,25 +96,27 @@ void Engine::start()
     } // ------------------------------------------
 
     // MODULES
+    // INPUT
     _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
     _shared.status.modules[0] = _shared.audioModules[0]->status();
-    _shared.audioWires.push_back(-1);  // Input
-
+    _shared.status.modules[0].params[10].value = 1.0; // LockLevel
+    _shared.audioWires.push_back(-1);
+    // FILTER
     _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
     _shared.status.modules[1] = _shared.audioModules[1]->status();
-    _shared.audioWires.push_back(0);  // Filter
-
+    _shared.audioWires.push_back(0);
+    // COMP
     _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
     _shared.status.modules[2] = _shared.audioModules[2]->status();
-    _shared.audioWires.push_back(1);  // Comp
-
+    _shared.audioWires.push_back(1);
+    // KICK SYNTH
     _shared.audioModules.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
     _shared.status.modules[3] = _shared.audioModules[3]->status();
-    _shared.audioWires.push_back(2);  // Kick
-
+    _shared.audioWires.push_back(2);
+    // OUT
     _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
     _shared.status.modules[4] = _shared.audioModules[4]->status();
-    _shared.audioWires.push_back(3);  // Out
+    _shared.audioWires.push_back(3);
 
     // MIDI DEVICE
     _setMidiDeviceIndex();
@@ -199,6 +201,9 @@ void Engine::start()
     if( _shared.output_file.error() != 0) {
         std::cout << " Output file " << _shared.output_file.strError() << std::endl;
     }
+
+    // READY
+    _shared.ready = true;
 }
 
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
@@ -210,6 +215,15 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     Sample *ioIn = (Sample*)bufferIn;
     Sample *ioOut = (Sample*)bufferOut;
     Shared* s = (Shared*)userData;
+
+    // READY ?
+    if( !s->ready ){
+        for( nFrame i = 0; i < bufferSize * 2; i++ ) {
+            ioOut[i] = 0.0;
+        }
+
+        return 0;
+    }
 
     // UI STATUS
     UiStatus uiStatus = s->uiGetStatus(s->uiPtr);

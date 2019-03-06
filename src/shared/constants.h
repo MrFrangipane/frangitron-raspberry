@@ -22,6 +22,7 @@
 #define UI_OUTMETER_WIDTH 6
 #define UI_OUTMETER_HEIGHT 40
 #define UI_MIN_CONTENT_SIZE 40
+#define UI_LEVEL_HANDLE_SIZE 10
 #define UI_LEVEL_MAGIC_COEFF 0.0045
 #define UI_ASPECT_RATIO 0.95 // Official RaspberryPi touchscreen
 

@@ -4,7 +4,7 @@
 void AbstractWidget::update_(const ModuleStatus status)
 {
     _status = status;
-    QWidget::update();
+    update();
 }
 
 QSize AbstractWidget::minimumSizeHint() const
@@ -94,6 +94,6 @@ void AbstractWidget::mousePressEvent(QMouseEvent *event) {
     if( event->button() == Qt::LeftButton && !_selected) {
         _selected = true;
         emit selectedChanged(_selected);
-        QWidget::update();
+        update();
     }
 }

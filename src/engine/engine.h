@@ -27,6 +27,7 @@ typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 
 struct Shared {
+    bool ready = false;
     MasterClock time;
     std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;
