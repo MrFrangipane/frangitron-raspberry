@@ -11,7 +11,6 @@ class _Envelope
 {
 public:
     _Envelope() { }
-    void gate(nFrame time) { _last_gate = time; }
     float value(nFrame time);
     float duration() { return _attack + _decay + _hold + _release; }
     float attack() { return _attack; }
@@ -19,6 +18,7 @@ public:
     float hold() { return _hold; }
     float sustainLevel() { return _sustain; }
     float release() { return _release; }
+    void gate(nFrame time);
     void setAttack(float attack) { _attack = std::fmax(0.0, attack); }
     void setDecay(float decay) { _decay = std::fmax(0.0, decay); }
     void setHold(float hold) { _hold = std::fmax(0.0, hold); }
@@ -26,6 +26,7 @@ public:
     void setRelease(float release) { _release = std::fmax(0.0, release); }
 private:
     nFrame _last_gate = 6000;
+    float _value_at_gate = 0.0;
     float _attack = 0.01;
     float _decay = 0.01;
     float _hold = 0.01;

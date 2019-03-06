@@ -181,11 +181,24 @@ void Engine::start()
         );
 
         _audio->startStream();
-      }
-      catch( RtAudioError &error ) {
-          std::cout << "Error while opening audio device and setting callback" << std::endl;
-          std::cout << error.getMessage() << std::endl;
-      }
+    }
+    catch( RtAudioError &error ) {
+        std::cout << "Error while opening audio device and setting callback" << std::endl;
+        std::cout << error.getMessage() << std::endl;
+    }
+
+    // OUTPUT FILE
+    _shared.output_file = SndfileHandle(
+        "/tmp/frangitron_out.wav",
+        SFM_WRITE,
+        SF_FORMAT_WAV | SF_FORMAT_PCM_16,
+        2,
+        SAMPLE_RATE
+    );
+
+    if( _shared.output_file.error() != 0) {
+        std::cout << " Output file " << _shared.output_file.strError() << std::endl;
+    }
 }
 
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
@@ -275,6 +288,11 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     for( nFrame i = 0; i < bufferSize; i++ ) {
         ioOut[i * 2] = s->audioModules[masterId]->output()[i * 2];
         ioOut[i * 2 + 1] = s->audioModules[masterId]->output()[i * 2 + 1];
+    }
+
+    // OUTPUT FILE
+    if( s->output_file.error() == SF_ERR_NO_ERROR ) {
+        s->output_file.write(ioOut, bufferSize * 2);
     }
 
     // MODULES -> STATUS

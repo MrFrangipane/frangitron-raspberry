@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
+#include "sndfile.hh"
 #include "../include/rtaudio/RtAudio.h"
 #include "../include/rtmidi/RtMidi.h"
 #include "shared/constants.h"
@@ -40,6 +41,7 @@ struct Shared {
     _AWeighting temp_a_weighting_L;
     _AWeighting temp_a_weighting_R;
     bool midi_note_on[128];
+    SndfileHandle output_file;
 };
 
 

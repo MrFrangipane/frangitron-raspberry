@@ -8,7 +8,7 @@ float _Envelope::value(nFrame time)
 
     if( elapsed > 0.0 && elapsed <= _attack) // Attack
     {
-        return lerp(0.0, 1.0, elapsed / _attack);
+        return lerp(_value_at_gate, 1.0, elapsed / _attack);
     }
     else if( elapsed > _attack && elapsed <= _attack + _decay) // Decay
     {
@@ -24,4 +24,11 @@ float _Envelope::value(nFrame time)
     }
 
     return 0.0;
+}
+
+
+void _Envelope::gate(nFrame time)
+{
+    _last_gate = time;
+    _value_at_gate = value(time);
 }

@@ -3,7 +3,7 @@
 
 KickSynth::KickSynth(const nFrame bufferSize) : AbstractModule(bufferSize)
 {
-    _pitch = 60.0;
+    _pitch = 600.0;
 
     _sidechain_amount = 0.25;
 
