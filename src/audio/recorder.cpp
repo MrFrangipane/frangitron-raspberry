@@ -43,7 +43,7 @@ void Recorder::main_loop(Recorder* recorder)
     SndfileHandle output_file(
         recorder->filepath(),
         SFM_WRITE,
-        SF_FORMAT_WAV | SF_FORMAT_FLOAT,
+        SF_FORMAT_WAV | SF_FORMAT_PCM_16,
         2,
         SAMPLE_RATE
     );
@@ -60,10 +60,10 @@ void Recorder::main_loop(Recorder* recorder)
         {
             for( uint i = 0; i < buffer_size; i++ )
             {
-                cache_index = file_index + i;
+                cache_index = file_index + (i * 2);
 
-                buf[0] = recorder->cache(cache_index * 2);
-                buf[1] = recorder->cache(cache_index * 2 + 1);
+                buf[0] = recorder->cache(cache_index);
+                buf[1] = recorder->cache(cache_index + 1);
 
                 if( output_file.error() == SF_ERR_NO_ERROR )
                     output_file.write(buf, 2);

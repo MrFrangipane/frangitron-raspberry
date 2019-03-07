@@ -8,7 +8,7 @@ ModuleStatus const LevelMeter::status()
 
     status_.params[2].name = "Level";
     status_.params[2].value = _level;
-    status_.params[2].visible = true;
+    status_.params[2].visible = !_is_level_locked;
     status_.params[2].min = -60.0;
     status_.params[2].max = 6.0;
     status_.params[2].step = 1.0;
