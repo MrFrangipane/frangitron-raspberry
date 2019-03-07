@@ -189,22 +189,13 @@ void Engine::start()
         std::cout << error.getMessage() << std::endl;
     }
 
-    // RECORDERS
-    _shared.output_file = SndfileHandle(
-        "/tmp/frangitron_out.wav",
-        SFM_WRITE,
-        SF_FORMAT_WAV | SF_FORMAT_PCM_16,
-        2,
-        SAMPLE_RATE
+    // RECORDER
+    _shared.recorder= new Recorder(
+        _bufferSize,
+        2048,
+        "/tmp/frangitron_out.wav"
     );
-
-    if( _shared.output_file.error() != 0) {
-        std::cout << " Output file " << _shared.output_file.strError() << std::endl;
-    }
-
-    _recorder = new Recorder(_bufferSize * 32);
-    _recorder->setCallback(_recordCallback, &_shared);
-    _recorder->start();
+    _shared.recorder->start(_shared.recorder);
 
     // READY
     _shared.ready = true;
@@ -231,6 +222,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
     // UI STATUS
     UiStatus uiStatus = s->uiGetStatus(s->uiPtr);
+    if( !uiStatus.running ) { // Experimental
+        s->recorder->stop();
+    }
+
     if( uiStatus.selectedModule != -1 ) {
         if( s->uiPreviousFrame != uiStatus.frame ) {
             s->uiPreviousFrame = uiStatus.frame;
@@ -303,17 +298,12 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     masterId = s->audioModules.size() - 1;
-    for( nFrame i = 0; i < bufferSize; i++ ) {
-        ioOut[i * 2] = s->audioModules[masterId]->output()[i * 2];
-        ioOut[i * 2 + 1] = s->audioModules[masterId]->output()[i * 2 + 1];
+    for( nFrame i = 0; i < bufferSize * 2; i++ ) {
+        ioOut[i] = s->audioModules[masterId]->output()[i];
     }
 
-    // OUTPUT FILE
-    /*
-    if( s->output_file.error() == SF_ERR_NO_ERROR ) {
-        s->output_file.write(ioOut, bufferSize * 2);
-    }
-    */
+    // RECORDER
+    s->recorder->write(ioOut);
 
     // MODULES -> STATUS
     moduleId = 0;
@@ -411,21 +401,4 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
             break;
         }
     }
-}
-
-void Engine::_recordCallback(void *userData)
-{
-    Shared* shared = (Shared*)userData;
-    std::cout << "Recorder thread started" << std::endl;
-
-    while( true )
-    {
-        if( !shared->ready || shared->output_file.error() != 0 ) return;
-
-        std::cout << shared->time.engine_frame() << std::endl;
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    }
-
-    std::cout << "Recorder thread stopped" << std::endl;
 }

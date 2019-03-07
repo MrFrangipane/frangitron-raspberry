@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_timerRefresh, SIGNAL(timeout()), this, SLOT(_refresh()));
     _timerRefresh->start(1000 / UI_FRAMERATE);
 
-    connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(ui->exit, SIGNAL(clicked(bool)), this, SLOT(_stop()));
 }
 
 MainWindow::~MainWindow()
@@ -245,4 +245,9 @@ void MainWindow::_refresh()
 
     // TEMP -> MEMBERS
     _uiStatus = uiStatus;
+}
+
+void MainWindow::_stop()
+{
+    _uiStatus.running = false;
 }

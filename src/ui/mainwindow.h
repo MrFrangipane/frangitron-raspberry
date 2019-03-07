@@ -56,6 +56,7 @@ private:
 private slots:
     void _refresh();
     void _selectedChanged();
+    void _stop();
 };
 
 #endif // MAINWINDOW_H

@@ -45,6 +45,7 @@ struct UiStatus {
     float paramIncrements[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
     int selectedModule = -1;
     nFrame frame = 0;
+    bool running = true;
 };
 
 #endif // SHARED_H

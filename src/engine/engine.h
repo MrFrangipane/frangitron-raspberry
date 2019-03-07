@@ -42,7 +42,7 @@ struct Shared {
     _AWeighting temp_a_weighting_L;
     _AWeighting temp_a_weighting_R;
     bool midi_note_on[128];
-    SndfileHandle output_file;
+    Recorder* recorder = nullptr;
 };
 
 
@@ -72,9 +72,6 @@ private:
     static void _midiCallback(
         double deltaTime,
         std::vector<unsigned char> *message,
-        void *userData
-    );
-    static void _recordCallback(
         void *userData
     );
     unsigned int _midiDeviceIndex = 0;
