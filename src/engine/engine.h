@@ -1,7 +1,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <atomic>
 #include <cmath>
 #include <vector>
 #include <memory>
@@ -15,6 +14,7 @@
 #include "shared/typedefs.h"
 #include "shared/masterclock.h"
 #include "midi/encoder.h"
+#include "audio/recorder.h"
 #include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
 #include "audio/filter.h"
@@ -55,8 +55,10 @@ public:
         _shared.uiPtr = uiPtr; _shared.uiGetStatus = getCallback; _shared.uiSetStatus = setCallback;
     }
 private:
+    Shared _shared;
     RtAudio* _audio = nullptr;
     RtMidiIn* _midi = nullptr;
+    Recorder* _recorder = nullptr;
     void _setAudioDeviceIndex();
     void _setMidiDeviceIndex();
     static int _audioCallback(
@@ -72,10 +74,12 @@ private:
         std::vector<unsigned char> *message,
         void *userData
     );
+    static void _recordCallback(
+        void *userData
+    );
     unsigned int _midiDeviceIndex = 0;
     unsigned int _audioDeviceIndex = 0;
     unsigned int _bufferSize = BUFFER_SIZE;
-    Shared _shared;
 };
 
 #endif // ENGINE_H

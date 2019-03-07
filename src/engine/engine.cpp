@@ -189,8 +189,7 @@ void Engine::start()
         std::cout << error.getMessage() << std::endl;
     }
 
-    // OUTPUT FILE
-    /*
+    // RECORDERS
     _shared.output_file = SndfileHandle(
         "/tmp/frangitron_out.wav",
         SFM_WRITE,
@@ -202,7 +201,11 @@ void Engine::start()
     if( _shared.output_file.error() != 0) {
         std::cout << " Output file " << _shared.output_file.strError() << std::endl;
     }
-    */
+
+    _recorder = new Recorder(_bufferSize * 32);
+    _recorder->setCallback(_recordCallback, &_shared);
+    _recorder->start();
+
     // READY
     _shared.ready = true;
 }
@@ -338,6 +341,8 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     int encoder = 0;
     Shared* shared = (Shared*)userData;
 
+    if( !shared->ready ) return;
+
     // DEBUG COUT
 //    unsigned int nBytes = message->size();
 //    for ( unsigned int i=0; i<nBytes; i++ )
@@ -406,4 +411,21 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
             break;
         }
     }
+}
+
+void Engine::_recordCallback(void *userData)
+{
+    Shared* shared = (Shared*)userData;
+    std::cout << "Recorder thread started" << std::endl;
+
+    while( true )
+    {
+        if( !shared->ready || shared->output_file.error() != 0 ) return;
+
+        std::cout << shared->time.engine_frame() << std::endl;
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+
+    std::cout << "Recorder thread stopped" << std::endl;
 }
