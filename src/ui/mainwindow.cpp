@@ -249,5 +249,6 @@ void MainWindow::_refresh()
 
 void MainWindow::_stop()
 {
-    _uiStatus.running = false;
+    _engineWorker->stop();
+    close();
 }

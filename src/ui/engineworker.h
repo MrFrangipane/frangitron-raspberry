@@ -12,6 +12,7 @@ public:
     void setStatusCallbacks(void * uiPtr, GetStatusCallback callbackGet, SetStatusCallback callbackSet) {
         _engine.setUiCallbacks(uiPtr, callbackGet, callbackSet);
     }
+    void stop() { _engine.stop(); }
 private:
     Engine _engine;
 

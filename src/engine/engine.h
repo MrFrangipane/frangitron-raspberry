@@ -7,6 +7,8 @@
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
+#include <iomanip>
+#include <ctime>
 #include "sndfile.hh"
 #include "../include/rtaudio/RtAudio.h"
 #include "../include/rtmidi/RtMidi.h"
@@ -51,6 +53,7 @@ class Engine
 public:
     Engine() { }
     void start();
+    void stop();
     void setUiCallbacks(void * uiPtr, GetStatusCallback getCallback, SetStatusCallback setCallback) {
         _shared.uiPtr = uiPtr; _shared.uiGetStatus = getCallback; _shared.uiSetStatus = setCallback;
     }

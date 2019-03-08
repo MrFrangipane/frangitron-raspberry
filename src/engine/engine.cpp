@@ -190,15 +190,41 @@ void Engine::start()
     }
 
     // RECORDER
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "/var/frangitron/frangitron_%d-%m-%Y_%H.%M.%S.wav");
+    auto filepath = oss.str();
+
     _shared.recorder= new Recorder(
         _bufferSize,
-        2048,
-        "/tmp/frangitron_out.wav"
+        RECORDER_CACHE_BUFFER_COUNT,
+        filepath
     );
     _shared.recorder->start(_shared.recorder);
 
     // READY
     _shared.ready = true;
+}
+
+void Engine::stop() {
+    // READY
+    _shared.ready = false;
+
+    // RECORDER
+    _shared.recorder->stop();
+
+    // AUDIO
+    try {
+      _audio->stopStream();
+    }
+    catch (RtAudioError& e) {
+      e.printMessage();
+    }
+    if ( _audio->isStreamOpen() ) _audio->closeStream();
+
+    // MIDI
+    delete _midi;
 }
 
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
@@ -222,10 +248,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
     // UI STATUS
     UiStatus uiStatus = s->uiGetStatus(s->uiPtr);
-    if( !uiStatus.running ) { // Experimental
-        s->recorder->stop();
-    }
-
+    // Selected Module
     if( uiStatus.selectedModule != -1 ) {
         if( s->uiPreviousFrame != uiStatus.frame ) {
             s->uiPreviousFrame = uiStatus.frame;
