@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../images.qrc">
+   <iconset>
     <normaloff>:/splash.png</normaloff>:/splash.png</iconset>
   </property>
   <property name="windowOpacity">
@@ -27,11 +27,11 @@
 
 QWidget {
 	color: white;
-	background-color: rgb(23, 23, 23);
+	background-color: black;
 }
 
-*#MainWindow {
-	background-image: url(':/splash.png');
+QWidget#MainWindow {;	
+	background-image: url(':/images/splash.png');
 }
 
 QLabel[style=encoderName] {
@@ -400,8 +400,6 @@ border: 0px;</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
