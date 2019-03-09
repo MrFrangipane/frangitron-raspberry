@@ -4,6 +4,11 @@
 #include <string>
 #include "shared/typedefs.h"
 
+// CONFIGURATION
+struct Configuration {
+    std::string wav_files[128];
+};
+
 // SHARED
 struct EncoderStatus {
     bool pressed = false;

@@ -25,6 +25,6 @@
 #define UI_MIN_CONTENT_SIZE 40
 #define UI_LEVEL_HANDLE_SIZE 10
 #define UI_LEVEL_MAGIC_COEFF 0.0045
-#define UI_ASPECT_RATIO 0.95 // Official RaspberryPi touchscreen
+#define UI_ASPECT_RATIO 0.95 // 800x480 as 16:9
 
 #endif // CONSTANTS_H

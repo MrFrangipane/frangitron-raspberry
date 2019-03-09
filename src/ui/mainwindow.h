@@ -22,8 +22,12 @@
 
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
+
+
+//Configuration load_configuration();
+
 
 class MainWindow : public QWidget
 {
@@ -32,6 +36,7 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void loadPatch();
     static UiStatus callbackGetStatus(void * thisPtr);
     static void callbackSetStatus(void * thisPtr, EngineStatus status);
     UiStatus getStatus();

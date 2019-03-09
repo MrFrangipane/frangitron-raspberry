@@ -82,6 +82,8 @@ HEADERS += \
     audio/_envelope.h \
     audio/recorder.h
 
+RESOURCES += \
+    images.qrc
 
 FORMS += \
     ui/mainwindow.ui

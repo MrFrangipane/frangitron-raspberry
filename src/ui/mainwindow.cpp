@@ -40,7 +40,7 @@ void MainWindow::_setupUi()
     // HACKY POTTER (Sliders for dev mode) ---
     ui->widgetDevMode->setVisible(false);
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
-        ui->widgetDevMode->setVisible(true);
+        //ui->widgetDevMode->setVisible(true);
         resize(width(), height() + 200);
     } // -------------------------------------
 
@@ -62,7 +62,9 @@ void MainWindow::_setupUi()
     _sliders.push_back(ui->sliderEnc3);
     _sliders.push_back(ui->sliderEnc4);
     _sliders.push_back(ui->sliderEnc5);
+}
 
+void MainWindow::loadPatch() {
     // IN
     _modules << new LevelMeterWidget();
     connect(_modules[0], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
