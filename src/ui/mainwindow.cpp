@@ -37,7 +37,7 @@ void MainWindow::_setupUi()
 {
     ui->setupUi(this);
     ui->patch->setVisible(false);
-    ui->loading->setVisible(false);
+    ui->loading->setVisible(true);
     ui->devMode->setVisible(false);
     resize(800, 480);
     show();
@@ -71,9 +71,8 @@ void MainWindow::_setupUi()
     _loadPatch();
 }
 
-void MainWindow::_loadSamples() {
-    ui->loading->setVisible(true);
-
+void MainWindow::_loadSamples()
+{
     for( int i = 0; i <= 100; i++ ) {
         ui->progress->setValue(i);
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
