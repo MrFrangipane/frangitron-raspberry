@@ -37,24 +37,60 @@ int main(int argc, char *argv[])
     configuration->modules[2].layout.row = 1;
     configuration->modules[2].layout.col = 1;
 
-    configuration->modules[3].name = "KICK";
+    configuration->modules[3].name = "KICK 1";
     configuration->modules[3].type = "kickSynth";
     configuration->modules[3].wireIndex = 2;
+    configuration->modules[3].midiNote = 36;
     configuration->modules[3].layout.row = 0;
     configuration->modules[3].layout.col = 2;
 
-    configuration->modules[4].type = "dummy";
+    configuration->modules[4].name = "KICK 2";
+    configuration->modules[4].type = "kickSynth";
+    configuration->modules[4].wireIndex = 3;
+    configuration->modules[4].midiNote = 38;
     configuration->modules[4].layout.row = 0;
     configuration->modules[4].layout.col = 3;
-    configuration->modules[4].layout.colStretch = 100;
 
-    configuration->modules[5].name = "OUT";
-    configuration->modules[5].type = "levelMeter";
-    configuration->modules[5].wireIndex = 3;
+    configuration->modules[5].name = "KICK 3";
+    configuration->modules[5].type = "kickSynth";
+    configuration->modules[5].wireIndex = 4;
+    configuration->modules[5].midiNote = 40;
     configuration->modules[5].layout.row = 0;
     configuration->modules[5].layout.col = 4;
-    configuration->modules[5].layout.rowSpan = 3;
-    configuration->modules[5].layout.colSpan = 1;
+
+    configuration->modules[6].name = "KICK 4";
+    configuration->modules[6].type = "kickSynth";
+    configuration->modules[6].wireIndex = 5;
+    configuration->modules[6].midiNote = 41;
+    configuration->modules[6].layout.row = 0;
+    configuration->modules[6].layout.col = 5;
+
+    configuration->modules[7].name = "KICK 5";
+    configuration->modules[7].type = "kickSynth";
+    configuration->modules[7].wireIndex = 6;
+    configuration->modules[7].midiNote = 43;
+    configuration->modules[7].layout.row = 0;
+    configuration->modules[7].layout.col = 6;
+
+    configuration->modules[8].name = "KICK 6";
+    configuration->modules[8].type = "kickSynth";
+    configuration->modules[8].wireIndex = 7;
+    configuration->modules[8].midiNote = 45;
+    configuration->modules[8].layout.row = 0;
+    configuration->modules[8].layout.col = 7;
+
+    configuration->modules[9].type = "dummy";
+    configuration->modules[9].layout.row = 0;
+    configuration->modules[9].layout.col = 8;
+    configuration->modules[9].layout.colStretch = 100;
+
+    configuration->modules[10].name = "OUT";
+    configuration->modules[10].type = "levelMeter";
+    configuration->modules[10].wireIndex = 8;
+    configuration->modules[10].layout.row = 0;
+    configuration->modules[10].layout.col = 9;
+    configuration->modules[10].layout.rowSpan = 3;
+    configuration->modules[10].layout.colSpan = 1;
 
     // APPLICATION
     QThread::currentThread()->setObjectName("FrangUi");

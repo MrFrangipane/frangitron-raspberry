@@ -27,6 +27,7 @@ struct ModuleConfig
     std::string name = "Module";
     std::string type = "unknown";
     int wireIndex = -1;
+    int midiNote = -1;
     ModuleConfigOverride overrides[MODULE_PARAM_COUNT];
     ModuleLayout layout;
 };

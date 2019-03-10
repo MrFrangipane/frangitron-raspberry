@@ -123,14 +123,18 @@ void Engine::start()
         else continue;
 
         // WIRE
-        _shared.audioWires.push_back(_configuration->modules[module].wireIndex);
+        _shared.audioWires.push_back(_configuration->modules[configModule].wireIndex);
+
+        // REGISTER MIDI NOTE
+        if( _configuration->modules[configModule].midiNote != -1 )
+            _shared.registeredNotes.push_back(RegisteredNote(_configuration->modules[configModule].midiNote, module));
 
         // STATUS & OVERRIDES
         _shared.status.modules[module] = _shared.audioModules[module]->status();
         for( int override_ = 0; override_ < MODULE_PARAM_COUNT; override_ ++ )
         {
-            if( _configuration->modules[module].overrides[override_].active )
-                _shared.status.modules[module].params[override_].value = _configuration->modules[module].overrides[override_].value;
+            if( _configuration->modules[configModule].overrides[override_].active )
+                _shared.status.modules[module].params[override_].value = _configuration->modules[configModule].overrides[override_].value;
         }
 
         module++;
@@ -274,9 +278,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         return 0;
     }
 
-    // UI STATUS
+    // FROM UI
     UiStatus uiStatus = s->uiGetStatus(s->uiPtr);
-    // Selected Module
+
+    // SELECTED MODULE
     if( uiStatus.selectedModule != -1 ) {
         if( s->uiPreviousFrame != uiStatus.frame ) {
             s->uiPreviousFrame = uiStatus.frame;
@@ -295,7 +300,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
             }
         }
 
-    // ENCODERS
+        // ENCODERS
         for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
 
             s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
@@ -324,14 +329,15 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // NOTE ON
-    for( int note = 0; note < MIDI_NOTE_COUNT; note++ ) {
-        if( s->midi_note_on[36] ) {
-            s->midi_note_on[36] = false;
-
-            masterId = s->audioModules.size() - 2; // hacky gate the kick
-            s->audioModules[masterId]->gate(s->time.engine_frame());
+    for( RegisteredNote note : s->registeredNotes ) {
+        if( s->midi_note_on[note.noteNumber] )
+        {
+            s->audioModules[note.moduleIndex]->gate(s->time.engine_frame());
         }
     }
+    // NOTE OFF
+    for( RegisteredNote note : s->registeredNotes )
+        s->midi_note_on[note.noteNumber] = false;
 
     // PROCESS
     moduleId = 0;
@@ -363,7 +369,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
 
-    // STATUS -> UI
+    // TO UI
     s->status.clock.bar = s->time.bar();
     s->status.clock.seconds = s->time.seconds();
     s->status.clock.sequence_step = s->time.sequence_step();
@@ -384,7 +390,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
 
     if( shared->status.state != EngineStatus::RUNNING ) return;
 
-    // DEBUG COUT
+//     DEBUG COUT
 //    unsigned int nBytes = message->size();
 //    for ( unsigned int i=0; i<nBytes; i++ )
 //      std::cout << "Byte " << i << " = " << (int)message->at(i) << ", " << std::endl;

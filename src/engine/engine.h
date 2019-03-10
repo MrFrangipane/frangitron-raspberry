@@ -32,11 +32,22 @@ typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 
+struct RegisteredNote {
+    RegisteredNote(const int note, const int module) :
+        noteNumber(note),
+        moduleIndex(module) { }
+
+    const int noteNumber;
+    const int moduleIndex;
+};
+
+
 struct Shared {
     MasterClock time;
     std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;
     std::vector<int> audioWires;
+    std::vector<RegisteredNote> registeredNotes;
     void* uiPtr;
     GetStatusCallback uiGetStatus;
     SetStatusCallback uiSetStatus;
