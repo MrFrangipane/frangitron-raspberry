@@ -287,6 +287,7 @@ void MainWindow::_refresh()
 
 void MainWindow::_stop()
 {
+    _timerRefresh->stop();
     _engineWorker->stop();
     close();
 }

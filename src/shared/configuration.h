@@ -3,16 +3,17 @@
 
 
 #include <string>
+#include "shared/typedefs.h"
 #include "shared/constants.h"
 
 
-struct ModuleConfigOverride {
+struct ConfModuleParamOverride {
     bool active = false;
     float value = 0;
 };
 
 
-struct ModuleLayout {
+struct ConfModuleLayout {
     int row = 0;
     int col = 0;
     int rowSpan = 1;
@@ -22,20 +23,36 @@ struct ModuleLayout {
 };
 
 
-struct ModuleConfig
+struct ConfModule
 {
     std::string name = "Module";
     std::string type = "unknown";
     int wireIndex = -1;
     int midiNote = -1;
-    ModuleConfigOverride overrides[MODULE_PARAM_COUNT];
-    ModuleLayout layout;
+    ConfModuleParamOverride overrides[MODULE_PARAM_COUNT];
+    ConfModuleLayout layout;
+};
+
+
+struct ConfAudioClip
+{
+    std::string name = "unknown";
+    std::string filepath = "";
+    int channelCount = 1;
+    nFrame frameCount = 0;
 };
 
 
 struct Configuration
 {
-    ModuleConfig modules[MODULE_MAX_COUNT];
+    ConfModule modules[MODULE_MAX_COUNT];
+    ConfAudioClip audioClips[AUDIOCLIP_MAX_COUNT];
 };
+
+
+void initModules(Configuration* conf);
+void initSamples(Configuration* conf);
+void initConfig(Configuration* conf);
+
 
 #endif // CONFIGURATION_H

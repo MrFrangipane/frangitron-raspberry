@@ -42,12 +42,23 @@ struct RegisteredNote {
 };
 
 
+struct RegisteredAudioClip{
+    int channelCount = 0;
+    nFrame frameCount = 0;
+    nSample startSample = 0;
+    std::string filepath = "";
+    Sample *startPointer = nullptr;
+};
+
+
 struct Shared {
     MasterClock time;
     std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;
     std::vector<int> audioWires;
     std::vector<RegisteredNote> registeredNotes;
+    std::vector<RegisteredAudioClip> registeredAudioClips;
+    std::vector<Sample> audioClips;
     void* uiPtr;
     GetStatusCallback uiGetStatus;
     SetStatusCallback uiSetStatus;

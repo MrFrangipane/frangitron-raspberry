@@ -212,12 +212,61 @@ void Engine::start()
     }
 
     // AUDIO FILES
-    for( int i = 0; i <= 100; i++ )
+    nFrame framesToLoad = 0;
+    nSample samplesToLoad = 0;
+    for( int configIndex = 0; configIndex < AUDIOCLIP_MAX_COUNT; configIndex++ )
     {
-        _shared.status.loading_progress = i;
-        _shared.uiSetStatus(_shared.uiPtr, _shared.status);
+        if( _configuration->audioClips[configIndex].frameCount == 0 ) // Exit at first empty clip
+            break;
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        RegisteredAudioClip registration;
+        registration.frameCount = _configuration->audioClips[configIndex].frameCount;
+        registration.channelCount = _configuration->audioClips[configIndex].channelCount;
+        registration.filepath = _configuration->audioClips[configIndex].filepath;
+
+        _shared.registeredAudioClips.push_back(registration);
+        framesToLoad += registration.frameCount;
+        samplesToLoad += registration.frameCount * registration.channelCount;
+    }
+
+    int registrationIndex = 0;
+    nFrame framesLoaded = 0;
+    nSample samplesLoaded = 0;
+    _shared.audioClips.resize(samplesToLoad);
+
+    for( RegisteredAudioClip registration : _shared.registeredAudioClips )
+    {
+        SndfileHandle f_clip = SndfileHandle(registration.filepath);
+
+        if( f_clip.frames() != registration.frameCount )
+        {
+            std::cout << registration.filepath << " is not the expected file !" << std::endl;
+            framesLoaded += registration.frameCount;
+            samplesLoaded += registration.frameCount * registration.channelCount;
+        }
+        else
+        {
+            // store pointer
+            registration.startPointer = (Sample*)(_shared.audioClips.data() + samplesLoaded);
+            registration.startSample = samplesLoaded;
+
+            // Fill RAM
+            for( int _ = 0; _ < registration.frameCount; _++ )
+            {
+                f_clip.read((Sample*)(_shared.audioClips.data() + samplesLoaded), registration.channelCount);
+
+                // Ui
+                framesLoaded ++;
+                samplesLoaded += registration.channelCount;
+                _shared.status.loading_progress = (samplesLoaded * 100) / samplesToLoad;
+                _shared.uiSetStatus(_shared.uiPtr, _shared.status);
+            }
+
+            std::cout << "Loaded " << registration.filepath << std::endl;
+
+            _shared.registeredAudioClips[registrationIndex] = registration;
+            registrationIndex++;
+        }
     }
 
     // RECORDER
@@ -354,10 +403,22 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
 
+    /*
     masterId = s->audioModules.size() - 1;
     for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
         ioOut[i] = s->audioModules[masterId]->output()[i];
+    }*/
+
+    // SAMPLE BANK EXPERIMENT ---
+    nSample posS = 0;
+    int sample = std::min((int)s->status.modules[2].params[2].value - 1, 3);
+    nFrame posF = s->time.engine_frame() % (s->registeredAudioClips[sample].frameCount);
+
+    for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
+        posS = (posF * CHANNEL_COUNT + i) % (s->registeredAudioClips[sample].frameCount * CHANNEL_COUNT);
+        ioOut[i] = s->audioClips.at(s->registeredAudioClips[sample].startSample + posS);
     }
+    // --------------------------
 
     // RECORDER
     s->recorder->write(ioOut);

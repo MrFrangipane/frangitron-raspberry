@@ -48,7 +48,8 @@ SOURCES += \
     audio/kicksynth.cpp \
     ui/kickwidget.cpp \
     audio/_envelope.cpp \
-    audio/recorder.cpp
+    audio/recorder.cpp \
+    shared/configuration.cpp
 
 
 HEADERS += \
