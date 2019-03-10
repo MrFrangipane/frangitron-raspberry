@@ -90,10 +90,16 @@ void Engine::_setMidiDeviceIndex()
 
 void Engine::start()
 {
-    // HACKY POTTER (to work with Fireface UCX) ---
+    // WAIT FOR CALLBACK SETTING
+    while ( _shared.uiPtr == nullptr ) { }
+
+    // STATE <- LOADING
+    _shared.status.state = EngineStatus::LOADING;
+
+    // HACKY POTTER (Fireface UCX in ClassCompilant mode on Ubuntu) ---
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
         _bufferSize = 60;
-    } // ------------------------------------------
+    } // --------------------------------------------------------------
 
     // MODULES
     // INPUT
@@ -189,6 +195,15 @@ void Engine::start()
         std::cout << error.getMessage() << std::endl;
     }
 
+    // AUDIO FILES
+    for( int i = 0; i <= 100; i++ )
+    {
+        _shared.status.loading_progress = i;
+        _shared.uiSetStatus(_shared.uiPtr, _shared.status);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    }
+
     // RECORDER
     auto t = std::time(nullptr);
     auto tm = *std::localtime(&t);
@@ -203,13 +218,13 @@ void Engine::start()
     );
     _shared.recorder->start(_shared.recorder);
 
-    // READY
-    _shared.ready = true;
+    // STATE <- RUNNING
+    _shared.status.state = EngineStatus::RUNNING;
 }
 
 void Engine::stop() {
-    // READY
-    _shared.ready = false;
+    // STATE
+    _shared.status.state = EngineStatus::STOPPED;
 
     // RECORDER
     _shared.recorder->stop();
@@ -237,8 +252,9 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     Sample *ioOut = (Sample*)bufferOut;
     Shared* s = (Shared*)userData;
 
-    // READY ?
-    if( !s->ready ){
+    // RUNNING ?
+    if( s->status.state != EngineStatus::RUNNING )
+    {
         for( nFrame i = 0; i < bufferSize * 2; i++ ) {
             ioOut[i] = 0.0;
         }
@@ -354,7 +370,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     int encoder = 0;
     Shared* shared = (Shared*)userData;
 
-    if( !shared->ready ) return;
+    if( !shared->status.state != EngineStatus::RUNNING ) return;
 
     // DEBUG COUT
 //    unsigned int nBytes = message->size();

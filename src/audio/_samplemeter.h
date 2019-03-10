@@ -8,8 +8,8 @@
 
 
 struct _SampleMeterStatus {
-    float average = 0.0;
-    float instant = 0.0;
+    float average = -60.0;
+    float instant = -60.0;
 };
 
 class _SampleMeter

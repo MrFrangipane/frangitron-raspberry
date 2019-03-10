@@ -4,11 +4,6 @@
 #include <string>
 #include "shared/typedefs.h"
 
-// CONFIGURATION
-struct Configuration {
-    std::string wav_files[128];
-};
-
 // SHARED
 struct EncoderStatus {
     bool pressed = false;
@@ -26,8 +21,8 @@ struct ModuleParameter {
 struct ModuleStatus {
     bool empty = true;
     ModuleParameter params[16];
-    float levelOut;
-    bool is_clipping;
+    float levelOut = -60.0;
+    bool is_clipping = false;
 };
 
 struct ClockStatus {
@@ -39,6 +34,15 @@ struct ClockStatus {
 
 // ENGINE
 struct EngineStatus {
+    enum State {
+        IDLE = 0,
+        LOADING,
+        RUNNING,
+        STOPPED,
+        nActivities
+    };
+    int loading_progress = 0;
+    State state = IDLE;
     ModuleStatus modules[16];
     int selectedModule = -1;
     EncoderStatus encoders[5];

@@ -14,6 +14,7 @@
 #include "../include/rtmidi/RtMidi.h"
 #include "shared/constants.h"
 #include "shared/typedefs.h"
+#include "shared/structures.h"
 #include "shared/masterclock.h"
 #include "midi/encoder.h"
 #include "audio/recorder.h"
@@ -29,7 +30,6 @@ typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 
 struct Shared {
-    bool ready = false;
     MasterClock time;
     std::vector<std::shared_ptr<AbstractModule>> audioModules;
     EngineStatus status;

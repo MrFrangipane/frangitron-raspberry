@@ -1,8 +1,10 @@
 #include "assert.h"
 #include "ui/mainwindow.h"
+#include "ui/engineworker.h"
+#include "engine/engine.h"
+#include <QObject>
 #include <QApplication>
-#include <QStyle>
-#include <QStyleFactory>
+#include <QThread>
 
 
 int main(int argc, char *argv[])
@@ -11,11 +13,28 @@ int main(int argc, char *argv[])
     assert(sizeof(float) * 8 == 32);
     assert(sizeof(double) * 8 == 64);
 
-    // Main
-    QApplication a(argc, argv);
-    QApplication::setStyle(QStyleFactory::create("Fusion"));
+    // PARSE CONFIG
+    Configuration *configuration = new Configuration();
 
-    MainWindow w;
+    // APPLICATION
+    QThread::currentThread()->setObjectName("FrangUi");
+    QApplication a(argc, argv);
+
+    // ENGINE THREAD
+    QThread* engineThread = new QThread();
+    engineThread->setObjectName("FrangAudioMidi");
+    EngineWorker* engineWorker = new EngineWorker();
+    engineWorker->moveToThread(engineThread);
+
+    QObject::connect(engineThread, SIGNAL(started()), engineWorker, SLOT(process()));
+    QObject::connect(engineWorker, SIGNAL(finished()), engineThread, SLOT(quit()));
+    QObject::connect(engineWorker, SIGNAL(finished()), engineWorker, SLOT(deleteLater()));
+    QObject::connect(engineWorker, SIGNAL(finished()), engineThread, SLOT(deleteLater()));
+
+    engineThread->start();
+
+    // UI
+    MainWindow w(configuration, engineWorker);
     w.show();
 
     return a.exec();

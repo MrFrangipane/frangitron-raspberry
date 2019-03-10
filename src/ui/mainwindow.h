@@ -6,12 +6,13 @@
 #include <QLabel>
 #include <QSlider>
 #include <QWidget>
-#include <QThread>
 #include <QString>
 #include <QTimer>
 #include <QTime>
+#include <QThread>
 #include "../include/nlohmann/json.hpp"
 #include "shared/structures.h"
+#include "shared/configuration.h"
 #include "engine/engine.h"
 #include "ui/engineworker.h"
 #include "ui/abstractwidget.h"
@@ -34,7 +35,7 @@ class MainWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(const Configuration *configuration, EngineWorker *engineWorker, QWidget *parent = 0);
     ~MainWindow();
     static UiStatus callbackGetStatus(void * thisPtr);
     static void callbackSetStatus(void * thisPtr, EngineStatus status);
@@ -44,11 +45,10 @@ public:
 private:
     void _setupUi();
     void _loadPatch();
-    void _loadSamples();
     Ui::MainWindow *ui;
-    QThread* _engineThread = nullptr;
-    EngineWorker* _engineWorker = nullptr;
-    QTimer* _timerRefresh = nullptr;
+    const Configuration *_configuration;
+    EngineWorker *_engineWorker = nullptr;
+    QTimer *_timerRefresh = nullptr;
     bool _started = false;
     EngineStatus _engineStatus;
     UiStatus _uiStatus;

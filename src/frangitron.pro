@@ -80,7 +80,8 @@ HEADERS += \
     audio/kicksynth.h \
     ui/kickwidget.h \
     audio/_envelope.h \
-    audio/recorder.h
+    audio/recorder.h \
+    shared/configuration.h
 
 RESOURCES += \
     images.qrc
