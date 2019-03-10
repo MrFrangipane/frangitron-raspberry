@@ -372,7 +372,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     int encoder = 0;
     Shared* shared = (Shared*)userData;
 
-    if( !shared->status.state != EngineStatus::RUNNING ) return;
+    if( shared->status.state != EngineStatus::RUNNING ) return;
 
     // DEBUG COUT
 //    unsigned int nBytes = message->size();
