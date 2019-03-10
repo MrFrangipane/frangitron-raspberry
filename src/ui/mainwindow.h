@@ -36,13 +36,15 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void loadPatch();
     static UiStatus callbackGetStatus(void * thisPtr);
     static void callbackSetStatus(void * thisPtr, EngineStatus status);
     UiStatus getStatus();
     void setEngineStatus(EngineStatus status);
 
 private:
+    void _setupUi();
+    void _loadPatch();
+    void _loadSamples();
     Ui::MainWindow *ui;
     QThread* _engineThread = nullptr;
     EngineWorker* _engineWorker = nullptr;
@@ -55,7 +57,6 @@ private:
     QList<QLabel*> _valueLabels;
     QList<QSlider*> _sliders;
     float _previousValues[5] = {0, 0, 0, 0, 0};
-    void _setupUi();
     std::atomic<bool> _statusLocked{false};
 
 private slots:

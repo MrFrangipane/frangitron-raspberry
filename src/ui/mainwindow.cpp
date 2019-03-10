@@ -40,11 +40,11 @@ void MainWindow::_setupUi()
     ui->loading->setVisible(false);
     ui->devMode->setVisible(false);
     resize(800, 480);
+    show();
 
     // HACKY POTTER (Sliders for dev mode) ---
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
         ui->devMode->setVisible(true);
-        resize(width(), height() + 200);
     } // -------------------------------------
 
     // INIT WIDGET LISTS
@@ -66,11 +66,24 @@ void MainWindow::_setupUi()
     _sliders.push_back(ui->sliderEnc4);
     _sliders.push_back(ui->sliderEnc5);
 
-    ui->loading->setVisible(true);
-    //loadPatch();
+    // LOADING
+    _loadSamples();
+    _loadPatch();
 }
 
-void MainWindow::loadPatch() {
+void MainWindow::_loadSamples() {
+    ui->loading->setVisible(true);
+
+    for( int i = 0; i <= 100; i++ ) {
+        ui->progress->setValue(i);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        QApplication::processEvents();
+    }
+
+    ui->loading->setVisible(false);
+}
+
+void MainWindow::_loadPatch() {
     // IN
     _modules << new LevelMeterWidget();
     connect(_modules[0], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
@@ -110,7 +123,6 @@ void MainWindow::loadPatch() {
     ui->layoutPatch->setRowStretch(ui->layoutPatch->rowCount() - 1, 10);
 
     // Show
-    ui->loading->setVisible(false);
     ui->patch->setVisible(true);
 }
 
