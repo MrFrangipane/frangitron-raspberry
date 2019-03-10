@@ -41,7 +41,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     QSize minimumSizeHint() const;
     virtual void paint_(QRect /*rect*/) { }
-    QString _parameterFormats[5] = {"%1", "%1", "%1", "%1", "%1"};
+    QString _parameterFormats[MIDI_ENCODER_COUNT] = {"%1", "%1", "%1", "%1", "%1"};
     QColor _darkGrey = QColor(60, 60, 60);
 
 signals:

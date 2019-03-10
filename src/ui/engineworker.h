@@ -3,12 +3,16 @@
 
 #include <QObject>
 #include "engine/engine.h"
+#include "shared/configuration.h"
 
 class EngineWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit EngineWorker(QObject *parent = nullptr) : QObject(parent) {}
+    explicit EngineWorker(const Configuration *configuration, QObject *parent = nullptr) :
+        QObject(parent),
+        _engine(configuration)
+        { }
     void setStatusCallbacks(void * uiPtr, GetStatusCallback callbackGet, SetStatusCallback callbackSet) {
         _engine.setUiCallbacks(uiPtr, callbackGet, callbackSet);
     }

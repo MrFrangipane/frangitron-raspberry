@@ -62,46 +62,68 @@ void MainWindow::_setupUi()
 }
 
 
-void MainWindow::_loadPatch() {
-    // IN
-    _modules << new LevelMeterWidget();
-    connect(_modules[0], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    _modules[0]->setProperty("displayName", "IN");
-    ui->layoutPatch->addWidget(_modules[0], 0, 0, 3, 1);
+void MainWindow::_loadPatch()
+{
+    // MODULES
+    int module = 0;
+    for( int configModule = 0; configModule < MODULE_MAX_COUNT; configModule++ )
+    {
+        // TYPE
+        if( _configuration->modules[configModule].type == std::string("levelMeter") )
+            _modules << new LevelMeterWidget();
 
-    // IN FILTER
-    _modules <<  new FilterWidget();
-    connect(_modules[1], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    _modules[1]->setProperty("displayName", "IN FILTER");
-    ui->layoutPatch->addWidget(_modules[1], 0, 1);
+        else if( _configuration->modules[configModule].type == std::string("filter") )
+            _modules <<  new FilterWidget();
 
-    // IN COMP
-    _modules << new CompWidget();
-    connect(_modules[2], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    _modules[2]->setProperty("displayName", "IN COMP");
-    ui->layoutPatch->addWidget(_modules[2], 1, 1);
+        else if( _configuration->modules[configModule].type == std::string("compressor") )
+            _modules << new CompWidget();
 
-    // KICK
-    _modules << new KickWidget();
-    connect(_modules[3], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    _modules[3]->setProperty("displayName", "KICK");
-    ui->layoutPatch->addWidget(_modules[3], 0, 2);
+        else if( _configuration->modules[configModule].type == std::string("kickSynth") )
+            _modules << new KickWidget();
 
-    // BEFORE MASTER STRETCH
-    ui->layoutPatch->addWidget(new QWidget(), 0, 3);
-    ui->layoutPatch->setColumnStretch(3, 10);
+        // DUMMY
+        else if( _configuration->modules[configModule].type == std::string("dummy") )
+        {
+            ui->layoutPatch->addWidget(
+                new QWidget(),
+                _configuration->modules[configModule].layout.row,
+                _configuration->modules[configModule].layout.col,
+                _configuration->modules[configModule].layout.rowSpan,
+                _configuration->modules[configModule].layout.colSpan
+            );
 
-    // MASTER
-    _modules << new LevelMeterWidget();
-    connect(_modules[4], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-    _modules[4]->setProperty("displayName", "OUT");
-    ui->layoutPatch->addWidget(_modules[4], 0, 4, 3, 1);
+            if( _configuration->modules[configModule].layout.colStretch != -1 )
+                ui->layoutPatch->setColumnStretch(
+                    _configuration->modules[configModule].layout.col,
+                    _configuration->modules[configModule].layout.colStretch
+                );
 
-    // HACK STRETCH
-    ui->layoutPatch->addWidget(new QWidget(), 2, ui->layoutPatch->rowCount() - 1);
-    ui->layoutPatch->setRowStretch(ui->layoutPatch->rowCount() - 1, 10);
+            if( _configuration->modules[configModule].layout.rowStretch != -1 )
+                ui->layoutPatch->setRowStretch(
+                    _configuration->modules[configModule].layout.row,
+                    _configuration->modules[configModule].layout.rowStretch
+                );
 
-    // Show
+            continue;
+        }
+
+        else continue;
+
+        // WIDGET
+        connect(_modules[module], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
+        _modules[module]->setProperty("displayName", QString::fromStdString(_configuration->modules[configModule].name));
+        ui->layoutPatch->addWidget(
+            _modules[module],
+            _configuration->modules[configModule].layout.row,
+            _configuration->modules[configModule].layout.col,
+            _configuration->modules[configModule].layout.rowSpan,
+            _configuration->modules[configModule].layout.colSpan
+        );
+
+        module++;
+    }
+
+    // SHOW PATCH
     ui->patch->setVisible(true);
 }
 
@@ -177,7 +199,7 @@ void MainWindow::_refresh()
             // NO SELECTION
             uiStatus.selectedModule = -1;
 
-            for( int paramId = 0; paramId < 5; paramId++ ) {
+            for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
                 _nameLabels[paramId]->setText("");
 
                 _valueLabels[paramId]->setText("");
@@ -196,7 +218,7 @@ void MainWindow::_refresh()
             if ( selectedModule != uiStatus.selectedModule ) {
                 uiStatus.selectedModule = selectedModule;
 
-                for( int paramId = 0; paramId < 5; paramId++ ) {
+                for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
                     if( engineStatus.modules[selectedModule].params[paramId].visible )
                     {
                         text = QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name);
@@ -226,7 +248,7 @@ void MainWindow::_refresh()
                 }
             }
             // UPDATE STATUS
-            for( int paramId = 0; paramId < 5; paramId++ ) {
+            for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
                 if( !engineStatus.modules[selectedModule].params[paramId].visible ) continue;
 
                 // ENGINE -> UI

@@ -3,6 +3,7 @@
 
 #include <string>
 #include "shared/typedefs.h"
+#include "shared/constants.h"
 
 // SHARED
 struct EncoderStatus {
@@ -20,7 +21,7 @@ struct ModuleParameter {
 
 struct ModuleStatus {
     bool empty = true;
-    ModuleParameter params[16];
+    ModuleParameter params[MODULE_PARAM_COUNT];
     float levelOut = -60.0;
     bool is_clipping = false;
 };
@@ -43,15 +44,15 @@ struct EngineStatus {
     };
     int loading_progress = 0;
     State state = IDLE;
-    ModuleStatus modules[16];
+    ModuleStatus modules[MODULE_MAX_COUNT];
     int selectedModule = -1;
-    EncoderStatus encoders[5];
+    EncoderStatus encoders[MIDI_ENCODER_COUNT];
     ClockStatus clock;
 };
 
 // UI
 struct UiStatus {
-    float paramIncrements[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    float paramIncrements[MIDI_ENCODER_COUNT] = {0.0, 0.0, 0.0, 0.0, 0.0};
     int selectedModule = -1;
     nFrame frame = 0;
     bool running = true;

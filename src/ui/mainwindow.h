@@ -11,6 +11,7 @@
 #include <QTime>
 #include <QThread>
 #include "../include/nlohmann/json.hpp"
+#include "shared/constants.h"
 #include "shared/structures.h"
 #include "shared/configuration.h"
 #include "engine/engine.h"
@@ -56,7 +57,7 @@ private:
     QList<QLabel*> _nameLabels;
     QList<QLabel*> _valueLabels;
     QList<QSlider*> _sliders;
-    float _previousValues[5] = {0, 0, 0, 0, 0};
+    float _previousValues[MIDI_ENCODER_COUNT] = {0, 0, 0, 0, 0};
     std::atomic<bool> _statusLocked{false};
 
 private slots:

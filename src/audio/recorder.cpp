@@ -36,7 +36,7 @@ void Recorder::main_loop(Recorder* recorder)
     nFrame cache_index = 0;
     nFrame buffer_size = recorder->buffer_size();
     Sample buf[2];
-    int sleep_duration = SECOND_PER_SAMPLE * buffer_size * 500;
+    int sleep_duration = SECOND_PER_SAMPLE * buffer_size * 500; // half a buffer in milliseconds
 
     std::cout << "Opening output file " << recorder->filepath() << std::endl;
 

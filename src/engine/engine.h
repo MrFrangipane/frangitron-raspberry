@@ -17,6 +17,7 @@
 #include "shared/constants.h"
 #include "shared/typedefs.h"
 #include "shared/structures.h"
+#include "shared/configuration.h"
 #include "shared/masterclock.h"
 #include "midi/encoder.h"
 #include "audio/recorder.h"
@@ -41,11 +42,9 @@ struct Shared {
     SetStatusCallback uiSetStatus;
     int midi_msb = -1;
     int midi_lsb = -1;
-    Encoder midi_encoders[5];
+    Encoder midi_encoders[MIDI_ENCODER_COUNT];
     nFrame uiPreviousFrame = 0;
-    _AWeighting temp_a_weighting_L;
-    _AWeighting temp_a_weighting_R;
-    bool midi_note_on[128];
+    bool midi_note_on[MIDI_NOTE_COUNT];
     Recorder* recorder = nullptr;
 };
 
@@ -53,7 +52,9 @@ struct Shared {
 class Engine
 {
 public:
-    Engine() { }
+    Engine(const Configuration *configuration = nullptr) :
+        _configuration(configuration)
+        { }
     void start();
     void stop();
     void setUiCallbacks(void * uiPtr, GetStatusCallback getCallback, SetStatusCallback setCallback) {
@@ -61,6 +62,7 @@ public:
     }
 private:
     Shared _shared;
+    const Configuration *_configuration;
     RtAudio* _audio = nullptr;
     RtMidiIn* _midi = nullptr;
     Recorder* _recorder = nullptr;

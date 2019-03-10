@@ -13,8 +13,48 @@ int main(int argc, char *argv[])
     assert(sizeof(float) * 8 == 32);
     assert(sizeof(double) * 8 == 64);
 
-    // PARSE CONFIG
+    // CONFIG
     Configuration *configuration = new Configuration();
+    configuration->modules[0].name = "IN";
+    configuration->modules[0].type = "levelMeter";
+    configuration->modules[0].wireIndex = -1;
+    configuration->modules[0].overrides[10].active = true; // locked
+    configuration->modules[0].overrides[10].value = 1.0;   // level
+    configuration->modules[0].layout.row = 0;
+    configuration->modules[0].layout.col = 0;
+    configuration->modules[0].layout.rowSpan = 3;
+    configuration->modules[0].layout.colSpan = 1;
+
+    configuration->modules[1].name = "IN FILTER";
+    configuration->modules[1].type = "filter";
+    configuration->modules[1].wireIndex = 0;
+    configuration->modules[1].layout.row = 0;
+    configuration->modules[1].layout.col = 1;
+
+    configuration->modules[2].name = "IN COMP";
+    configuration->modules[2].type = "compressor";
+    configuration->modules[2].wireIndex = 1;
+    configuration->modules[2].layout.row = 1;
+    configuration->modules[2].layout.col = 1;
+
+    configuration->modules[3].name = "KICK";
+    configuration->modules[3].type = "kickSynth";
+    configuration->modules[3].wireIndex = 2;
+    configuration->modules[3].layout.row = 0;
+    configuration->modules[3].layout.col = 2;
+
+    configuration->modules[4].type = "dummy";
+    configuration->modules[4].layout.row = 0;
+    configuration->modules[4].layout.col = 3;
+    configuration->modules[4].layout.colStretch = 100;
+
+    configuration->modules[5].name = "OUT";
+    configuration->modules[5].type = "levelMeter";
+    configuration->modules[5].wireIndex = 3;
+    configuration->modules[5].layout.row = 0;
+    configuration->modules[5].layout.col = 4;
+    configuration->modules[5].layout.rowSpan = 3;
+    configuration->modules[5].layout.colSpan = 1;
 
     // APPLICATION
     QThread::currentThread()->setObjectName("FrangUi");
@@ -23,7 +63,7 @@ int main(int argc, char *argv[])
     // ENGINE THREAD
     QThread* engineThread = new QThread();
     engineThread->setObjectName("FrangAudioMidi");
-    EngineWorker* engineWorker = new EngineWorker();
+    EngineWorker* engineWorker = new EngineWorker(configuration);
     engineWorker->moveToThread(engineThread);
 
     QObject::connect(engineThread, SIGNAL(started()), engineWorker, SLOT(process()));

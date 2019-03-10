@@ -104,27 +104,37 @@ void Engine::start()
     } // --------------------------------------------------------------
 
     // MODULES
-    // INPUT
-    _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
-    _shared.status.modules[0] = _shared.audioModules[0]->status();
-    _shared.status.modules[0].params[10].value = 1.0; // LockLevel
-    _shared.audioWires.push_back(-1);
-    // FILTER
-    _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
-    _shared.status.modules[1] = _shared.audioModules[1]->status();
-    _shared.audioWires.push_back(0);
-    // COMP
-    _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
-    _shared.status.modules[2] = _shared.audioModules[2]->status();
-    _shared.audioWires.push_back(1);
-    // KICK SYNTH
-    _shared.audioModules.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
-    _shared.status.modules[3] = _shared.audioModules[3]->status();
-    _shared.audioWires.push_back(2);
-    // OUT
-    _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
-    _shared.status.modules[4] = _shared.audioModules[4]->status();
-    _shared.audioWires.push_back(3);
+    int module = 0;
+    for( int configModule = 0; configModule < MODULE_MAX_COUNT; configModule++ )
+    {
+        // TYPE
+        if( _configuration->modules[configModule].type == std::string("levelMeter") )
+            _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+
+        else if( _configuration->modules[configModule].type == std::string("filter") )
+            _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
+
+        else if( _configuration->modules[configModule].type == std::string("compressor") )
+            _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
+
+        else if( _configuration->modules[configModule].type == std::string("kickSynth") )
+            _shared.audioModules.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
+
+        else continue;
+
+        // WIRE
+        _shared.audioWires.push_back(_configuration->modules[module].wireIndex);
+
+        // STATUS & OVERRIDES
+        _shared.status.modules[module] = _shared.audioModules[module]->status();
+        for( int override_ = 0; override_ < MODULE_PARAM_COUNT; override_ ++ )
+        {
+            if( _configuration->modules[module].overrides[override_].active )
+                _shared.status.modules[module].params[override_].value = _configuration->modules[module].overrides[override_].value;
+        }
+
+        module++;
+    }
 
     // MIDI DEVICE
     _setMidiDeviceIndex();
@@ -165,11 +175,11 @@ void Engine::start()
 
     RtAudio::StreamParameters _audioInParams;
     _audioInParams.deviceId = _audioDeviceIndex;
-    _audioInParams.nChannels = 2;
+    _audioInParams.nChannels = CHANNEL_COUNT;
 
     RtAudio::StreamParameters _audioOutParams;
     _audioOutParams.deviceId = _audioDeviceIndex;
-    _audioOutParams.nChannels = 2;
+    _audioOutParams.nChannels = CHANNEL_COUNT;
 
     try {
         std::cout << "Opening audio device " << "(" << _audioDeviceIndex << ") " <<
@@ -203,7 +213,7 @@ void Engine::start()
         _shared.status.loading_progress = i;
         _shared.uiSetStatus(_shared.uiPtr, _shared.status);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 
     // RECORDER
@@ -257,7 +267,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // RUNNING ?
     if( s->status.state != EngineStatus::RUNNING )
     {
-        for( nFrame i = 0; i < bufferSize * 2; i++ ) {
+        for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
             ioOut[i] = 0.0;
         }
 
@@ -273,7 +283,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
             s->status.selectedModule = uiStatus.selectedModule;
 
-            for( int paramId = 0; paramId < 5; paramId++ ) {
+            for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
                 if( !s->status.modules[uiStatus.selectedModule].params[paramId].visible ) continue;
 
                 float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
@@ -286,7 +296,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         }
 
     // ENCODERS
-        for( int paramId = 0; paramId < 5; paramId++ ) {
+        for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
 
             s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
 
@@ -314,7 +324,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // NOTE ON
-    for( int note = 0; note < 128; note++ ) {
+    for( int note = 0; note < MIDI_NOTE_COUNT; note++ ) {
         if( s->midi_note_on[36] ) {
             s->midi_note_on[36] = false;
 
@@ -339,7 +349,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     masterId = s->audioModules.size() - 1;
-    for( nFrame i = 0; i < bufferSize * 2; i++ ) {
+    for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
         ioOut[i] = s->audioModules[masterId]->output()[i];
     }
 

@@ -14,7 +14,7 @@ public:
     Sample process(Sample sample);
 
 private:
-    Sample _sample=0.0;
+    Sample _sample = 0.0;
     _SampleFilter _filter_hi;
     _SampleFilter _filter_low_1;
     _SampleFilter _filter_low_2;
