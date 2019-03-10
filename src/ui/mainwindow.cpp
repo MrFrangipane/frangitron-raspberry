@@ -36,11 +36,14 @@ MainWindow::~MainWindow()
 void MainWindow::_setupUi()
 {
     ui->setupUi(this);
+    ui->patch->setVisible(false);
+    ui->loading->setVisible(false);
+    ui->devMode->setVisible(false);
+    resize(800, 480);
 
     // HACKY POTTER (Sliders for dev mode) ---
-    ui->widgetDevMode->setVisible(false);
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
-        ui->widgetDevMode->setVisible(true);
+        ui->devMode->setVisible(true);
         resize(width(), height() + 200);
     } // -------------------------------------
 
@@ -63,7 +66,8 @@ void MainWindow::_setupUi()
     _sliders.push_back(ui->sliderEnc4);
     _sliders.push_back(ui->sliderEnc5);
 
-    loadPatch();
+    ui->loading->setVisible(true);
+    //loadPatch();
 }
 
 void MainWindow::loadPatch() {
@@ -104,6 +108,10 @@ void MainWindow::loadPatch() {
     // HACK STRETCH
     ui->layoutPatch->addWidget(new QWidget(), 2, ui->layoutPatch->rowCount() - 1);
     ui->layoutPatch->setRowStretch(ui->layoutPatch->rowCount() - 1, 10);
+
+    // Show
+    ui->loading->setVisible(false);
+    ui->patch->setVisible(true);
 }
 
 // CALLBACK MECHANISM
