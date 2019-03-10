@@ -145,7 +145,11 @@ QSlider::sub-page:vertical {
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QProgressBar::chunk {
+       <string notr="true">QProgressBar {
+	border: 1px solid white;
+}
+
+QProgressBar::chunk {
     background-color: white;
     width: 1px;
     margin: 0px;

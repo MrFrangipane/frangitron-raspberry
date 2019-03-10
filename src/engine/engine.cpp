@@ -91,7 +91,7 @@ void Engine::_setMidiDeviceIndex()
 void Engine::start()
 {
     // WAIT FOR CALLBACK SETTING
-    while ( _shared.uiPtr == nullptr ) { }
+    while ( _shared.uiPtr == nullptr ) { std::cout << "waiting "; }
 
     // STATE <- LOADING
     _shared.status.state = EngineStatus::LOADING;
