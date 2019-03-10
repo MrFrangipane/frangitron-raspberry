@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <ctime>
+#include <thread>
+#include <chrono>
 #include "sndfile.hh"
 #include "../include/rtaudio/RtAudio.h"
 #include "../include/rtmidi/RtMidi.h"
