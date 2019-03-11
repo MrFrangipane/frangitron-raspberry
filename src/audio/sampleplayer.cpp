@@ -4,11 +4,19 @@
 
 void SamplePlayer::update(ModuleStatus status)
 {
+    _sampleIndex = status.params[2].value;
 }
 
 const ModuleStatus SamplePlayer::status()
 {
     ModuleStatus status_;
+
+    status_.params[2].name = "Sample";
+    status_.params[2].value = _sampleIndex;
+    status_.params[2].min = 0;
+    status_.params[2].max = 3;
+    status_.params[2].step = 1;
+    status_.params[2].visible = true;
 
     status_.params[5].name = "Amplitude";
     status_.params[5].value = _amplitude;
@@ -32,8 +40,8 @@ void SamplePlayer::process(Sample const * bufferIn, const nFrame time, SampleBan
         if( elapsedSeconds <= _envelope_amplitude.duration() )
         {
             _amplitude = _envelope_amplitude.value(time + i);
-            _bufferOut[_left] = sampleBank->left(0, elapsedFrames) * _amplitude;
-            _bufferOut[_right] = sampleBank->right(0, elapsedFrames) * _amplitude;
+            _bufferOut[_left] = bufferIn[_left] + sampleBank->left(_sampleIndex, elapsedFrames) * _amplitude;
+            _bufferOut[_right] = bufferIn[_right] + sampleBank->right(_sampleIndex, elapsedFrames) * _amplitude;
         }
         else
         {
