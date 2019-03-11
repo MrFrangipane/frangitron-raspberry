@@ -407,10 +407,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         inputId = s->audioWires[moduleId];
 
         if( inputId == -1 ) {  // Hardware Input
-            module->process(ioIn, s->time.engine_frame());
+            module->process(ioIn, s->time.engine_frame(), s->sampleBank);
         }
         else if( inputId >= 0 ) {  // Module Input
-           module->process(s->audioModules[inputId]->output(), s->time.engine_frame());
+           module->process(s->audioModules[inputId]->output(), s->time.engine_frame(), s->sampleBank);
         }
 
         moduleId++;

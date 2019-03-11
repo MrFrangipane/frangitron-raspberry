@@ -133,7 +133,7 @@ void KickSynth::update(ModuleStatus status)
     //*/
 }
 
-void KickSynth::process(Sample const * bufferIn, const nFrame time)
+void KickSynth::process(Sample const * bufferIn, const nFrame time, const SampleBank * /*sampleBank*/)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;

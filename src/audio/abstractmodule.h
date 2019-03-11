@@ -4,6 +4,7 @@
 #include "shared/typedefs.h"
 #include "shared/structures.h"
 #include "audio/_samplemeter.h"
+#include "audio/_samplebank.h"
 
 class AbstractModule
 {
@@ -15,7 +16,7 @@ public:
     }
     virtual ModuleStatus const status() { return ModuleStatus(); }
     virtual void update(ModuleStatus /*status_*/) { }
-    virtual void process(Sample const * /*bufferIn*/, const nFrame /*time*/) { }
+    virtual void process(Sample const * /*bufferIn*/, const nFrame /*time*/, SampleBank const * /*sampleBank*/) { }
     virtual void gate(nFrame /*time*/) { }
     Sample const * output() { return _bufferOut.data(); }
 

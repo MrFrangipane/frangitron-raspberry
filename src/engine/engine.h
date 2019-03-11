@@ -20,6 +20,7 @@
 #include "shared/configuration.h"
 #include "shared/masterclock.h"
 #include "midi/encoder.h"
+#include "audio/_samplebank.h"
 #include "audio/recorder.h"
 #include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
@@ -68,6 +69,7 @@ struct Shared {
     Encoder midi_encoders[MIDI_ENCODER_COUNT];
     nFrame uiPreviousFrame = 0;
     bool midi_note_on[MIDI_NOTE_COUNT];
+    SampleBank * sampleBank = nullptr;
     Recorder* recorder = nullptr;
 };
 

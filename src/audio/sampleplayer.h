@@ -16,9 +16,10 @@ public:
         AbstractModule(bufferSize) { }
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
-    void process(Sample const * bufferIn, const nFrame /*time*/) override;
+    void process(Sample const * bufferIn, const nFrame time, const SampleBank * sampleBank) override;
     void gate(nFrame time) override;
 private:
+    float _amplitude = 0;
     _Envelope _envelope_amplitude;
     _Envelope _envelope_sidechain;
 };
