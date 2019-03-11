@@ -3,6 +3,7 @@
 
 #include "cmath"
 #include "shared/typedefs.h"
+#include "shared/constants.h"
 #include "shared/audiohelpers.h"
 #include "audio/_samplemeter.h"
 #include "audio/abstractmodule.h"

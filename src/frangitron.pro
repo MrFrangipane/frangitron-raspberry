@@ -49,7 +49,8 @@ SOURCES += \
     ui/kickwidget.cpp \
     audio/_envelope.cpp \
     audio/recorder.cpp \
-    shared/configuration.cpp
+    shared/configuration.cpp \
+    audio/sampleplayer.cpp
 
 
 HEADERS += \
@@ -82,7 +83,8 @@ HEADERS += \
     ui/kickwidget.h \
     audio/_envelope.h \
     audio/recorder.h \
-    shared/configuration.h
+    shared/configuration.h \
+    audio/sampleplayer.h
 
 RESOURCES += \
     images.qrc

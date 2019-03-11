@@ -13,6 +13,7 @@ public:
     _Envelope() { }
     float value(nFrame time);
     float duration() { return _attack + _decay + _hold + _release; }
+    nFrame lastGate() { return _last_gate; }
     float attack() { return _attack; }
     float decay() { return _decay; }
     float hold() { return _hold; }
@@ -25,7 +26,7 @@ public:
     void setSustainLevel(float sustain) { _sustain = std::fmin(1.0, std::fmax(0.0, sustain)); }
     void setRelease(float release) { _release = std::fmax(0.0, release); }
 private:
-    nFrame _last_gate = 6000;
+    nFrame _last_gate = 0;
     float _value_at_gate = 0.0;
     float _attack = 0.01;
     float _decay = 0.01;

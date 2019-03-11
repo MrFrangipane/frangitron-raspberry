@@ -4,6 +4,9 @@
 
 float _Envelope::value(nFrame time)
 {
+    if( _last_gate == 0 ) // Prevents startup gate
+        return 0.0;
+
     float elapsed = (float)(time - _last_gate) / SAMPLE_RATE;
 
     if( elapsed > 0.0 && elapsed <= _attack) // Attack

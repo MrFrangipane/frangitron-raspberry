@@ -141,7 +141,7 @@ void KickSynth::process(Sample const * bufferIn, const nFrame time)
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;
         _right = _left + 1;
-        float elapsed = (float)(time + i - _last_gate) / SAMPLE_RATE;
+        float elapsed = (float)(time + i - _envelope_amplitude.lastGate()) / SAMPLE_RATE;
 
         if( elapsed <= _envelope_amplitude.duration() )
         {
@@ -169,7 +169,6 @@ void KickSynth::process(Sample const * bufferIn, const nFrame time)
 
 void KickSynth::gate(nFrame time)
 {
-    _last_gate = time;
     _envelope_amplitude.gate(time);
     _envelope_pitch.gate(time);
 }

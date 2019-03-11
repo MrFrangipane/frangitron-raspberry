@@ -403,13 +403,13 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
 
-    /*
     masterId = s->audioModules.size() - 1;
     for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
         ioOut[i] = s->audioModules[masterId]->output()[i];
-    }*/
+    }
 
     // SAMPLE BANK EXPERIMENT ---
+    /*
     nSample posS = 0;
     int sample = std::min((int)s->status.modules[2].params[2].value - 1, 3);
     nFrame posF = s->time.engine_frame() % (s->registeredAudioClips[sample].frameCount);
@@ -418,6 +418,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         posS = (posF * CHANNEL_COUNT + i) % (s->registeredAudioClips[sample].frameCount * CHANNEL_COUNT);
         ioOut[i] = s->audioClips.at(s->registeredAudioClips[sample].startSample + posS);
     }
+    */
     // --------------------------
 
     // RECORDER
