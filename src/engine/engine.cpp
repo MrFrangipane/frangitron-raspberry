@@ -108,12 +108,10 @@ void Engine::start()
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 
-    /*
     // HACKY POTTER (Fireface UCX in ClassCompilant mode on Ubuntu) ---
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
         _bufferSize = 60;
     } // --------------------------------------------------------------
-    */
 
     // MODULES
     int module = 0;

@@ -20,7 +20,7 @@ public:
     void process(Sample const * bufferIn, const nFrame time) override;
     void gate(nFrame time) override;
 private:
-    float _pitch = 115.0;
+    float _pitch = 65.0;
     float _hard_soft = 0.05;
     float _release = 1.0;
     int _sample_index = 0;

@@ -3,8 +3,6 @@
 
 KickSynth::KickSynth(const nFrame bufferSize) : AbstractModule(bufferSize)
 {
-    _pitch = 600.0;
-
     _sidechain_amount = 0.25;
 
     _hipass_1.setMode(HIPASS);

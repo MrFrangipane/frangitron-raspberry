@@ -81,6 +81,9 @@ void MainWindow::_loadPatch()
         else if( configModule.type == std::string("kickSynth") )
             _modules << new KickWidget();
 
+        else if( configModule.type == std::string("samplePlayer") )
+            _modules << new SamplePlayerWidget();
+
         // DUMMY
         else if( configModule.type == std::string("dummy") )
         {
@@ -170,7 +173,7 @@ void MainWindow::_refresh()
     }
     else if ( engineStatus.state == EngineStatus::RUNNING )
     {
-        if( !ui->patch->isVisible() ) {
+        if( !ui->patch->isVisible() ) { // Hacky : should be if( _isPatchLoaded )
             ui->loading->setVisible(false);
             ui->patch->setVisible(true);
             _loadPatch();

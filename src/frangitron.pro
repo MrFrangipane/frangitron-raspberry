@@ -50,7 +50,8 @@ SOURCES += \
     audio/_envelope.cpp \
     audio/recorder.cpp \
     shared/configuration.cpp \
-    audio/sampleplayer.cpp
+    audio/sampleplayer.cpp \
+    ui/sampleplayerwidget.cpp
 
 
 HEADERS += \
@@ -84,7 +85,8 @@ HEADERS += \
     audio/_envelope.h \
     audio/recorder.h \
     shared/configuration.h \
-    audio/sampleplayer.h
+    audio/sampleplayer.h \
+    ui/sampleplayerwidget.h
 
 RESOURCES += \
     images.qrc

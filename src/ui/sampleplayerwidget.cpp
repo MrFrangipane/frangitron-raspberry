@@ -1,7 +1,7 @@
-#include "templatemodulewidget.h"
+#include "sampleplayerwidget.h"
 
 
-void TemplateModuleWidget::paint_(QRect rect)
+void SamplePlayerWidget::paint_(QRect rect)
 {
     QPainter painter(this);
     painter.setRenderHints(QPainter::RenderHint::Antialiasing);

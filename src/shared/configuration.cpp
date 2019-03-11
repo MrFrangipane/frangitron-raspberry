@@ -66,14 +66,14 @@ void initModules(Configuration* conf)
     conf->modules[3].layout.row = 0;
     conf->modules[3].layout.col = 2;
 
-    conf->modules[4].name = "KICK 2";
-    conf->modules[4].type = "kickSynth";
+    conf->modules[4].name = "SAMPLE 1";
+    conf->modules[4].type = "samplePlayer";
     conf->modules[4].wireIndex = 3;
     conf->modules[4].midiNote = 38;
     conf->modules[4].layout.row = 0;
     conf->modules[4].layout.col = 3;
 
-    conf->modules[5].name = "KICK 3";
+    /*conf->modules[5].name = "KICK 3";
     conf->modules[5].type = "kickSynth";
     conf->modules[5].wireIndex = 4;
     conf->modules[5].midiNote = 40;
@@ -99,18 +99,18 @@ void initModules(Configuration* conf)
     conf->modules[8].wireIndex = 7;
     conf->modules[8].midiNote = 45;
     conf->modules[8].layout.row = 0;
-    conf->modules[8].layout.col = 7;
+    conf->modules[8].layout.col = 7;*/
 
-    conf->modules[9].type = "dummy";
-    conf->modules[9].layout.row = 0;
-    conf->modules[9].layout.col = 8;
-    conf->modules[9].layout.colStretch = 100;
+    conf->modules[5].type = "dummy";
+    conf->modules[5].layout.row = 0;
+    conf->modules[5].layout.col = 8;
+    conf->modules[5].layout.colStretch = 100;
 
-    conf->modules[10].name = "OUT";
-    conf->modules[10].type = "levelMeter";
-    conf->modules[10].wireIndex = 8;
-    conf->modules[10].layout.row = 0;
-    conf->modules[10].layout.col = 9;
-    conf->modules[10].layout.rowSpan = 3;
-    conf->modules[10].layout.colSpan = 1;
+    conf->modules[6].name = "OUT";
+    conf->modules[6].type = "levelMeter";
+    conf->modules[6].wireIndex = 4;
+    conf->modules[6].layout.row = 0;
+    conf->modules[6].layout.col = 9;
+    conf->modules[6].layout.rowSpan = 3;
+    conf->modules[6].layout.colSpan = 1;
 }

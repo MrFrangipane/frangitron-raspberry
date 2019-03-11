@@ -21,6 +21,7 @@
 #include "ui/filterwidget.h"
 #include "ui/compwidget.h"
 #include "ui/kickwidget.h"
+#include "ui/sampleplayerwidget.h"
 
 
 namespace Ui {

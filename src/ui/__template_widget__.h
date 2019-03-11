@@ -1,15 +1,15 @@
-#ifndef KICKWIDGET_H
-#define KICKWIDGET_H
+#ifndef TEMPLATEMODULEWIDGET_H
+#define TEMPLATEMODULEWIDGET_H
 
 
 #include "ui/abstractwidget.h"
-#include "audio/kicksynth.h".h"
+#include "audio/templatemodule.h"
 
 
-class KickWidget : public AbstractWidget
+class TemplateModuleWidget : public AbstractWidget
 {
 public:
-    explicit KickWidget(QWidget *parent = nullptr) :
+    explicit TemplateModuleWidget(QWidget *parent = nullptr) :
         AbstractWidget(parent) {
         _contentMinimumWidth = 70;
         _contentMinimumHeight = _contentMinimumWidth;
@@ -19,4 +19,4 @@ private:
     void paint_(QRect rect) override;
 };
 
-#endif // KICKWIDGET_H
+#endif // TEMPLATEMODULEWIDGET_H
