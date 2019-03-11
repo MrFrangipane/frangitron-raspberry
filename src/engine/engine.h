@@ -74,9 +74,7 @@ struct Shared {
 class Engine
 {
 public:
-    Engine(const Configuration *configuration = nullptr) :
-        _configuration(configuration)
-        { }
+    Engine(const Configuration *configuration = nullptr);
     void start();
     void stop();
     void setUiCallbacks(void * uiPtr, GetStatusCallback getCallback, SetStatusCallback setCallback) {

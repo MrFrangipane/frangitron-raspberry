@@ -32,8 +32,7 @@ const ModuleStatus KickSynth::status()
 {
     ModuleStatus status_;
 
-    status_.empty = false; // Will be updated by engine
-/*
+    /*
     status_.params[0].name = "A";
     status_.params[0].value = _envelope_amplitude.attack() * ATTACK_FACTOR;
     status_.params[0].min = 0;

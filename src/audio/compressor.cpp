@@ -13,8 +13,6 @@ const ModuleStatus Compressor::status()
 {
     ModuleStatus status_;
 
-    status_.empty = false; // Will be updated by engine
-
     status_.params[0].name = "Attack";
     status_.params[0].value = _attack;
     status_.params[0].min = 0.001;

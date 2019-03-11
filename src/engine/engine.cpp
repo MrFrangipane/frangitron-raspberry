@@ -1,5 +1,14 @@
 #include "engine.h"
 
+Engine::Engine(const Configuration *configuration) :
+    _configuration(configuration)
+{
+    // Disable all modules before patch loading
+    for(int moduleIndex = 0; moduleIndex < MODULE_MAX_COUNT; moduleIndex++ ) {
+        _shared.status.modules[moduleIndex].isUpdatedByEngine = false;
+    }
+}
+
 void Engine::_setAudioDeviceIndex()
 {
     std::vector<std::string> interfaceNames;
@@ -372,7 +381,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // STATUS -> MODULES
     moduleId = 0;
     for( ModuleStatus status : s->status.modules ) {
-        if( !s->status.modules[moduleId].empty )
+        if( status.isUpdatedByEngine )
             s->audioModules[moduleId]->update(status);
         moduleId++;
     }

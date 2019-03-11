@@ -20,7 +20,7 @@ struct ModuleParameter {
 };
 
 struct ModuleStatus {
-    bool empty = true;
+    bool isUpdatedByEngine = true;
     ModuleParameter params[MODULE_PARAM_COUNT];
     float levelOut = -60.0;
     bool is_clipping = false;

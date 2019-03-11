@@ -36,8 +36,6 @@ const ModuleStatus Filter::status()
 {
     ModuleStatus status_;
 
-    status_.empty = false;
-
     status_.params[1].name = "Cutoff";
     status_.params[1].min = -1.0;
     status_.params[1].max = 1.0;

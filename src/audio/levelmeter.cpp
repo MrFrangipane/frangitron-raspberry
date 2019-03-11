@@ -4,8 +4,6 @@ ModuleStatus const LevelMeter::status()
 {
     ModuleStatus status_;
 
-    status_.empty = false; // Will get updated by engine
-
     status_.params[2].name = "Level";
     status_.params[2].value = _level;
     status_.params[2].visible = !_is_level_locked;
