@@ -66,42 +66,42 @@ void MainWindow::_loadPatch()
 {
     // MODULES
     int module = 0;
-    for( int configModule = 0; configModule < MODULE_MAX_COUNT; configModule++ )
+    for( ConfModule configModule : _configuration->modules )
     {
         // TYPE
-        if( _configuration->modules[configModule].type == std::string("levelMeter") )
+        if( configModule.type == std::string("levelMeter") )
             _modules << new LevelMeterWidget();
 
-        else if( _configuration->modules[configModule].type == std::string("filter") )
+        else if( configModule.type == std::string("filter") )
             _modules <<  new FilterWidget();
 
-        else if( _configuration->modules[configModule].type == std::string("compressor") )
+        else if( configModule.type == std::string("compressor") )
             _modules << new CompWidget();
 
-        else if( _configuration->modules[configModule].type == std::string("kickSynth") )
+        else if( configModule.type == std::string("kickSynth") )
             _modules << new KickWidget();
 
         // DUMMY
-        else if( _configuration->modules[configModule].type == std::string("dummy") )
+        else if( configModule.type == std::string("dummy") )
         {
             ui->layoutPatch->addWidget(
                 new QWidget(),
-                _configuration->modules[configModule].layout.row,
-                _configuration->modules[configModule].layout.col,
-                _configuration->modules[configModule].layout.rowSpan,
-                _configuration->modules[configModule].layout.colSpan
+                configModule.layout.row,
+                configModule.layout.col,
+                configModule.layout.rowSpan,
+                configModule.layout.colSpan
             );
 
-            if( _configuration->modules[configModule].layout.colStretch != -1 )
+            if( configModule.layout.colStretch != -1 )
                 ui->layoutPatch->setColumnStretch(
-                    _configuration->modules[configModule].layout.col,
-                    _configuration->modules[configModule].layout.colStretch
+                    configModule.layout.col,
+                    configModule.layout.colStretch
                 );
 
-            if( _configuration->modules[configModule].layout.rowStretch != -1 )
+            if( configModule.layout.rowStretch != -1 )
                 ui->layoutPatch->setRowStretch(
-                    _configuration->modules[configModule].layout.row,
-                    _configuration->modules[configModule].layout.rowStretch
+                    configModule.layout.row,
+                    configModule.layout.rowStretch
                 );
 
             continue;
@@ -111,13 +111,13 @@ void MainWindow::_loadPatch()
 
         // WIDGET
         connect(_modules[module], SIGNAL(selectedChanged(bool)), this, SLOT(_selectedChanged()));
-        _modules[module]->setProperty("displayName", QString::fromStdString(_configuration->modules[configModule].name));
+        _modules[module]->setProperty("displayName", QString::fromStdString(configModule.name));
         ui->layoutPatch->addWidget(
             _modules[module],
-            _configuration->modules[configModule].layout.row,
-            _configuration->modules[configModule].layout.col,
-            _configuration->modules[configModule].layout.rowSpan,
-            _configuration->modules[configModule].layout.colSpan
+            configModule.layout.row,
+            configModule.layout.col,
+            configModule.layout.rowSpan,
+            configModule.layout.colSpan
         );
 
         module++;

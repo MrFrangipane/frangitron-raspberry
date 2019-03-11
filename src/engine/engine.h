@@ -26,6 +26,7 @@
 #include "audio/filter.h"
 #include "audio/compressor.h"
 #include "audio/kicksynth.h"
+#include "audio/sampleplayer.h"
 
 
 typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);

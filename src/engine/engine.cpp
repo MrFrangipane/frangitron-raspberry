@@ -1,5 +1,6 @@
 #include "engine.h"
 
+
 Engine::Engine(const Configuration *configuration) :
     _configuration(configuration)
 {
@@ -99,51 +100,56 @@ void Engine::_setMidiDeviceIndex()
 
 void Engine::start()
 {
-    // WAIT FOR CALLBACK SETTING
+    // STATE <- LOADING
+    _shared.status.state = EngineStatus::LOADING;
+
+    // WAIT FOR UI CALLBACK REGISTRATION
     while ( _shared.uiPtr == nullptr ) {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 
-    // STATE <- LOADING
-    _shared.status.state = EngineStatus::LOADING;
-
+    /*
     // HACKY POTTER (Fireface UCX in ClassCompilant mode on Ubuntu) ---
     if( std::string(std::getenv("USER")) == std::string("frangi") ) {
         _bufferSize = 60;
     } // --------------------------------------------------------------
+    */
 
     // MODULES
     int module = 0;
-    for( int configModule = 0; configModule < MODULE_MAX_COUNT; configModule++ )
+    for( ConfModule configModule : _configuration->modules )
     {
         // TYPE
-        if( _configuration->modules[configModule].type == std::string("levelMeter") )
+        if( configModule.type == std::string("levelMeter") )
             _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
 
-        else if( _configuration->modules[configModule].type == std::string("filter") )
+        else if( configModule.type == std::string("filter") )
             _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
 
-        else if( _configuration->modules[configModule].type == std::string("compressor") )
+        else if( configModule.type == std::string("compressor") )
             _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
 
-        else if( _configuration->modules[configModule].type == std::string("kickSynth") )
+        else if( configModule.type == std::string("kickSynth") )
             _shared.audioModules.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
+
+        else if( configModule.type == std::string("samplePlayer") )
+            _shared.audioModules.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize)));
 
         else continue;
 
         // WIRE
-        _shared.audioWires.push_back(_configuration->modules[configModule].wireIndex);
+        _shared.audioWires.push_back(configModule.wireIndex);
 
         // REGISTER MIDI NOTE
-        if( _configuration->modules[configModule].midiNote != -1 )
-            _shared.registeredNotes.push_back(RegisteredNote(_configuration->modules[configModule].midiNote, module));
+        if( configModule.midiNote != -1 )
+            _shared.registeredNotes.push_back(RegisteredNote(configModule.midiNote, module));
 
         // STATUS & OVERRIDES
         _shared.status.modules[module] = _shared.audioModules[module]->status();
         for( int override_ = 0; override_ < MODULE_PARAM_COUNT; override_ ++ )
         {
-            if( _configuration->modules[configModule].overrides[override_].active )
-                _shared.status.modules[module].params[override_].value = _configuration->modules[configModule].overrides[override_].value;
+            if( configModule.overrides[override_].active )
+                _shared.status.modules[module].params[override_].value = configModule.overrides[override_].value;
         }
 
         module++;
