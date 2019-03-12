@@ -100,6 +100,7 @@ LIBS += -lpthread -lasound -lsndfile
 
 linux {
     contains(QMAKE_HOST.arch, arm.*): {
+        DEFINES += RASPBERRYPI
         QMAKE_CXXFLAGS *= -g -O3
     } else {
         QMAKE_CXXFLAGS *= -g -O0

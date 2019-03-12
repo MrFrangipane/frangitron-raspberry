@@ -2,6 +2,8 @@
 #define RECORDER_H
 
 #include <thread>
+#include <iomanip>
+#include <ctime>
 #include <chrono>
 #include <iostream>
 #include "sndfile.hh"
@@ -12,8 +14,8 @@
 class Recorder
 {
 public:
-    Recorder(nFrame buffer_size, int cache_buffer_count, std::string filepath);
-    void start(Recorder *recorder);
+    Recorder(nFrame buffer_size, int cache_buffer_count);
+    void start();
     void write(Sample * buffer);
     bool running() { return _running; }
     void stop() { _running = false; }

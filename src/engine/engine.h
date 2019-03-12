@@ -8,7 +8,6 @@
 #include <cstring>
 #include <stdlib.h>
 #include <iomanip>
-#include <ctime>
 #include <thread>
 #include <chrono>
 #include "sndfile.hh"
@@ -34,8 +33,8 @@ typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
 
-struct RegisteredNote {
-    RegisteredNote(const int note, const int module) :
+struct SubscribedNote {
+    SubscribedNote(const int note, const int module) :
         noteNumber(note),
         moduleIndex(module) { }
 
@@ -46,17 +45,17 @@ struct RegisteredNote {
 
 struct Shared {
     MasterClock time;
-    std::vector<std::shared_ptr<AbstractModule>> audioModules;
-    EngineStatus status;
-    std::vector<int> audioWires;
-    std::vector<RegisteredNote> registeredNotes;
+    std::vector<std::shared_ptr<AbstractModule>> patch;
+    EngineStatus engine;
+    std::vector<int> patchWires;
+    std::vector<SubscribedNote> subscribedNotes;
     void* uiPtr;
-    GetStatusCallback uiGetStatus;
+    GetStatusCallback uiStatus;
     SetStatusCallback uiSetStatus;
     int midi_msb = -1;
     int midi_lsb = -1;
     Encoder midi_encoders[MIDI_ENCODER_COUNT];
-    nFrame uiPreviousFrame = 0;
+    nFrame uiFrame = 0;
     bool midi_note_on[MIDI_NOTE_COUNT];
     SampleBank * sampleBank = nullptr;
     Recorder* recorder = nullptr;
@@ -70,7 +69,7 @@ public:
     void start();
     void stop();
     void setUiCallbacks(void * uiPtr, GetStatusCallback getCallback, SetStatusCallback setCallback) {
-        _shared.uiPtr = uiPtr; _shared.uiGetStatus = getCallback; _shared.uiSetStatus = setCallback;
+        _shared.uiPtr = uiPtr; _shared.uiStatus = getCallback; _shared.uiSetStatus = setCallback;
     }
 private:
     Shared _shared;

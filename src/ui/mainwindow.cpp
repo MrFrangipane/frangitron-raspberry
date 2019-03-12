@@ -34,10 +34,9 @@ void MainWindow::_setupUi()
     ui->devMode->setVisible(false);
     resize(800, 480);
 
-    // HACKY POTTER (Sliders for dev mode) ---
-    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
-        ui->devMode->setVisible(true);
-    } // -------------------------------------
+#ifndef RASPBERRYPI
+    ui->devMode->setVisible(true);
+#endif
 
     // WIDGET LISTS FOR EASY PARAM LOOPING
     _nameLabels.push_back(ui->labelEncName1);
@@ -166,12 +165,12 @@ void MainWindow::_refresh()
     UiStatus uiStatus = _uiStatus;
 
     // LOADING
-    if( engineStatus.state == EngineStatus::LOADING )
+    if( engineStatus.status == EngineStatus::LOADING )
     {
         ui->loading->setVisible(true);
         ui->progress->setValue(engineStatus.loading_progress);
     }
-    else if ( engineStatus.state == EngineStatus::RUNNING )
+    else if ( engineStatus.status == EngineStatus::RUNNING )
     {
         if( !ui->patch->isVisible() ) { // Hacky : should be if( _isPatchLoaded )
             ui->loading->setVisible(false);
@@ -190,7 +189,7 @@ void MainWindow::_refresh()
         int i = 0;
         for( AbstractWidget* moduleWidget : _modules ) {
 
-            moduleWidget->update_(engineStatus.modules[i]);
+            moduleWidget->update_(engineStatus.modulesStatuses[i]);
 
             if( moduleWidget->isSelected() ) selectedModule = i;
 
@@ -222,24 +221,27 @@ void MainWindow::_refresh()
                 uiStatus.selectedModule = selectedModule;
 
                 for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
-                    if( engineStatus.modules[selectedModule].params[paramId].visible )
+                    if( engineStatus.modulesStatuses[selectedModule].params[paramId].visible )
                     {
-                        text = QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name);
+                        text = QString::fromStdString(engineStatus.modulesStatuses[selectedModule].params[paramId].name);
                         _nameLabels[paramId]->setText(text);
 
-                        _sliders[paramId]->setMinimum(engineStatus.modules[selectedModule].params[paramId].min * 1000);
-                        _sliders[paramId]->setMaximum(engineStatus.modules[selectedModule].params[paramId].max * 1000);
-                        _sliders[paramId]->setSingleStep(engineStatus.modules[selectedModule].params[paramId].step * 1000);
-                        _sliders[paramId]->setValue(engineStatus.modules[selectedModule].params[paramId].value * 1000);
+                        #ifndef RASPBERRYPI
+                        _sliders[paramId]->setMinimum(engineStatus.modulesStatuses[selectedModule].params[paramId].min * 1000);
+                        _sliders[paramId]->setMaximum(engineStatus.modulesStatuses[selectedModule].params[paramId].max * 1000);
+                        _sliders[paramId]->setSingleStep(engineStatus.modulesStatuses[selectedModule].params[paramId].step * 1000);
+                        _sliders[paramId]->setValue(engineStatus.modulesStatuses[selectedModule].params[paramId].value * 1000);
                         _sliders[paramId]->setEnabled(true);
 
                         _previousValues[paramId] = _sliders[paramId]->value();
+                        #endif
                     }
                     else {
                         _nameLabels[paramId]->setText("");
 
                         _valueLabels[paramId]->setText("");
 
+                        #ifndef RASPBERRYPI
                         _sliders[paramId]->setMinimum(0);
                         _sliders[paramId]->setMaximum(2);
                         _sliders[paramId]->setSingleStep(1);
@@ -247,27 +249,29 @@ void MainWindow::_refresh()
                         _sliders[paramId]->setEnabled(false);
 
                         _previousValues[paramId] = 0.0;
+                        #endif
                     }
                 }
             }
             // UPDATE STATUS
             for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
-                if( !engineStatus.modules[selectedModule].params[paramId].visible ) continue;
+                if( !engineStatus.modulesStatuses[selectedModule].params[paramId].visible ) continue;
 
                 // ENGINE -> UI
                 if( engineStatus.encoders[paramId].pressed ) {
                     text = QString("*");
-                    text += QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name);
+                    text += QString::fromStdString(engineStatus.modulesStatuses[selectedModule].params[paramId].name);
                     text += QString("*");
                     _nameLabels[paramId]->setText(text);
                 }
                 else {
-                    text = QString::fromStdString(engineStatus.modules[selectedModule].params[paramId].name);
+                    text = QString::fromStdString(engineStatus.modulesStatuses[selectedModule].params[paramId].name);
                     _nameLabels[paramId]->setText(text);
                 }
 
                 _valueLabels[paramId]->setText(_modules[selectedModule]->formatParameter(paramId));
 
+                #ifndef RASPBERRYPI
                 // SLIDER MOVED
                 float sliderValue = _sliders[paramId]->value();
                 if( _previousValues[paramId] != sliderValue ) {
@@ -277,9 +281,10 @@ void MainWindow::_refresh()
                 // SLIDER NOT MOVED
                 else {
                     uiStatus.paramIncrements[paramId] = 0.0;
-                    _sliders[paramId]->setValue(engineStatus.modules[selectedModule].params[paramId].value * 1000);
+                    _sliders[paramId]->setValue(engineStatus.modulesStatuses[selectedModule].params[paramId].value * 1000);
                     _previousValues[paramId] = _sliders[paramId]->value();
                 }
+                #endif
             }
         }
 

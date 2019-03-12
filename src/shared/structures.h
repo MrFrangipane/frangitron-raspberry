@@ -20,7 +20,7 @@ struct ModuleParameter {
 };
 
 struct ModuleStatus {
-    bool isUpdatedByEngine = true;
+    bool isUpdatedByEngine = true; // This is for not having to set it to true on every Module->status() call
     ModuleParameter params[MODULE_PARAM_COUNT];
     float levelOut = -60.0;
     bool is_clipping = false;
@@ -35,7 +35,7 @@ struct ClockStatus {
 
 // ENGINE
 struct EngineStatus {
-    enum State {
+    enum Status {
         IDLE = 0,
         LOADING,
         RUNNING,
@@ -43,8 +43,8 @@ struct EngineStatus {
         nActivities
     };
     int loading_progress = 0;
-    State state = IDLE;
-    ModuleStatus modules[MODULE_MAX_COUNT];
+    Status status = IDLE;
+    ModuleStatus modulesStatuses[MODULE_MAX_COUNT];
     int selectedModule = -1;
     EncoderStatus encoders[MIDI_ENCODER_COUNT];
     ClockStatus clock;

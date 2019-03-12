@@ -7,11 +7,11 @@
 
 
 struct AudioClipRegistration{
+    std::string name = "";
     int channelCount = 0;
     nFrame frameCount = 0;
     nSample startSample = 0;
     std::string filepath = "";
-    Sample *startPointer = nullptr;
 };
 
 
@@ -24,7 +24,6 @@ public:
     void registerClip(AudioClipRegistration registration) { _registered.push_back(registration); }
     void updateRegistration(AudioClipRegistration registration, int index) { _registered[index] = registration; }
     void setSize(nSample sampleCount) { _samples.resize(sampleCount); }
-    void incrementFrame(nFrame value) { _framesLoaded += value; }
     void incrementSample(nFrame value) { _samplesLoaded += value; }
     int loadingProgress() { return _samplesLoaded * 100 / _samples.size(); }
     const std::vector<AudioClipRegistration> & registeredClips() { return _registered; }
@@ -34,7 +33,6 @@ public:
 private:
     std::vector<Sample> _samples;
     std::vector<AudioClipRegistration> _registered;
-    nFrame _framesLoaded = 0;
     nSample _samplesLoaded = 0;
 };
 

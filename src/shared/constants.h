@@ -4,7 +4,8 @@
 #define BUFFER_SIZE 512
 #define SAMPLE_RATE 48000
 #define CHANNEL_COUNT 2
-#define RECORDER_CACHE_BUFFER_COUNT 512 // about 5.5s
+#define RECORDER_CACHE_BUFFER_COUNT 512 // 512 * 512 = about 5.5s
+#define RECORDER_OUTPUT_FILE "/var/frangitron/recordings/frangitron_%d-%m-%Y_%H.%M.%S.wav"
 #define SECOND_PER_SAMPLE 0.000020833
 #define LEVEL_METER_RMS_SAMPLE_COUNT 60
 #define LEVEL_METER_AVERAGE_CYCLE_COUNT 15
@@ -15,7 +16,7 @@
 #define MIDI_NOTE_COUNT 128
 #define MIDI_ENCODER_COUNT 5
 #define MIDI_PUSHED_FACTOR 6
-#define MIDI_CLICKED_TIME_TRESHOLD 128 // Audio frames
+#define MIDI_CLICKED_TIME_TRESHOLD 128 // in audio frames
 
 #define AUDIOCLIP_MAX_COUNT 64
 

@@ -4,9 +4,10 @@
 Engine::Engine(const Configuration *configuration) :
     _configuration(configuration)
 {
-    // Disable all modules before patch loading
-    for(int moduleIndex = 0; moduleIndex < MODULE_MAX_COUNT; moduleIndex++ ) {
-        _shared.status.modules[moduleIndex].isUpdatedByEngine = false;
+    // This is to avoid Engine trying to update Modules not loaded by patch
+    for( int moduleIndex = 0; moduleIndex < MODULE_MAX_COUNT; moduleIndex++ )
+    {
+        _shared.engine.modulesStatuses[moduleIndex].isUpdatedByEngine = false;
     }
 }
 
@@ -21,7 +22,7 @@ void Engine::_setAudioDeviceIndex()
     try {
         audio = new RtAudio();
     }
-    catch (RtAudioError &error) {
+    catch( RtAudioError &error ) {
         std::cout << "Engine : Error while allocating Audio" << std::endl;
         std::cout << error.getMessage() << std::endl;
         return;
@@ -31,7 +32,7 @@ void Engine::_setAudioDeviceIndex()
 
     RtAudio::DeviceInfo device_infos;
 
-    for (unsigned int i = 0; i < audio->getDeviceCount(); i++) {
+    for( unsigned int i = 0; i < audio->getDeviceCount(); i++ ) {
 
         device_infos = audio->getDeviceInfo(i);
         std::cout << i << " : " << device_infos.name <<
@@ -40,11 +41,12 @@ void Engine::_setAudioDeviceIndex()
                     " out:" << device_infos.outputChannels <<
                      std::endl;
 
-        for (auto interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++) {
+        for( std::string interfaceName : interfaceNames) {
 
-            if (device_infos.inputChannels != 0 &&
+            if( device_infos.inputChannels != 0 &&
                 device_infos.outputChannels != 0 &&
-                device_infos.name.find(*interfaceName) != std::string::npos) {
+                device_infos.name.find(interfaceName) != std::string::npos )
+            {
                     _audioDeviceIndex = i;
                     return;
             }
@@ -87,8 +89,9 @@ void Engine::_setMidiDeviceIndex()
 
         std::cout << i << " : " << portName << std::endl;
 
-        for (auto interfaceName = interfaceNames.begin(); interfaceName != interfaceNames.end(); interfaceName++) {
-            if( portName.find(*interfaceName) != std::string::npos ) {
+        for( std::string interfaceName : interfaceNames ) {
+            if( portName.find(interfaceName) != std::string::npos )
+            {
                 _midiDeviceIndex = i;
                 return;
             }
@@ -101,7 +104,7 @@ void Engine::_setMidiDeviceIndex()
 void Engine::start()
 {
     // STATE <- LOADING
-    _shared.status.state = EngineStatus::LOADING;
+    _shared.engine.status = EngineStatus::LOADING;
 
     // WAIT FOR UI CALLBACK REGISTRATION
     while ( _shared.uiPtr == nullptr ) {
@@ -109,45 +112,50 @@ void Engine::start()
     }
 
     // HACKY POTTER (Fireface UCX in ClassCompilant mode on Ubuntu) ---
-    if( std::string(std::getenv("USER")) == std::string("frangi") ) {
-        _bufferSize = 60;
-    } // --------------------------------------------------------------
+    #ifndef RASPBERRYPI
+    _bufferSize = 60;
+    #endif
+    // --------------------------------------------------------------
 
-    // MODULES
+    // PATCH LOADING (AUDIO MODULES)
     int module = 0;
     for( ConfModule configModule : _configuration->modules )
     {
         // TYPE
         if( configModule.type == std::string("levelMeter") )
-            _shared.audioModules.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
 
         else if( configModule.type == std::string("filter") )
-            _shared.audioModules.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
 
         else if( configModule.type == std::string("compressor") )
-            _shared.audioModules.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
 
         else if( configModule.type == std::string("kickSynth") )
-            _shared.audioModules.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
 
         else if( configModule.type == std::string("samplePlayer") )
-            _shared.audioModules.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize)));
 
         else continue;
 
         // WIRE
-        _shared.audioWires.push_back(configModule.wireIndex);
+        _shared.patchWires.push_back(configModule.wireIndex);
 
         // REGISTER MIDI NOTE
         if( configModule.midiNote != -1 )
-            _shared.registeredNotes.push_back(RegisteredNote(configModule.midiNote, module));
+            _shared.subscribedNotes.push_back(SubscribedNote(configModule.midiNote, module));
 
         // STATUS & OVERRIDES
-        _shared.status.modules[module] = _shared.audioModules[module]->status();
-        for( int override_ = 0; override_ < MODULE_PARAM_COUNT; override_ ++ )
+        _shared.engine.modulesStatuses[module] = _shared.patch[module]->status();
+
+        int paramIndex = 0;
+        for( ConfModuleParamOverride override : configModule.overrides )
         {
-            if( configModule.overrides[override_].active )
-                _shared.status.modules[module].params[override_].value = configModule.overrides[override_].value;
+            if( override.active )
+                _shared.engine.modulesStatuses[module].params[paramIndex].value = override.value;
+
+            paramIndex++;
         }
 
         module++;
@@ -207,14 +215,14 @@ void Engine::start()
         options.flags |= RTAUDIO_MINIMIZE_LATENCY;
 
         _audio->openStream(
-          &_audioOutParams,
-          &_audioInParams,
-          RTAUDIO_FLOAT32, // PiSound supports only up to 32 bits
-          SAMPLE_RATE,
-          &_bufferSize,
-          &_audioCallback,
-          &_shared,
-          &options
+            &_audioOutParams,
+            &_audioInParams,
+            RTAUDIO_FLOAT32, // PiSound supports only up to 32 bits
+            SAMPLE_RATE,
+            &_bufferSize,
+            &_audioCallback,
+            &_shared,
+            &options
         );
 
         _audio->startStream();
@@ -226,52 +234,49 @@ void Engine::start()
 
     // AUDIO FILES
     _shared.sampleBank = new SampleBank();
-    nFrame framesToLoad = 0;
-    nSample samplesToLoad = 0;
+    nSample sampleCountTotal = 0;
     for( ConfAudioClip configClip : _configuration->audioClips )
     {
         if( configClip.frameCount == 0 ) // Exit at first empty clip
             break;
 
         AudioClipRegistration registration;
+        registration.name = configClip.name;
+        registration.filepath = configClip.filepath;
         registration.frameCount = configClip.frameCount;
         registration.channelCount = configClip.channelCount;
-        registration.filepath = configClip.filepath;
 
         _shared.sampleBank->registerClip(registration);
-        framesToLoad += registration.frameCount;
-        samplesToLoad += registration.frameCount * registration.channelCount;
+        sampleCountTotal += registration.frameCount * registration.channelCount;
     }
 
     int registrationIndex = 0;
-    _shared.sampleBank->setSize(samplesToLoad);
+    _shared.sampleBank->setSize(sampleCountTotal);
 
     for( AudioClipRegistration registration : _shared.sampleBank->registeredClips() )
     {
         SndfileHandle f_clip = SndfileHandle(registration.filepath);
-
-        if( f_clip.frames() != registration.frameCount )
+        if( f_clip.frames() != registration.frameCount ||
+            f_clip.channels() != registration.channelCount )
         {
             std::cout << registration.filepath << " is not the expected file !" << std::endl;
-            _shared.sampleBank->incrementFrame(registration.frameCount);
             _shared.sampleBank->incrementSample(registration.frameCount * registration.channelCount);
         }
         else
         {
-            // store pointer
-            registration.startPointer = _shared.sampleBank->currentPointer();
+            // store start sample TODO : do this inside SampleBank
             registration.startSample = _shared.sampleBank->currentSample();
 
             // Fill RAM
+            // TODO : when more files are to be loaded : try to load the entire file at once, see if performance improves
             for( int _ = 0; _ < registration.frameCount; _++ )
             {
                 f_clip.read(_shared.sampleBank->currentPointer(), registration.channelCount);
-                _shared.sampleBank->incrementFrame(1);
                 _shared.sampleBank->incrementSample(registration.channelCount);
 
                 // Ui
-                _shared.status.loading_progress = _shared.sampleBank->loadingProgress();
-                _shared.uiSetStatus(_shared.uiPtr, _shared.status);
+                _shared.engine.loading_progress = _shared.sampleBank->loadingProgress();
+                _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
             }
 
             std::cout << "Loaded " << registration.filepath << std::endl;
@@ -282,26 +287,16 @@ void Engine::start()
     }
 
     // RECORDER
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "/var/frangitron/frangitron_%d-%m-%Y_%H.%M.%S.wav");
-    auto filepath = oss.str();
-
-    _shared.recorder= new Recorder(
-        _bufferSize,
-        RECORDER_CACHE_BUFFER_COUNT,
-        filepath
-    );
-    _shared.recorder->start(_shared.recorder);
+    _shared.recorder= new Recorder(_bufferSize, RECORDER_CACHE_BUFFER_COUNT);
+    _shared.recorder->start();
 
     // STATE <- RUNNING
-    _shared.status.state = EngineStatus::RUNNING;
+    _shared.engine.status = EngineStatus::RUNNING;
 }
 
 void Engine::stop() {
     // STATE
-    _shared.status.state = EngineStatus::STOPPED;
+    _shared.engine.status = EngineStatus::STOPPED;
 
     // RECORDER
     _shared.recorder->stop();
@@ -330,7 +325,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     Shared* s = (Shared*)userData;
 
     // RUNNING ?
-    if( s->status.state != EngineStatus::RUNNING )
+    if( s->engine.status != EngineStatus::RUNNING )
     {
         for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
             ioOut[i] = 0.0;
@@ -340,103 +335,125 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // FROM UI
-    UiStatus uiStatus = s->uiGetStatus(s->uiPtr);
+    UiStatus uiStatus = s->uiStatus(s->uiPtr);
 
-    // SELECTED MODULE
-    if( uiStatus.selectedModule != -1 ) {
-        if( s->uiPreviousFrame != uiStatus.frame ) {
-            s->uiPreviousFrame = uiStatus.frame;
+    // A MODULE IS SELECTED
+    if( uiStatus.selectedModule != -1 )
+    {
+        s->engine.selectedModule = uiStatus.selectedModule;
 
-            s->status.selectedModule = uiStatus.selectedModule;
+        #ifndef RASPBERRYPI
+        if( s->uiFrame != uiStatus.frame ) {
+            s->uiFrame = uiStatus.frame;
 
-            for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
-                if( !s->status.modules[uiStatus.selectedModule].params[paramId].visible ) continue;
+            int paramId = 0;
+            for( ModuleParameter moduleParameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
+            {
+                if( paramId >= MIDI_ENCODER_COUNT ) break;
+                if( !moduleParameter.visible )
+                {
+                    paramId++;
+                    continue;
+                }
 
-                float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
-                float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
-                float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
                 float increment = uiStatus.paramIncrements[paramId];
 
-                s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
+                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
+                    moduleParameter.min, fmin(moduleParameter.value + increment, moduleParameter.max)
+                );
+
+                paramId++;
             }
+            std::cout << "a";
         }
+        #endif
 
         // ENCODERS
-        for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
+        int paramId = 0;
+        float increment = 0;
+        bool pressed = false;
+        for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params)
+        {
+            if( paramId >= MIDI_ENCODER_COUNT ) break;
 
-            s->status.encoders[paramId].pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
+            pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
+            increment = s->midi_encoders[paramId].increment(s->time.engine_frame());
+            s->engine.encoders[paramId].pressed = pressed;
 
-            if( s->midi_encoders[paramId].increment(s->time.engine_frame()) != 0 ) {
+            if( increment != 0 )
+            {
+                increment *= parameter.step;
+                increment *= ((int)pressed * (MIDI_PUSHED_FACTOR - 1)) + 1;
 
-                float value = s->status.modules[uiStatus.selectedModule].params[paramId].value;
-                float min = s->status.modules[uiStatus.selectedModule].params[paramId].min;
-                float max = s->status.modules[uiStatus.selectedModule].params[paramId].max;
-                float increment = s->midi_encoders[paramId].increment(s->time.engine_frame());
-                increment *= s->status.modules[s->status.selectedModule].params[paramId].step;
-                increment *= ((int)s->midi_encoders[paramId].pressed(s->time.engine_frame()) * (MIDI_PUSHED_FACTOR - 1)) + 1;
+                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
+                    parameter.min, fmin(parameter.value + increment, parameter.max)
+                );
 
-                s->status.modules[uiStatus.selectedModule].params[paramId].value = fmax(min, fmin(value + increment, max));
                 s->midi_encoders[paramId].setIncrement(0, s->time.engine_frame());
             }
+
+            paramId++;
         }
     }
 
-    // STATUS -> MODULES
+    // ENGINE -> PATCH
     moduleId = 0;
-    for( ModuleStatus status : s->status.modules ) {
+    for( ModuleStatus status : s->engine.modulesStatuses ) {
         if( status.isUpdatedByEngine )
-            s->audioModules[moduleId]->update(status);
+            s->patch[moduleId]->update(status);
         moduleId++;
     }
 
     // NOTE ON
-    for( RegisteredNote note : s->registeredNotes ) {
+    for( SubscribedNote note : s->subscribedNotes ) {
         if( s->midi_note_on[note.noteNumber] )
         {
-            s->audioModules[note.moduleIndex]->gate(s->time.engine_frame());
+            s->patch[note.moduleIndex]->gate(s->time.engine_frame());
         }
     }
-    // NOTE OFF
-    for( RegisteredNote note : s->registeredNotes )
+    // INSTANT NOTE OFF
+    // TODO : use note off from midi ?
+    for( SubscribedNote note : s->subscribedNotes )
         s->midi_note_on[note.noteNumber] = false;
 
     // PROCESS
     moduleId = 0;
-    for( std::shared_ptr<AbstractModule> module : s->audioModules ) {
-        inputId = s->audioWires[moduleId];
+    for( std::shared_ptr<AbstractModule> module : s->patch ) {
+        inputId = s->patchWires[moduleId];
 
         if( inputId == -1 ) {  // Hardware Input
             module->process(ioIn, s->time.engine_frame(), s->sampleBank);
         }
         else if( inputId >= 0 ) {  // Module Input
-           module->process(s->audioModules[inputId]->output(), s->time.engine_frame(), s->sampleBank);
+           module->process(s->patch[inputId]->output(), s->time.engine_frame(), s->sampleBank);
         }
 
         moduleId++;
     }
 
-    masterId = s->audioModules.size() - 1;
+    masterId = s->patch.size() - 1;
     for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
-        ioOut[i] = s->audioModules[masterId]->output()[i];
+        ioOut[i] = s->patch[masterId]->output()[i];
     }
 
     // RECORDER
     s->recorder->write(ioOut);
 
-    // MODULES -> STATUS
+    // PATCH -> ENGINE
     moduleId = 0;
-    for( std::shared_ptr<AbstractModule> module : s->audioModules ) {
-        s->status.modules[moduleId] = module->status();
+    for( std::shared_ptr<AbstractModule> module : s->patch ) {
+        s->engine.modulesStatuses[moduleId] = module->status();
         moduleId++;
     }
 
     // TO UI
-    s->status.clock.bar = s->time.bar();
-    s->status.clock.seconds = s->time.seconds();
-    s->status.clock.sequence_step = s->time.sequence_step();
-    s->status.clock.is_playing = s->time.is_playing();
+    // TODO : clarify terms between UiStatus, EngineStatus, ...
+    s->engine.clock.bar = s->time.bar();
+    s->engine.clock.seconds = s->time.seconds();
+    s->engine.clock.sequence_step = s->time.sequence_step();
+    s->engine.clock.is_playing = s->time.is_playing();
 
-    s->uiSetStatus(s->uiPtr, s->status);
+    s->uiSetStatus(s->uiPtr, s->engine);
 
     // INCREMENT TIME
     s->time.increment_frame(bufferSize);
@@ -449,7 +466,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     int encoder = 0;
     Shared* shared = (Shared*)userData;
 
-    if( shared->status.state != EngineStatus::RUNNING ) return;
+    if( shared->engine.status != EngineStatus::RUNNING ) return;
 
 //     DEBUG COUT
 //    unsigned int nBytes = message->size();

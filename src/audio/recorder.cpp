@@ -1,19 +1,24 @@
 #include "recorder.h"
 
 
-Recorder::Recorder(nFrame buffer_size, int cache_buffer_count, std::string filepath)
+Recorder::Recorder(nFrame buffer_size, int cache_buffer_count)
 {
     _buffer_size = buffer_size;
     _cache_size = cache_buffer_count * buffer_size * 2;
-    _filepath = filepath;
     _cache.reserve(_cache_size);
+
+    auto now = std::time(nullptr);
+    auto nowLocal = *std::localtime(&now);
+    std::ostringstream oss;
+    oss << std::put_time(&nowLocal, RECORDER_OUTPUT_FILE);
+    _filepath = oss.str();
 }
 
-void Recorder::start(Recorder* recorder)
+void Recorder::start()
 {
     _running = true;
-     _thread = std::thread(main_loop, recorder);
-     _thread.detach();
+    _thread = std::thread(main_loop, this);
+    _thread.detach();
 }
 
 void Recorder::write(Sample *buffer)
