@@ -8,7 +8,7 @@
 
 
 struct ConfModuleParamOverride {
-    bool active = false;
+    bool isActive = false;
     float value = 0;
 };
 
@@ -27,7 +27,7 @@ struct ConfModule
 {
     std::string name = "Module";
     std::string type = "unknown";
-    int wireIndex = -1;
+    int inputIndex = -1;
     int midiNote = -1;
     ConfModuleParamOverride overrides[MODULE_PARAM_COUNT];
     ConfModuleLayout layout;

@@ -42,7 +42,7 @@ protected:
     QSize minimumSizeHint() const;
     virtual void paint_(QRect /*rect*/) { }
     QString _parameterFormats[MIDI_ENCODER_COUNT] = {"%1", "%1", "%1", "%1", "%1"};
-    QColor _darkGrey = QColor(60, 60, 60);
+    QColor _darkGrey = QColor(60, 60, 60);  // TODO : make it static ?
 
 signals:
     void selectedChanged(bool isSelected);

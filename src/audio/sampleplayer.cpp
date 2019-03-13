@@ -16,13 +16,13 @@ const ModuleStatus SamplePlayer::status()
     status_.params[2].min = 0;
     status_.params[2].max = 3;
     status_.params[2].step = 1;
-    status_.params[2].visible = true;
+    status_.params[2].isVisible = true;
 
     status_.params[5].name = "Amplitude";
     status_.params[5].value = _amplitude;
 
     status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
-    status_.is_clipping = _outMeterL.isClipping() || _outMeterR.isClipping();
+    status_.isClipping = _outMeterL.isClipping() || _outMeterR.isClipping();
 
     return status_;
 }
@@ -33,13 +33,13 @@ void SamplePlayer::process(Sample const * bufferIn, const nFrame time, SampleBan
     {
         _left = i * 2;
         _right = _left + 1;
-        _amplitude = _envelope_amplitude.value(time + i);
-        nFrame elapsedFrames = time + i - _envelope_amplitude.lastGate();
+        _amplitude = _envAmplitude.value(time + i);
+        nFrame elapsedFrames = time + i - _envAmplitude.lastGate();
         float elapsedSeconds = (float)elapsedFrames / SAMPLE_RATE;
 
-        if( elapsedSeconds <= _envelope_amplitude.duration() )
+        if( elapsedSeconds <= _envAmplitude.duration() )
         {
-            _amplitude = _envelope_amplitude.value(time + i);
+            _amplitude = _envAmplitude.value(time + i);
             _bufferOut[_left] = bufferIn[_left] + sampleBank->left(_sampleIndex, elapsedFrames) * _amplitude;
             _bufferOut[_right] = bufferIn[_right] + sampleBank->right(_sampleIndex, elapsedFrames) * _amplitude;
         }
@@ -57,6 +57,6 @@ void SamplePlayer::process(Sample const * bufferIn, const nFrame time, SampleBan
 
 void SamplePlayer::gate(nFrame time)
 {
-    _envelope_amplitude.gate(time);
-    _envelope_sidechain.gate(time);
+    _envAmplitude.gate(time);
+    _envSidechain.gate(time);
 }

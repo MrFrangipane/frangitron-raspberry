@@ -21,17 +21,17 @@ public:
     void gate(nFrame time) override;
 private:
     float _pitch = 65.0;
-    float _hard_soft = 0.05;
+    float _hardSoft = 0.05;
     float _release = 1.0;
-    int _sample_index = 0;
-    float _sample_amount = 1.0;
-    float _sidechain_amount = 0.7;
+    int _sampleIndex = 0;
+    float _sampleAmount = 1.0;
+    float _sidechainAmount = 0.7;
     float _amplitude = 0.0;
     float _pichitude = 0.0;
-    _Envelope _envelope_pitch;
-    _Envelope _envelope_amplitude;
-    _SampleFilter _hipass_1;
-    _SampleFilter _hipass_2;
+    _Envelope _envPitch;
+    _Envelope _envAmplitude;
+    _SampleFilter _hiPass1;
+    _SampleFilter _hiPass2;
 };
 
 

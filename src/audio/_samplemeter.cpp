@@ -4,7 +4,7 @@
 void _SampleMeter::stepCompute(Sample sample)
 {
     _sample = sample;
-    if( _isWeighted )
+    if( _isAWeighted )
         _sample = _a_weighting.process(_sample);
 
     _sum += _sample * _sample;
@@ -28,14 +28,14 @@ void _SampleMeter::_endCompute()
     }
 
     // Clipping
-    if( _is_clipping && _clip_persist_counter <= CLIPPING_PERSIST_BUFFER_COUNT) {
-        _clip_persist_counter++;
+    if( _isClipping && _clippingPersistCounter <= CLIPPING_PERSIST_BUFFER_COUNT) {
+        _clippingPersistCounter++;
     } else {
-        _clip_persist_counter = 0;
-        _is_clipping = false;
+        _clippingPersistCounter = 0;
+        _isClipping = false;
     }
     if( rms.instant >= CLIPPING_THRESOLD ) {
-        _is_clipping = true;
+        _isClipping = true;
     }
 
     // Reset

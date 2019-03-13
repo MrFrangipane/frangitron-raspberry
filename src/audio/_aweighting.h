@@ -15,9 +15,9 @@ public:
 
 private:
     Sample _sample = 0.0;
-    _SampleFilter _filter_hi;
-    _SampleFilter _filter_low_1;
-    _SampleFilter _filter_low_2;
+    _SampleFilter _filterHi;
+    _SampleFilter _filterLow1;
+    _SampleFilter _filterLow2;
 };
 
 #endif // _AWEIGHTING_H

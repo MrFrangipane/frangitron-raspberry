@@ -10,9 +10,9 @@ public:
     Encoder() {}
     void setIncrement(float increment, nFrame time) { _increment = increment; _lastIncrementUpdate = time; }
     void setPressed(bool pressed, nFrame time) { _pressed = pressed; _lastPressedUpdate = time; }
-    bool clicked(nFrame time);
-    bool pressed(nFrame time);
-    float increment(nFrame time);
+    bool clicked(nFrame /*time*/);
+    bool pressed(nFrame /*time*/);
+    float increment(nFrame /*time*/);
 
 
 private:

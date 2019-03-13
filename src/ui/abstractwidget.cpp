@@ -10,17 +10,17 @@ void AbstractWidget::update_(const ModuleStatus status)
 QSize AbstractWidget::minimumSizeHint() const
 {
     QFontMetrics metrics(QApplication::font());
-    int title_width = metrics.width(property("displayName").toString());
-    int content_width;
+    int titleWidth = metrics.width(property("displayName").toString());
+    int contentWidth;
 
     if( _drawMeter ) {
-        content_width = UI_MARGIN + _contentMinimumWidth + UI_MARGIN + UI_OUTMETER_WIDTH + UI_MARGIN;
+        contentWidth = UI_MARGIN + _contentMinimumWidth + UI_MARGIN + UI_OUTMETER_WIDTH + UI_MARGIN;
     } else {
-        content_width = UI_MARGIN + _contentMinimumWidth + UI_MARGIN;
+        contentWidth = UI_MARGIN + _contentMinimumWidth + UI_MARGIN;
     }
 
     return QSize(
-        std::max(UI_MIN_CONTENT_SIZE, std::max(title_width, content_width)),
+        std::max(UI_MIN_CONTENT_SIZE, std::max(titleWidth, contentWidth)),
         std::max(UI_MIN_CONTENT_SIZE, UI_TITLE_HEIGHT + UI_MARGIN + _contentMinimumHeight + UI_MARGIN)
     );
 }
@@ -79,7 +79,7 @@ void AbstractWidget::paintEvent(QPaintEvent *event)
     // METER OUT
     if( _drawMeter ) {
         fillRect(painter, rectOutMeter, _darkGrey);
-        if( _status.is_clipping ) {
+        if( _status.isClipping ) {
             fillRect(painter, rectOutMeter.adjusted(0, std::fmin(rectOutMeter.height(), -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF), 0, 0), Qt::red);
         } else {
             fillRect(painter, rectOutMeter.adjusted(0, std::fmin(rectOutMeter.height(), -_status.levelOut * rectOutMeter.height() * UI_LEVEL_MAGIC_COEFF), 0, 0), Qt::white);

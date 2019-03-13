@@ -6,7 +6,7 @@ ModuleStatus const LevelMeter::status()
 
     status_.params[2].name = "Level";
     status_.params[2].value = _level;
-    status_.params[2].visible = !_is_level_locked;
+    status_.params[2].isVisible = !_isLevelLocked;
     status_.params[2].min = -60.0;
     status_.params[2].max = 6.0;
     status_.params[2].step = 1.0;
@@ -27,7 +27,7 @@ ModuleStatus const LevelMeter::status()
     status_.params[9].value = (float)(_meterL.isClipping() || _meterR.isClipping());
 
     status_.params[10].name  = "is_locked";
-    status_.params[10].value = (float)(_is_level_locked);
+    status_.params[10].value = (float)(_isLevelLocked);
 
     return status_;
 }
@@ -35,9 +35,9 @@ ModuleStatus const LevelMeter::status()
 
 void LevelMeter::update(ModuleStatus status)
 {
-    _is_level_locked = (bool)status.params[10].value;
+    _isLevelLocked = (bool)status.params[10].value;
 
-    if( !_is_level_locked ) {
+    if( !_isLevelLocked ) {
         _level = status.params[2].value;
     }
 }

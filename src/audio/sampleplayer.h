@@ -21,8 +21,8 @@ public:
 private:
     float _amplitude = 0;
     int _sampleIndex = 0;
-    _Envelope _envelope_amplitude;
-    _Envelope _envelope_sidechain;
+    _Envelope _envAmplitude;
+    _Envelope _envSidechain;
 };
 
 

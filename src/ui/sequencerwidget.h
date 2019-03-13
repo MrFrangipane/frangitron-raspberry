@@ -16,7 +16,7 @@ class SequencerWidget : public QWidget
     Q_OBJECT
 public:
     explicit SequencerWidget(QWidget *parent = nullptr) : QWidget(parent) { }
-    void set_step(nSequenceStep step) { _step = step; update(); }
+    void setStep(nSequenceStep step) { _step = step; update(); }
 
 protected:
     void paintEvent(QPaintEvent *event) override;

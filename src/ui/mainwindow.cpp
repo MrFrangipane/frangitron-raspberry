@@ -31,12 +31,12 @@ void MainWindow::_setupUi()
     ui->setupUi(this);
     ui->patch->setVisible(false);
     ui->loading->setVisible(true);
+#ifdef RASPBERRYPI
     ui->devMode->setVisible(false);
-    resize(800, 480);
-
-#ifndef RASPBERRYPI
+#else
     ui->devMode->setVisible(true);
 #endif
+    resize(800, 480);
 
     // WIDGET LISTS FOR EASY PARAM LOOPING
     _nameLabels.push_back(ui->labelEncName1);
@@ -51,11 +51,13 @@ void MainWindow::_setupUi()
     _valueLabels.push_back(ui->labelEncValue4);
     _valueLabels.push_back(ui->labelEncValue5);
 
+#ifndef RASPBERRYPI
     _sliders.push_back(ui->sliderEnc1);
     _sliders.push_back(ui->sliderEnc2);
     _sliders.push_back(ui->sliderEnc3);
     _sliders.push_back(ui->sliderEnc4);
     _sliders.push_back(ui->sliderEnc5);
+#endif
 
     show();
 }
@@ -168,7 +170,7 @@ void MainWindow::_refresh()
     if( engineStatus.status == EngineStatus::LOADING )
     {
         ui->loading->setVisible(true);
-        ui->progress->setValue(engineStatus.loading_progress);
+        ui->progress->setValue(engineStatus.loadingProgress);
     }
     else if ( engineStatus.status == EngineStatus::RUNNING )
     {
@@ -181,7 +183,7 @@ void MainWindow::_refresh()
         uiStatus.frame += 1;
 
         // ENGINE STATUS -> INFOS
-        ui->sequencer->set_step(engineStatus.clock.sequence_step);
+        ui->sequencer->setStep(engineStatus.clock.sequenceStep);
         ui->labelTime->setText(QTime(0,0,0,0).addMSecs(engineStatus.clock.seconds * 1000.0).toString("hh:mm:ss.zzz") + QString(" s ") + QString::number(engineStatus.clock.bar, 'f', 1) + QString(" bar"));
 
         // ENGINE STATUS -> MODULE WIDGETS
@@ -206,6 +208,7 @@ void MainWindow::_refresh()
 
                 _valueLabels[paramId]->setText("");
 
+                #ifndef RASPBERRYPI
                 _sliders[paramId]->setMinimum(0);
                 _sliders[paramId]->setMaximum(2);
                 _sliders[paramId]->setSingleStep(1);
@@ -213,6 +216,7 @@ void MainWindow::_refresh()
                 _sliders[paramId]->setEnabled(false);
 
                 _previousValues[paramId] = 0.0;
+                #endif
             }
         }
         else {
@@ -221,7 +225,7 @@ void MainWindow::_refresh()
                 uiStatus.selectedModule = selectedModule;
 
                 for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
-                    if( engineStatus.modulesStatuses[selectedModule].params[paramId].visible )
+                    if( engineStatus.modulesStatuses[selectedModule].params[paramId].isVisible )
                     {
                         text = QString::fromStdString(engineStatus.modulesStatuses[selectedModule].params[paramId].name);
                         _nameLabels[paramId]->setText(text);
@@ -255,7 +259,7 @@ void MainWindow::_refresh()
             }
             // UPDATE STATUS
             for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
-                if( !engineStatus.modulesStatuses[selectedModule].params[paramId].visible ) continue;
+                if( !engineStatus.modulesStatuses[selectedModule].params[paramId].isVisible ) continue;
 
                 // ENGINE -> UI
                 if( engineStatus.encoders[paramId].pressed ) {

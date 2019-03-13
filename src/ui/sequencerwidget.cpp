@@ -8,17 +8,17 @@ void SequencerWidget::paintEvent(QPaintEvent *event)
     int page = (_step / 16) % 4;
 
     // COMPUTE RECTS
-    int cell_width = event->rect().width() / 21;
-    int cell_height = event->rect().height();
-    int top = (cell_height - cell_width) / 2;
+    int cellWidth = event->rect().width() / 21;
+    int cellHeight = event->rect().height();
+    int top = (cellHeight - cellWidth) / 2;
 
     // STEPS
     for( int i = 0; i < 16; i++ ) {
         QRect cell(
-            cell_width * i,
+            cellWidth * i,
             top,
-            cell_width,
-            cell_width
+            cellWidth,
+            cellWidth
         );
 
         if( i == step && i % 4 == 0 ) fillCircle(painter, cell, Qt::white, .8);
@@ -34,10 +34,10 @@ void SequencerWidget::paintEvent(QPaintEvent *event)
         else painter.setBrush(Qt::NoBrush);
 
         QRect cell(
-            cell_width * (i + 16.5),
+            cellWidth * (i + 16.5),
             top + 3,
-            cell_width,
-            cell_width - 6
+            cellWidth,
+            cellWidth - 6
         );
 
         if( i == page ) fillRect(painter, cell.adjusted(5, 5, -5, -5), Qt::white);

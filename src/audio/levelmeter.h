@@ -19,11 +19,11 @@ public:
     void process(Sample const * bufferIn, const nFrame /*time*/, const SampleBank * /*sampleBank*/) override;
 private:
     float _level = 0.0;
-    bool _is_level_locked = false;
+    bool _isLevelLocked = false;
     _SampleMeter _meterL;
     _SampleMeter _meterR;
-    bool _is_clipping = false;
-    int _clip_release = 0; // count buffers to persist clipping
+    bool _isClipping = false;
+    int _clippingPersistCount = 0; // count buffers to persist clipping
 };
 
 #endif // LEVELMETER_H

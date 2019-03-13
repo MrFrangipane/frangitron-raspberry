@@ -4,10 +4,9 @@
 Engine::Engine(const Configuration *configuration) :
     _configuration(configuration)
 {
-    // This is to avoid Engine trying to update Modules not loaded by patch
     for( int moduleIndex = 0; moduleIndex < MODULE_MAX_COUNT; moduleIndex++ )
     {
-        _shared.engine.modulesStatuses[moduleIndex].isUpdatedByEngine = false;
+        _shared.engine.modulesStatuses[moduleIndex].isDummy = true;
     }
 }
 
@@ -30,22 +29,22 @@ void Engine::_setAudioDeviceIndex()
 
     std::cout << std::endl << "Available audio devices :" << std::endl;
 
-    RtAudio::DeviceInfo device_infos;
+    RtAudio::DeviceInfo deviceInfos;
 
     for( unsigned int i = 0; i < audio->getDeviceCount(); i++ ) {
 
-        device_infos = audio->getDeviceInfo(i);
-        std::cout << i << " : " << device_infos.name <<
-                    " duplex:" << device_infos.duplexChannels <<
-                    " in:" << device_infos.inputChannels <<
-                    " out:" << device_infos.outputChannels <<
+        deviceInfos = audio->getDeviceInfo(i);
+        std::cout << i << " : " << deviceInfos.name <<
+                    " duplex:" << deviceInfos.duplexChannels <<
+                    " in:" << deviceInfos.inputChannels <<
+                    " out:" << deviceInfos.outputChannels <<
                      std::endl;
 
         for( std::string interfaceName : interfaceNames) {
 
-            if( device_infos.inputChannels != 0 &&
-                device_infos.outputChannels != 0 &&
-                device_infos.name.find(interfaceName) != std::string::npos )
+            if( deviceInfos.inputChannels != 0 &&
+                deviceInfos.outputChannels != 0 &&
+                deviceInfos.name.find(interfaceName) != std::string::npos )
             {
                     _audioDeviceIndex = i;
                     return;
@@ -140,7 +139,7 @@ void Engine::start()
         else continue;
 
         // WIRE
-        _shared.patchWires.push_back(configModule.wireIndex);
+        _shared.patchWires.push_back(configModule.inputIndex);
 
         // REGISTER MIDI NOTE
         if( configModule.midiNote != -1 )
@@ -152,7 +151,7 @@ void Engine::start()
         int paramIndex = 0;
         for( ConfModuleParamOverride override : configModule.overrides )
         {
-            if( override.active )
+            if( override.isActive )
                 _shared.engine.modulesStatuses[module].params[paramIndex].value = override.value;
 
             paramIndex++;
@@ -234,7 +233,7 @@ void Engine::start()
 
     // AUDIO FILES
     _shared.sampleBank = new SampleBank();
-    nSample sampleCountTotal = 0;
+    nSample sampleBankSize = 0;
     for( ConfAudioClip configClip : _configuration->audioClips )
     {
         if( configClip.frameCount == 0 ) // Exit at first empty clip
@@ -247,16 +246,16 @@ void Engine::start()
         registration.channelCount = configClip.channelCount;
 
         _shared.sampleBank->registerClip(registration);
-        sampleCountTotal += registration.frameCount * registration.channelCount;
+        sampleBankSize += registration.frameCount * registration.channelCount;
     }
 
-    int registrationIndex = 0;
-    _shared.sampleBank->setSize(sampleCountTotal);
+    _shared.sampleBank->setSize(sampleBankSize);
 
+    int registrationIndex = 0;
     for( AudioClipRegistration registration : _shared.sampleBank->registeredClips() )
     {
         SndfileHandle f_clip = SndfileHandle(registration.filepath);
-        if( f_clip.frames() != registration.frameCount ||
+        if( (nFrame)f_clip.frames() != registration.frameCount ||
             f_clip.channels() != registration.channelCount )
         {
             std::cout << registration.filepath << " is not the expected file !" << std::endl;
@@ -269,13 +268,13 @@ void Engine::start()
 
             // Fill RAM
             // TODO : when more files are to be loaded : try to load the entire file at once, see if performance improves
-            for( int _ = 0; _ < registration.frameCount; _++ )
+            for( nFrame _ = 0; _ < registration.frameCount; _++ )
             {
                 f_clip.read(_shared.sampleBank->currentPointer(), registration.channelCount);
                 _shared.sampleBank->incrementSample(registration.channelCount);
 
                 // Ui
-                _shared.engine.loading_progress = _shared.sampleBank->loadingProgress();
+                _shared.engine.loadingProgress = _shared.sampleBank->loadingProgress();
                 _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
             }
 
@@ -350,7 +349,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
             for( ModuleParameter moduleParameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
             {
                 if( paramId >= MIDI_ENCODER_COUNT ) break;
-                if( !moduleParameter.visible )
+                if( !moduleParameter.isVisible )
                 {
                     paramId++;
                     continue;
@@ -364,7 +363,6 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
                 paramId++;
             }
-            std::cout << "a";
         }
         #endif
 
@@ -376,8 +374,8 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         {
             if( paramId >= MIDI_ENCODER_COUNT ) break;
 
-            pressed = s->midi_encoders[paramId].pressed(s->time.engine_frame());
-            increment = s->midi_encoders[paramId].increment(s->time.engine_frame());
+            pressed = s->midiEncoders[paramId].pressed(s->time.engineFrame());
+            increment = s->midiEncoders[paramId].increment(s->time.engineFrame());
             s->engine.encoders[paramId].pressed = pressed;
 
             if( increment != 0 )
@@ -389,7 +387,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
                     parameter.min, fmin(parameter.value + increment, parameter.max)
                 );
 
-                s->midi_encoders[paramId].setIncrement(0, s->time.engine_frame());
+                s->midiEncoders[paramId].setIncrement(0, s->time.engineFrame());
             }
 
             paramId++;
@@ -399,22 +397,22 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // ENGINE -> PATCH
     moduleId = 0;
     for( ModuleStatus status : s->engine.modulesStatuses ) {
-        if( status.isUpdatedByEngine )
+        if( !status.isDummy )
             s->patch[moduleId]->update(status);
         moduleId++;
     }
 
     // NOTE ON
     for( SubscribedNote note : s->subscribedNotes ) {
-        if( s->midi_note_on[note.noteNumber] )
+        if( s->midiNoteOn[note.noteNumber] )
         {
-            s->patch[note.moduleIndex]->gate(s->time.engine_frame());
+            s->patch[note.moduleIndex]->gate(s->time.engineFrame());
         }
     }
     // INSTANT NOTE OFF
     // TODO : use note off from midi ?
     for( SubscribedNote note : s->subscribedNotes )
-        s->midi_note_on[note.noteNumber] = false;
+        s->midiNoteOn[note.noteNumber] = false;
 
     // PROCESS
     moduleId = 0;
@@ -422,10 +420,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         inputId = s->patchWires[moduleId];
 
         if( inputId == -1 ) {  // Hardware Input
-            module->process(ioIn, s->time.engine_frame(), s->sampleBank);
+            module->process(ioIn, s->time.engineFrame(), s->sampleBank);
         }
         else if( inputId >= 0 ) {  // Module Input
-           module->process(s->patch[inputId]->output(), s->time.engine_frame(), s->sampleBank);
+           module->process(s->patch[inputId]->output(), s->time.engineFrame(), s->sampleBank);
         }
 
         moduleId++;
@@ -450,13 +448,13 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // TODO : clarify terms between UiStatus, EngineStatus, ...
     s->engine.clock.bar = s->time.bar();
     s->engine.clock.seconds = s->time.seconds();
-    s->engine.clock.sequence_step = s->time.sequence_step();
-    s->engine.clock.is_playing = s->time.is_playing();
+    s->engine.clock.sequenceStep = s->time.sequenceStep();
+    s->engine.clock.isPlaying = s->time.isPlaying();
 
     s->uiSetStatus(s->uiPtr, s->engine);
 
     // INCREMENT TIME
-    s->time.increment_frame(bufferSize);
+    s->time.incrementFrame(bufferSize);
 
     return 0;
 }
@@ -478,15 +476,15 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     if( message->at(0) == 252 ) shared->time.stop();
     if( message->at(0) == 251 ) shared->time.resume();
 
-    if( message->at(0) == 248 && shared->time.is_playing() ) { // Midi Clock Pulse
-        shared->time.increment_ppqn(1);
+    if( message->at(0) == 248 && shared->time.isPlaying() ) { // Midi Clock Pulse
+        shared->time.incrementPpqn(1);
     }
 
     // NOTE ON
     if( message->at(0) >= 144 && message->at(0) <= 159) {
         //std::cout << "Note on : " << (int)message->at(1) << " vel: " << (int)message->at(2) << " chan: " << (int)message->at(0) - 143 << std::endl;
         if( (int)message->at(2) )
-            shared->midi_note_on[(int)message->at(1)] = true;
+            shared->midiNoteOn[(int)message->at(1)] = true;
     }
 
     // CONTROL CHANGE
@@ -501,35 +499,35 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
             case 23: {}
             case 24:
                 encoder = (int)message->at(1) - 20;
-                shared->midi_encoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time.engine_frame());
+                shared->midiEncoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time.engineFrame());
             break;
 
             // NRPN MSB
             case 99:
-                shared->midi_msb = (int)message->at(2);
+                shared->midiMsb = (int)message->at(2);
             break;
 
             // NRPN LSB
             case 98:
-                shared->midi_lsb = (int)message->at(2);
+                shared->midiLsb = (int)message->at(2);
             break;
 
             // DECREASE
             case 97:
-                encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-                shared->midi_encoders[encoder].setIncrement(-1, shared->time.engine_frame());
+                encoder = (shared->midiLsb << 7) | shared->midiMsb;
+                shared->midiEncoders[encoder].setIncrement(-1, shared->time.engineFrame());
 
-                shared->midi_msb = -1;
-                shared->midi_lsb = -1;
+                shared->midiMsb = -1;
+                shared->midiLsb = -1;
             break;
 
             // INCREASE
             case 96:
-                encoder = (shared->midi_lsb << 7) | shared->midi_msb;
-                shared->midi_encoders[encoder].setIncrement(1, shared->time.engine_frame());
+                encoder = (shared->midiLsb << 7) | shared->midiMsb;
+                shared->midiEncoders[encoder].setIncrement(1, shared->time.engineFrame());
 
-                shared->midi_msb = -1;
-                shared->midi_lsb = -1;
+                shared->midiMsb = -1;
+                shared->midiLsb = -1;
             break;
 
             default:

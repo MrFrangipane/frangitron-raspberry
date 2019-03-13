@@ -1,23 +1,23 @@
 #include "recorder.h"
 
 
-Recorder::Recorder(nFrame buffer_size, int cache_buffer_count)
+Recorder::Recorder(nFrame buffer_size, int cacheBufferCount)
 {
-    _buffer_size = buffer_size;
-    _cache_size = cache_buffer_count * buffer_size * 2;
-    _cache.reserve(_cache_size);
+    _bufferSize = buffer_size;
+    _cacheSize = cacheBufferCount * buffer_size * 2;
+    _cache.reserve(_cacheSize);
 
     auto now = std::time(nullptr);
     auto nowLocal = *std::localtime(&now);
-    std::ostringstream oss;
-    oss << std::put_time(&nowLocal, RECORDER_OUTPUT_FILE);
-    _filepath = oss.str();
+    std::ostringstream stringStream;
+    stringStream << std::put_time(&nowLocal, RECORDER_OUTPUT_FILE);
+    _filepath = stringStream.str();
 }
 
 void Recorder::start()
 {
-    _running = true;
-    _thread = std::thread(main_loop, this);
+    _isRunning = true;
+    _thread = std::thread(mainLoop, this);
     _thread.detach();
 }
 
@@ -25,27 +25,27 @@ void Recorder::write(Sample *buffer)
 {
     nFrame cache_index;
 
-    for( uint i = 0; i < _buffer_size * 2; i++ )
+    for( uint i = 0; i < _bufferSize * 2; i++ )
     {
-        cache_index = (_write_index + i) % _cache_size;
+        cache_index = (_writeIndex + i) % _cacheSize;
         _cache[cache_index] = buffer[i];
     }
 
-    _write_index += _buffer_size * 2;
+    _writeIndex += _bufferSize * 2;
 }
 
-void Recorder::main_loop(Recorder* recorder)
+void Recorder::mainLoop(Recorder* recorder)
 {
-    nFrame write_index_ = 0;
-    nFrame file_index = 0;
-    nFrame cache_index = 0;
-    nFrame buffer_size = recorder->buffer_size();
+    nFrame writeIndex_ = 0;
+    nFrame fileIndex = 0;
+    nFrame cacheIndex = 0;
+    nFrame bufferSize = recorder->bufferSize();
     Sample buf[2];
-    int sleep_duration = SECOND_PER_SAMPLE * buffer_size * 500; // half a buffer in milliseconds
+    int sleepDuration = SECOND_PER_SAMPLE * bufferSize * 500; // half a buffer in milliseconds
 
     std::cout << "Opening output file " << recorder->filepath() << std::endl;
 
-    SndfileHandle output_file(
+    SndfileHandle outputFile(
         recorder->filepath(),
         SFM_WRITE,
         SF_FORMAT_WAV | SF_FORMAT_PCM_16,
@@ -53,30 +53,30 @@ void Recorder::main_loop(Recorder* recorder)
         SAMPLE_RATE
     );
 
-    if( output_file.error() != 0) {
-        std::cout << " -> ERROR : " << output_file.strError() << std::endl;
+    if( outputFile.error() != 0) {
+        std::cout << " -> ERROR : " << outputFile.strError() << std::endl;
         return;
     }
 
-    while( recorder->running() )
+    while( recorder->isRunning() )
     {
-        write_index_ = recorder->write_index();
-        if( file_index < write_index_ )
+        writeIndex_ = recorder->writeIndex();
+        if( fileIndex < writeIndex_ )
         {
-            for( uint i = 0; i < buffer_size; i++ )
+            for( uint i = 0; i < bufferSize; i++ )
             {
-                cache_index = file_index + (i * 2);
+                cacheIndex = fileIndex + (i * 2);
 
-                buf[0] = recorder->cache(cache_index);
-                buf[1] = recorder->cache(cache_index + 1);
+                buf[0] = recorder->cache(cacheIndex);
+                buf[1] = recorder->cache(cacheIndex + 1);
 
-                if( output_file.error() == SF_ERR_NO_ERROR )
-                    output_file.write(buf, 2);
+                if( outputFile.error() == SF_ERR_NO_ERROR )
+                    outputFile.write(buf, 2);
             }
-            file_index += buffer_size * 2;
+            fileIndex += bufferSize * 2;
         } else {
             // sleep for half a buffer
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleep_duration));
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
         }
     }
 

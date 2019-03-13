@@ -40,7 +40,7 @@ const ModuleStatus Filter::status()
     status_.params[1].min = -1.0;
     status_.params[1].max = 1.0;
     status_.params[1].step = 0.01;
-    status_.params[1].visible = true;
+    status_.params[1].isVisible = true;
 
     if( _mode == FilterMode::LOWPASS ) {
         status_.params[1].value = _lowPassL.cutoff() - 1.0;
@@ -56,11 +56,11 @@ const ModuleStatus Filter::status()
     status_.params[3].min = 0.0;
     status_.params[3].max = 0.6;
     status_.params[3].step = 0.003;
-    status_.params[3].visible = true;
+    status_.params[3].isVisible = true;
     status_.params[3].value = _hiPassL.resonance();
 
     status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
-    status_.is_clipping = _outMeterL.isClipping() || _outMeterR.isClipping();
+    status_.isClipping = _outMeterL.isClipping() || _outMeterR.isClipping();
 
     return status_;
 }

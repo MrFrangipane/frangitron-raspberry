@@ -52,11 +52,11 @@ struct Shared {
     void* uiPtr;
     GetStatusCallback uiStatus;
     SetStatusCallback uiSetStatus;
-    int midi_msb = -1;
-    int midi_lsb = -1;
-    Encoder midi_encoders[MIDI_ENCODER_COUNT];
+    int midiMsb = -1;
+    int midiLsb = -1;
+    Encoder midiEncoders[MIDI_ENCODER_COUNT];
     nFrame uiFrame = 0;
-    bool midi_note_on[MIDI_NOTE_COUNT];
+    bool midiNoteOn[MIDI_NOTE_COUNT];
     SampleBank * sampleBank = nullptr;
     Recorder* recorder = nullptr;
 };
