@@ -21,18 +21,16 @@ public:
     SampleBank() { }
     Sample left(int clipIndex, nFrame frame) const;
     Sample right(int clipIndex, nFrame frame) const;
-    void registerClip(AudioClipRegistration registration) { _registered.push_back(registration); }
-    void updateRegistration(AudioClipRegistration registration, int index) { _registered[index] = registration; }
-    void setSize(nSample sampleCount) { _samples.resize(sampleCount); }
+    void registerClip(AudioClipRegistration registration);
+    Sample * pointerToSample(AudioClipRegistration clip, nFrame frameOffset, bool updateProgress=true);
     void incrementSample(nFrame value) { _samplesLoaded += value; }
     int loadingProgress() { return _samplesLoaded * 100 / _samples.size(); }
-    const std::vector<AudioClipRegistration> & registeredClips() { return _registered; }
-    Sample * currentPointer() { return (Sample*)(_samples.data() + _samplesLoaded); }
+    const std::vector<AudioClipRegistration> & registeredClips() { return _register; }
     nSample currentSample() { return _samplesLoaded; }
 
 private:
     std::vector<Sample> _samples;
-    std::vector<AudioClipRegistration> _registered;
+    std::vector<AudioClipRegistration> _register;
     nSample _samplesLoaded = 0;
 };
 

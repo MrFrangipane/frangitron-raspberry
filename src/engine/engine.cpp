@@ -233,7 +233,6 @@ void Engine::start()
 
     // AUDIO FILES
     _shared.sampleBank = new SampleBank();
-    nSample sampleBankSize = 0;
     for( ConfAudioClip configClip : _configuration->audioClips )
     {
         if( configClip.frameCount == 0 ) // Exit at first empty clip
@@ -246,41 +245,34 @@ void Engine::start()
         registration.channelCount = configClip.channelCount;
 
         _shared.sampleBank->registerClip(registration);
-        sampleBankSize += registration.frameCount * registration.channelCount;
     }
 
-    _shared.sampleBank->setSize(sampleBankSize);
-
     int registrationIndex = 0;
-    for( AudioClipRegistration registration : _shared.sampleBank->registeredClips() )
+    for( AudioClipRegistration clip : _shared.sampleBank->registeredClips() )
     {
-        SndfileHandle f_clip = SndfileHandle(registration.filepath);
-        if( (nFrame)f_clip.frames() != registration.frameCount ||
-            f_clip.channels() != registration.channelCount )
+        SndfileHandle f_clip = SndfileHandle(clip.filepath);
+        if( (nFrame)f_clip.frames() != clip.frameCount ||
+            f_clip.channels() != clip.channelCount )
         {
-            std::cout << registration.filepath << " is not the expected file !" << std::endl;
-            _shared.sampleBank->incrementSample(registration.frameCount * registration.channelCount);
+            std::cout << clip.filepath << " is not the expected file !" << std::endl;
         }
         else
         {
-            // store start sample TODO : do this inside SampleBank
-            registration.startSample = _shared.sampleBank->currentSample();
-
             // Fill RAM
             // TODO : when more files are to be loaded : try to load the entire file at once, see if performance improves
-            for( nFrame _ = 0; _ < registration.frameCount; _++ )
+            for( nFrame frameIndex = 0; frameIndex < clip.frameCount; frameIndex++ )
             {
-                f_clip.read(_shared.sampleBank->currentPointer(), registration.channelCount);
-                _shared.sampleBank->incrementSample(registration.channelCount);
+                f_clip.read(
+                    _shared.sampleBank->pointerToSample(clip, frameIndex, true),
+                    clip.channelCount
+                );
 
                 // Ui
                 _shared.engine.loadingProgress = _shared.sampleBank->loadingProgress();
                 _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
             }
 
-            std::cout << "Loaded " << registration.filepath << std::endl;
-
-            _shared.sampleBank->updateRegistration(registration, registrationIndex);
+            std::cout << "Loaded " << clip.filepath << std::endl;
             registrationIndex++;
         }
     }
