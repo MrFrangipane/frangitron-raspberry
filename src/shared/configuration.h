@@ -34,19 +34,28 @@ struct ConfModule
 };
 
 
-struct ConfAudioClip
+struct ConfAudioMarker
+{
+    std::string name = "unknown";
+    nFrame position = -1;
+};
+
+
+struct ConfAudioFile
 {
     std::string name = "unknown";
     std::string filepath = "";
     int channelCount = 1;
     nFrame frameCount = 0;
+    ConfAudioMarker markers[AUDIO_MARKER_COUNT_MAX];
 };
 
 
 struct Configuration
 {
     ConfModule modules[MODULE_MAX_COUNT];
-    ConfAudioClip audioClips[AUDIOCLIP_MAX_COUNT];
+    ConfAudioFile samples[AUDIO_SAMPLE_MAX_COUNT];  // pre-loaded
+    ConfAudioFile clips[AUDIO_CLIP_MAX_COUNT];  // async-loaded
 };
 
 

@@ -233,7 +233,7 @@ void Engine::start()
 
     // AUDIO FILES
     _shared.sampleBank = new SampleBank();
-    for( ConfAudioClip configClip : _configuration->audioClips )
+    for( ConfAudioFile configClip : _configuration->samples )
     {
         if( configClip.frameCount == 0 ) // Exit at first empty clip
             break;
@@ -247,7 +247,6 @@ void Engine::start()
         _shared.sampleBank->registerClip(registration);
     }
 
-    int registrationIndex = 0;
     for( AudioClipRegistration clip : _shared.sampleBank->registeredClips() )
     {
         SndfileHandle f_clip = SndfileHandle(clip.filepath);
@@ -273,7 +272,6 @@ void Engine::start()
             }
 
             std::cout << "Loaded " << clip.filepath << std::endl;
-            registrationIndex++;
         }
     }
 

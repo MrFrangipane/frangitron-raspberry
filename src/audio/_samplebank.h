@@ -25,12 +25,12 @@ public:
     Sample * pointerToSample(AudioClipRegistration clip, nFrame frameOffset, bool updateProgress=true);
     void incrementSample(nFrame value) { _samplesLoaded += value; }
     int loadingProgress() { return _samplesLoaded * 100 / _samples.size(); }
-    const std::vector<AudioClipRegistration> & registeredClips() { return _register; }
+    const std::vector<AudioClipRegistration> & registeredClips() { return _clips; }
     nSample currentSample() { return _samplesLoaded; }
 
 private:
     std::vector<Sample> _samples;
-    std::vector<AudioClipRegistration> _register;
+    std::vector<AudioClipRegistration> _clips;
     nSample _samplesLoaded = 0;
 };
 

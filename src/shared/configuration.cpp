@@ -11,30 +11,52 @@ void initConfig(Configuration* conf)
 // expecting to parse a JSON file at some point (instead of doing that)
 void initSamples(Configuration* conf)
 {
-    conf->audioClips[0].name = "Kick 01";
-    conf->audioClips[0].filepath = "/var/frangitron/samples/KIT111AI.wav";
-    conf->audioClips[0].channelCount = 2;
-    conf->audioClips[0].frameCount = 13264;
+    conf->samples[0].name = "Kick 01";
+    conf->samples[0].filepath = "/var/frangitron/samples/KIT111AI.wav";
+    conf->samples[0].channelCount = 2;
+    conf->samples[0].frameCount = 13264;
 
-    conf->audioClips[1].name = "Kick 02";
-    conf->audioClips[1].filepath = "/var/frangitron/samples/BD11_WAV.wav";
-    conf->audioClips[1].channelCount = 2;
-    conf->audioClips[1].frameCount = 29911;
+    conf->samples[1].name = "Kick 02";
+    conf->samples[1].filepath = "/var/frangitron/samples/BD11_WAV.wav";
+    conf->samples[1].channelCount = 2;
+    conf->samples[1].frameCount = 29911;
 
-    conf->audioClips[2].name = "Snare 01";
-    conf->audioClips[2].filepath = "/var/frangitron/samples/SN_11.wav";
-    conf->audioClips[2].channelCount = 2;
-    conf->audioClips[2].frameCount = 20672;
+    conf->samples[2].name = "Snare 01";
+    conf->samples[2].filepath = "/var/frangitron/samples/SN_11.wav";
+    conf->samples[2].channelCount = 2;
+    conf->samples[2].frameCount = 20672;
 
-    conf->audioClips[3].name = "Snare 02";
-    conf->audioClips[3].filepath = "/var/frangitron/samples/SN_12.wav";
-    conf->audioClips[3].channelCount = 2;
-    conf->audioClips[3].frameCount = 16024;
+    conf->samples[3].name = "Snare 02";
+    conf->samples[3].filepath = "/var/frangitron/samples/SN_12.wav";
+    conf->samples[3].channelCount = 2;
+    conf->samples[3].frameCount = 16024;
 }
 
 
-// Here we put ugly stuff that makes engine and Ui code more generic
-// expecting to parse a JSON file at some point (instead of doing that)
+void initClips(Configuration* conf)
+{
+    conf->clips[0].name = "Kick 01";
+    conf->clips[0].filepath = "/var/frangitron/samples/KIT111AI.wav";
+    conf->clips[0].channelCount = 2;
+    conf->clips[0].frameCount = 13264;
+
+    conf->clips[1].name = "Kick 01";
+    conf->clips[1].filepath = "/var/frangitron/samples/KIT111AI.wav";
+    conf->clips[1].channelCount = 2;
+    conf->clips[1].frameCount = 13264;
+
+    conf->clips[2].name = "Kick 01";
+    conf->clips[2].filepath = "/var/frangitron/samples/KIT111AI.wav";
+    conf->clips[2].channelCount = 2;
+    conf->clips[2].frameCount = 13264;
+
+    conf->clips[3].name = "Kick 01";
+    conf->clips[3].filepath = "/var/frangitron/samples/KIT111AI.wav";
+    conf->clips[3].channelCount = 2;
+    conf->clips[3].frameCount = 13264;
+}
+
+
 void initModules(Configuration* conf)
 {
     conf->modules[0].name = "IN";
