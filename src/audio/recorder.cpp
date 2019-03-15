@@ -4,7 +4,7 @@
 Recorder::Recorder(nFrame buffer_size, int cacheBufferCount)
 {
     _bufferSize = buffer_size;
-    _cacheSize = cacheBufferCount * buffer_size * 2;
+    _cacheSize = cacheBufferCount * buffer_size * CHANNEL_COUNT;
     _cache.reserve(_cacheSize);
 
     auto now = std::time(nullptr);
@@ -25,13 +25,13 @@ void Recorder::write(Sample *buffer)
 {
     nFrame cache_index;
 
-    for( uint i = 0; i < _bufferSize * 2; i++ )
+    for( uint i = 0; i < _bufferSize * CHANNEL_COUNT; i++ )
     {
         cache_index = (_writeIndex + i) % _cacheSize;
         _cache[cache_index] = buffer[i];
     }
 
-    _writeIndex += _bufferSize * 2;
+    _writeIndex += _bufferSize * CHANNEL_COUNT;
 }
 
 void Recorder::mainLoop(Recorder* recorder)
@@ -40,7 +40,7 @@ void Recorder::mainLoop(Recorder* recorder)
     nFrame fileIndex = 0;
     nFrame cacheIndex = 0;
     nFrame bufferSize = recorder->bufferSize();
-    Sample buf[2];
+    Sample buf[CHANNEL_COUNT];
     int sleepDuration = SECOND_PER_SAMPLE * bufferSize * 500; // half a buffer in milliseconds
 
     std::cout << "Opening output file " << recorder->filepath() << std::endl;
@@ -49,7 +49,7 @@ void Recorder::mainLoop(Recorder* recorder)
         recorder->filepath(),
         SFM_WRITE,
         SF_FORMAT_WAV | SF_FORMAT_PCM_16,
-        2,
+        CHANNEL_COUNT,
         SAMPLE_RATE
     );
 
@@ -65,15 +65,15 @@ void Recorder::mainLoop(Recorder* recorder)
         {
             for( uint i = 0; i < bufferSize; i++ )
             {
-                cacheIndex = fileIndex + (i * 2);
+                cacheIndex = fileIndex + (i * CHANNEL_COUNT);
 
                 buf[0] = recorder->cache(cacheIndex);
                 buf[1] = recorder->cache(cacheIndex + 1);
 
                 if( outputFile.error() == SF_ERR_NO_ERROR )
-                    outputFile.write(buf, 2);
+                    outputFile.write(buf, CHANNEL_COUNT);
             }
-            fileIndex += bufferSize * 2;
+            fileIndex += bufferSize * CHANNEL_COUNT;
         } else {
             // sleep for half a buffer
             std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));

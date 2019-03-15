@@ -54,9 +54,9 @@ struct Shared {
     SetStatusCallback uiSetStatus;
     int midiMsb = -1;
     int midiLsb = -1;
-    Encoder midiEncoders[MIDI_ENCODER_COUNT];
+    Encoder midiEncoders[MIDI_ENCODER_COUNT] = {};
     nFrame uiFrame = 0;
-    bool midiNoteOn[MIDI_NOTE_COUNT];
+    bool midiNoteOn[MIDI_NOTE_COUNT] = {};
     SampleBank * sampleBank = nullptr;
     Recorder* recorder = nullptr;
 };
