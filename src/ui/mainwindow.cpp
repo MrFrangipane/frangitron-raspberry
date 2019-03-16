@@ -301,5 +301,7 @@ void MainWindow::_stop()
 {
     _timerRefresh->stop();
     _engineWorker->stop();
+
+    delete _timerRefresh;
     close();
 }

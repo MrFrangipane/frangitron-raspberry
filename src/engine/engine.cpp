@@ -47,11 +47,13 @@ void Engine::_setAudioDeviceIndex()
                 deviceInfos.name.find(interfaceName) != std::string::npos )
             {
                     _audioDeviceIndex = i;
+                    delete audio;
                     return;
             }
         }
     }
 
+    delete audio;
     _audioDeviceIndex = 0;
 }
 
@@ -92,11 +94,13 @@ void Engine::_setMidiDeviceIndex()
             if( portName.find(interfaceName) != std::string::npos )
             {
                 _midiDeviceIndex = i;
+                delete midiIn;
                 return;
             }
         }
     }
 
+    delete midiIn;
     _midiDeviceIndex = 0;
 }
 
