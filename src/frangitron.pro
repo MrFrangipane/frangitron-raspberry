@@ -52,7 +52,9 @@ SOURCES += \
     shared/configuration.cpp \
     audio/sampleplayer.cpp \
     ui/sampleplayerwidget.cpp \
-    audio/_samplebank.cpp
+    audio/_samplebank.cpp \
+    audio/_deck.cpp \
+    audio/djdeck.cpp
 
 
 HEADERS += \
@@ -88,7 +90,9 @@ HEADERS += \
     shared/configuration.h \
     audio/sampleplayer.h \
     ui/sampleplayerwidget.h \
-    audio/_samplebank.h
+    audio/_samplebank.h \
+    audio/_deck.h \
+    audio/djdeck.h
 
 RESOURCES += \
     images.qrc

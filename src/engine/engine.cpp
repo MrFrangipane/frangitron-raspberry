@@ -140,6 +140,12 @@ void Engine::start()
         else if( configModule.type == std::string("samplePlayer") )
             _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize)));
 
+        else if( configModule.type == std::string("djDeck") )
+        {
+            _shared.decks.push_back(std::make_shared<Deck>(Deck()));
+            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(_bufferSize)));
+        }
+
         else continue;
 
         // WIRE

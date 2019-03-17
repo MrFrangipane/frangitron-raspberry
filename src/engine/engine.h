@@ -19,6 +19,7 @@
 #include "shared/configuration.h"
 #include "shared/masterclock.h"
 #include "midi/encoder.h"
+#include "audio/_deck.h"
 #include "audio/_samplebank.h"
 #include "audio/recorder.h"
 #include "audio/abstractmodule.h"
@@ -27,6 +28,7 @@
 #include "audio/compressor.h"
 #include "audio/kicksynth.h"
 #include "audio/sampleplayer.h"
+#include "audio/djdeck.h"
 
 
 typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
@@ -57,8 +59,9 @@ struct Shared {
     Encoder midiEncoders[MIDI_ENCODER_COUNT] = {};
     nFrame uiFrame = 0;
     bool midiNoteOn[MIDI_NOTE_COUNT] = {};
+    std::vector<std::shared_ptr<Deck>> decks;
     SampleBank * sampleBank = nullptr;
-    Recorder* recorder = nullptr;
+    Recorder * recorder = nullptr;
 };
 
 
