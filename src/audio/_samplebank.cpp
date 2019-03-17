@@ -1,5 +1,14 @@
 #include "_samplebank.h"
 
+SampleBank::SampleBank()
+{
+    _deckA1.resize(SAMPLE_RATE * CHANNEL_COUNT * DECK_LENGTH_SECONDS);
+    _deckA2.resize(SAMPLE_RATE * CHANNEL_COUNT * DECK_LENGTH_SECONDS);
+    _deckB1.resize(SAMPLE_RATE * CHANNEL_COUNT * DECK_LENGTH_SECONDS);
+    _deckB2.resize(SAMPLE_RATE * CHANNEL_COUNT * DECK_LENGTH_SECONDS);
+}
+
+
 void SampleBank::registerClip(AudioClipRegistration clip)
 {
     clip.startSample = _samples.size();

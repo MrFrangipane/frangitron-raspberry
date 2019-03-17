@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "shared/constants.h"
 #include "shared/typedefs.h"
 
 
@@ -18,7 +19,7 @@ struct AudioClipRegistration{
 class SampleBank
 {
 public:
-    SampleBank() { }
+    SampleBank();
     Sample left(int clipIndex, nFrame frame) const;
     Sample right(int clipIndex, nFrame frame) const;
     void registerClip(AudioClipRegistration registration);
@@ -30,6 +31,10 @@ public:
 
 private:
     std::vector<Sample> _samples;
+    std::vector<Sample> _deckA1;
+    std::vector<Sample> _deckA2;
+    std::vector<Sample> _deckB1;
+    std::vector<Sample> _deckB2;
     std::vector<AudioClipRegistration> _clips;
     nSample _samplesLoaded = 0;
 };
