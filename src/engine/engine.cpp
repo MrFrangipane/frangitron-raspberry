@@ -280,10 +280,8 @@ void Engine::start()
     }
 
     // RECORDER
-    /*
-    _shared.recorder= new Recorder(_bufferSize, RECORDER_CACHE_BUFFER_COUNT);
+    _shared.recorder = new Recorder(_bufferSize, RECORDER_CACHE_BUFFER_COUNT);
     _shared.recorder->start();
-    */
 
     // STATE <- RUNNING
     _shared.engine.status = EngineStatus::RUNNING;
@@ -294,9 +292,7 @@ void Engine::stop() {
     _shared.engine.status = EngineStatus::STOPPED;
 
     // RECORDER
-    /*
     _shared.recorder->stop();
-    */
 
     // AUDIO
     try {
@@ -433,9 +429,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // RECORDER
-    /*
     s->recorder->write(ioOut);
-    */
 
     // PATCH -> ENGINE
     moduleId = 0;

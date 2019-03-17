@@ -16,7 +16,7 @@ class Recorder
 public:
     Recorder(nFrame bufferSize, int cacheBufferCount);
     void start();
-    void write(Sample * buffer);
+    void write(Sample *buffer);
     bool isRunning() { return _isRunning; }
     void stop() { _isRunning = false; }
     std::string filepath() { return _filepath; }
@@ -24,7 +24,6 @@ public:
     nFrame bufferSize() { return _bufferSize; }
     Sample const * cacheData() { return _cache.data(); }
     Sample cache(nFrame index) { return _cache[index % _cacheSize]; }
-
 
 private:
     static void mainLoop(Recorder *recorder);
@@ -34,7 +33,6 @@ private:
     nFrame _writeIndex = 0;
     int _cacheSize = 0;
     std::string _filepath = "";
-    SndfileHandle _outputFile;
     bool _isRunning = false;
 };
 

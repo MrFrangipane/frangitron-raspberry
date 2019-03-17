@@ -6,7 +6,7 @@
 #define CHANNEL_COUNT 2
 #define RECORDER_CACHE_BUFFER_COUNT 512 // 512 * 512 = about 5.5s
 #define RECORDER_OUTPUT_FILE "/var/frangitron/recordings/frangitron_%d-%m-%Y_%H.%M.%S.wav"
-#define SECOND_PER_SAMPLE 0.000020833
+#define RECORDER_SLEEP_MS 5 // Sleep 5ms if file write is ahead of engine
 #define LEVEL_METER_RMS_SAMPLE_COUNT 60
 #define LEVEL_METER_AVERAGE_CYCLE_COUNT 15
 #define COMPRESSOR_UPDATE_SAMPLE_COUNT 60
