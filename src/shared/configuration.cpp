@@ -37,16 +37,16 @@ void initSamples(Configuration* conf)
 void initDjTracks(Configuration* conf)
 {
     conf->djTracks[0].name = "Aviate Intro";
-    conf->djTracks[0].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/01-intro.wav";
+    conf->djTracks[0].filepath = "/var/frangitron/djtracks/01-intro.wav";
 
     conf->djTracks[1].name = "Aviate Bridge";
-    conf->djTracks[1].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/02-bridge.wav";
+    conf->djTracks[1].filepath = "/var/frangitron/djtracks/02-bridge.wav";
 
     conf->djTracks[2].name = "Aviate Loop";
-    conf->djTracks[2].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/03-loop.wav";
+    conf->djTracks[2].filepath = "/var/frangitron/djtracks/03-loop.wav";
 
     conf->djTracks[3].name = "Aviate Bridge";
-    conf->djTracks[3].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/04-bridge.wav";
+    conf->djTracks[3].filepath = "/var/frangitron/djtracks/04-bridge.wav";
 }
 
 

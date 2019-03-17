@@ -446,9 +446,9 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
     // HACKY DJTRACKBANK TEST ---
     DjDeckInfos deck = s->djTrackBank->deckInfos(0);
-    if( (int)s->engine.modulesStatuses[2].params[2].value != deck.trackIndex )
+    if( (int)s->engine.modulesStatuses[2].params[2].value - 1 != deck.trackIndex )
     {
-        deck.trackIndex = (int)s->engine.modulesStatuses[2].params[2].value;
+        deck.trackIndex = (int)s->engine.modulesStatuses[2].params[2].value - 1;
         deck.needsLoading = true;
         s->djTrackBank->setDeckInfos(0, deck);
     }
