@@ -3,15 +3,16 @@
 
 void initConfig(Configuration* conf)
 {
-    initModules(conf);
+    initPatch(conf);
     initSamples(conf);
+    initDjTracks(conf);
 }
 
 // Here we put ugly stuff that makes engine and Ui code more generic
 // expecting to parse a JSON file at some point (instead of doing that)
 void initSamples(Configuration* conf)
 {
-    conf->samples[0].name = "Kick 01";
+    conf->samples[0].name = "Kick 01";    
     conf->samples[0].filepath = "/var/frangitron/samples/KIT111AI.wav";
     conf->samples[0].channelCount = 2;
     conf->samples[0].frameCount = 13264;
@@ -33,31 +34,23 @@ void initSamples(Configuration* conf)
 }
 
 
-void initClips(Configuration* conf)
+void initDjTracks(Configuration* conf)
 {
-    conf->clips[0].name = "Kick 01";
-    conf->clips[0].filepath = "/var/frangitron/samples/KIT111AI.wav";
-    conf->clips[0].channelCount = 2;
-    conf->clips[0].frameCount = 13264;
+    conf->djTracks[0].name = "Aviate Intro";
+    conf->djTracks[0].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/01-intro.wav";
 
-    conf->clips[1].name = "Kick 01";
-    conf->clips[1].filepath = "/var/frangitron/samples/KIT111AI.wav";
-    conf->clips[1].channelCount = 2;
-    conf->clips[1].frameCount = 13264;
+    conf->djTracks[1].name = "Aviate Bridge";
+    conf->djTracks[1].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/02-bridge.wav";
 
-    conf->clips[2].name = "Kick 01";
-    conf->clips[2].filepath = "/var/frangitron/samples/KIT111AI.wav";
-    conf->clips[2].channelCount = 2;
-    conf->clips[2].frameCount = 13264;
+    conf->djTracks[2].name = "Aviate Loop";
+    conf->djTracks[2].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/03-loop.wav";
 
-    conf->clips[3].name = "Kick 01";
-    conf->clips[3].filepath = "/var/frangitron/samples/KIT111AI.wav";
-    conf->clips[3].channelCount = 2;
-    conf->clips[3].frameCount = 13264;
+    conf->djTracks[3].name = "Aviate Bridge";
+    conf->djTracks[3].filepath = "/mnt/DATA_900/PROJETS/mr-frangipane-dj/set-04-04-2019/yotto - aviate/04-bridge.wav";
 }
 
 
-void initModules(Configuration* conf)
+void initPatch(Configuration* conf)
 {
     conf->modules[0].name = "IN";
     conf->modules[0].type = "levelMeter";

@@ -8,8 +8,13 @@
 class DjDeck : public AbstractModule
 {
 public:
-    DjDeck(const nFrame bufferSize = 0) :
-        AbstractModule(bufferSize) { }
+    DjDeck(const nFrame bufferSize = 0, int deckIndex = -1) :
+        AbstractModule(bufferSize),
+        _deckIndex(deckIndex)
+    { }
+
+private:
+    int _deckIndex;
 };
 
 #endif // DJDECK_H

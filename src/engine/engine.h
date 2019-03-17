@@ -19,8 +19,8 @@
 #include "shared/configuration.h"
 #include "shared/masterclock.h"
 #include "midi/encoder.h"
-#include "audio/_deck.h"
 #include "audio/_samplebank.h"
+#include "audio/_djtrackbank.h"
 #include "audio/recorder.h"
 #include "audio/abstractmodule.h"
 #include "audio/levelmeter.h"
@@ -59,8 +59,8 @@ struct Shared {
     Encoder midiEncoders[MIDI_ENCODER_COUNT] = {};
     nFrame uiFrame = 0;
     bool midiNoteOn[MIDI_NOTE_COUNT] = {};
-    std::vector<std::shared_ptr<Deck>> decks;
     SampleBank * sampleBank = nullptr;
+    DjTrackBank * djTrackBank = nullptr;
     Recorder * recorder = nullptr;
 };
 
@@ -68,7 +68,7 @@ struct Shared {
 class Engine
 {
 public:
-    Engine(const Configuration *configuration = nullptr);
+    Engine(const Configuration * configuration = nullptr);
     void start();
     void stop();
     void setUiCallbacks(void * uiPtr, GetStatusCallback getCallback, SetStatusCallback setCallback) {

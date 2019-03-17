@@ -1,7 +1,6 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-
 #include <string>
 #include "shared/typedefs.h"
 #include "shared/constants.h"
@@ -55,13 +54,14 @@ struct Configuration
 {
     ConfModule modules[MODULE_MAX_COUNT];
     ConfAudioFile samples[AUDIO_SAMPLE_MAX_COUNT];  // pre-loaded
-    ConfAudioFile clips[AUDIO_CLIP_MAX_COUNT];  // async-loaded
+    ConfAudioFile djTracks[AUDIO_DJTRACK_MAX_COUNT];  // async-loaded
 };
 
 
-void initModules(Configuration* conf);
-void initSamples(Configuration* conf);
-void initConfig(Configuration* conf);
+void initPatch(Configuration * conf);
+void initSamples(Configuration * conf);
+void initDjTracks(Configuration * conf);
+void initConfig(Configuration * conf);
 
 
 #endif // CONFIGURATION_H

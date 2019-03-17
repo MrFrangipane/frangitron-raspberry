@@ -120,6 +120,24 @@ void Engine::start()
     #endif
     // --------------------------------------------------------------
 
+    // DJ TRACK BANK
+    _shared.djTrackBank = new DjTrackBank();
+    for( ConfAudioFile configDjTrack : _configuration->djTracks ) {
+        if( configDjTrack.filepath.empty() ) // Exit at first empty clip
+            break;
+
+        _shared.djTrackBank->registerDjTrack(configDjTrack);
+    }
+    _shared.djTrackBank->start();
+
+    // HACKY DJTRACKBANK TEST ---
+    DjDeckInfos djDeckInfos;
+    djDeckInfos.name = "";
+    djDeckInfos.trackIndex = 0;
+    djDeckInfos.needsLoading = true;
+    _shared.djTrackBank->registerDjDeck(djDeckInfos);
+    // --------------------------
+
     // PATCH LOADING (AUDIO MODULES)
     int module = 0;
     for( ConfModule configModule : _configuration->modules )
@@ -142,7 +160,10 @@ void Engine::start()
 
         else if( configModule.type == std::string("djDeck") )
         {
-            _shared.decks.push_back(std::make_shared<Deck>(Deck()));
+            DjDeckInfos djDeckInfos;
+            djDeckInfos.name = configModule.name;
+
+            _shared.djTrackBank->registerDjDeck(djDeckInfos);
             _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(_bufferSize)));
         }
 
@@ -293,7 +314,8 @@ void Engine::start()
     _shared.engine.status = EngineStatus::RUNNING;
 }
 
-void Engine::stop() {
+void Engine::stop()
+{
     // STATE
     _shared.engine.status = EngineStatus::STOPPED;
 
@@ -315,32 +337,28 @@ void Engine::stop() {
 
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
 {
-    // INIT
     int moduleId = 0;
     int inputId = -2;
     int masterId = 0;
-    Sample *ioIn = (Sample*)bufferIn;
-    Sample *ioOut = (Sample*)bufferOut;
-    Shared* s = (Shared*)userData;
+    Sample * ioIn = (Sample*)bufferIn;
+    Sample * ioOut = (Sample*)bufferOut;
+    Shared * s = (Shared*)userData;
 
-    // RUNNING ?
+    // ENGINE RUNNING ?
     if( s->engine.status != EngineStatus::RUNNING )
     {
-        for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
+        for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ )
             ioOut[i] = 0.0;
-        }
 
         return 0;
     }
 
-    // FROM UI
+    // SELECTED MODULE -> ENGINE
     UiStatus uiStatus = s->uiStatus(s->uiPtr);
-
-    // A MODULE IS SELECTED
-    if( uiStatus.selectedModule != -1 )
+    s->engine.selectedModule = uiStatus.selectedModule;
+    if( s->engine.selectedModule != -1 )
     {
-        s->engine.selectedModule = uiStatus.selectedModule;
-
+        // UI SLIDERS -> ENGINE
         #ifndef RASPBERRYPI
         if( s->uiFrame != uiStatus.frame ) {
             s->uiFrame = uiStatus.frame;
@@ -349,8 +367,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
             for( ModuleParameter moduleParameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
             {
                 if( paramId >= MIDI_ENCODER_COUNT ) break;
-                if( !moduleParameter.isVisible )
-                {
+                if( !moduleParameter.isVisible ) {
                     paramId++;
                     continue;
                 }
@@ -366,7 +383,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         }
         #endif
 
-        // ENCODERS
+        // MIDI ENCODERS -> ENGINE
         int paramId = 0;
         float increment = 0;
         bool pressed = false;
@@ -402,19 +419,16 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
 
-    // NOTE ON
+    // NOTE ON -> PATCH
     for( SubscribedNote note : s->subscribedNotes ) {
         if( s->midiNoteOn[note.noteNumber] )
-        {
             s->patch[note.moduleIndex]->gate(s->time.engineFrame());
-        }
     }
-    // INSTANT NOTE OFF
     // TODO : use note off from midi ?
     for( SubscribedNote note : s->subscribedNotes )
         s->midiNoteOn[note.noteNumber] = false;
 
-    // PROCESS
+    // PATCH PROCESS
     moduleId = 0;
     for( std::shared_ptr<AbstractModule> module : s->patch ) {
         inputId = s->patchWires[moduleId];
@@ -429,12 +443,33 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
 
-    masterId = s->patch.size() - 1;
-    for( nFrame i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
-        ioOut[i] = s->patch[masterId]->output()[i];
+
+    // HACKY DJTRACKBANK TEST ---
+    DjDeckInfos deck = s->djTrackBank->deckInfos(0);
+    if( (int)s->engine.modulesStatuses[2].params[2].value != deck.trackIndex )
+    {
+        deck.trackIndex = (int)s->engine.modulesStatuses[2].params[2].value;
+        deck.needsLoading = true;
+        s->djTrackBank->setDeckInfos(0, deck);
     }
 
-    // RECORDER
+    ConfAudioFile track = s->djTrackBank->trackInfos(deck.trackIndex);
+    int sampleIndex = 0;
+    for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
+        sampleIndex = (s->time.engineFrame() * CHANNEL_COUNT + i) % (track.frameCount * track.channelCount);
+        ioOut[i] = s->djTrackBank->sample(0, sampleIndex);
+    }
+    // --------------------------
+
+    // PATCH -> OUTPUT
+    /*
+    masterId = s->patch.size() - 1;
+    for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
+        ioOut[i] = s->patch[masterId]->output()[i];
+    }
+    */
+
+    // OUTPUT -> RECORDER
     s->recorder->write(ioOut);
 
     // PATCH -> ENGINE
@@ -444,17 +479,16 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         moduleId++;
     }
 
-    // TO UI
-    // TODO : clarify terms between UiStatus, EngineStatus, ...
+    // INCREMENT TIME
     s->engine.clock.bar = s->time.bar();
     s->engine.clock.seconds = s->time.seconds();
     s->engine.clock.sequenceStep = s->time.sequenceStep();
     s->engine.clock.isPlaying = s->time.isPlaying();
-
-    s->uiSetStatus(s->uiPtr, s->engine);
-
-    // INCREMENT TIME
     s->time.incrementFrame(bufferSize);
+
+    // ENGINE -> UI
+    // TODO : clarify terms between UiStatus, EngineStatus, ...
+    s->uiSetStatus(s->uiPtr, s->engine);
 
     return 0;
 }

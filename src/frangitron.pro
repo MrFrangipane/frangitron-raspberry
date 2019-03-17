@@ -53,8 +53,8 @@ SOURCES += \
     audio/sampleplayer.cpp \
     ui/sampleplayerwidget.cpp \
     audio/_samplebank.cpp \
-    audio/_deck.cpp \
-    audio/djdeck.cpp
+    audio/djdeck.cpp \
+    audio/_djtrackbank.cpp
 
 
 HEADERS += \
@@ -91,8 +91,8 @@ HEADERS += \
     audio/sampleplayer.h \
     ui/sampleplayerwidget.h \
     audio/_samplebank.h \
-    audio/_deck.h \
-    audio/djdeck.h
+    audio/djdeck.h \
+    audio/_djtrackbank.h
 
 RESOURCES += \
     images.qrc

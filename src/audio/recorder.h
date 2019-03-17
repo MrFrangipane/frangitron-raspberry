@@ -1,10 +1,10 @@
 #ifndef RECORDER_H
 #define RECORDER_H
 
-#include <thread>
-#include <iomanip>
 #include <ctime>
 #include <chrono>
+#include <thread>
+#include <iomanip>
 #include <iostream>
 #include "sndfile.hh"
 #include "shared/constants.h"
@@ -26,7 +26,7 @@ public:
     Sample cache(nFrame index) { return _cache[index % _cacheSize]; }
 
 private:
-    static void mainLoop(Recorder *recorder);
+    static void mainLoop(Recorder * recorder);
     std::thread _thread;
     Buffer _cache;
     nFrame _bufferSize = 0;
