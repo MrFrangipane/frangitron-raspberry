@@ -2,25 +2,24 @@
 
 DjTrackBank::DjTrackBank() { }
 
-void DjTrackBank::registerDjTrack(ConfAudioFile configDjTrack)
+void DjTrackBank::registerAudioFile(AudioFileInfos djTrack)
 {
-    std::cout << "Registering DjTrack " << configDjTrack.filepath << std::endl;
+    std::cout << "Registering DjTrack " << djTrack.filepath << std::endl;
 
-    SndfileHandle file(configDjTrack.filepath);
+    SndfileHandle file(djTrack.filepath);
     if( file.error() != 0 )
         std::cout << file.strError() << std::endl;
 
-    configDjTrack.frameCount = file.frames();
-    configDjTrack.channelCount = file.channels();
+    djTrack.frameCount = file.frames();
+    djTrack.channelCount = file.channels();
 
-    _tracks.push_back(configDjTrack);
+    _tracks.push_back(djTrack);
 }
 
 void DjTrackBank::registerDjDeck(DjDeckInfos djDeckInfos)
 {
     _samples.push_back(std::vector<Sample>());
     _samples.back().resize(DECK_LENGTH_SECONDS * CHANNEL_COUNT * SAMPLE_RATE);
-    djDeckInfos.startPointer = _samples.back().data();
     _decks.push_back(djDeckInfos);
 }
 
@@ -42,19 +41,22 @@ Sample DjTrackBank::sample(int deckIndex, int sampleIndex)
 void DjTrackBank::mainLoop(DjTrackBank *trackBank)
 {
     DjDeckInfos deck;
-    ConfAudioFile track;
+    AudioFileInfos track;
     auto sleepDuration = std::chrono::milliseconds(DJTRACK_BANK_SLEEP_DURATION);
 
     while( trackBank->isRunning() ) {
         for( int deckIndex = 0; deckIndex < trackBank->deckCount(); deckIndex++ ) {
             deck = trackBank->deckInfos(deckIndex);
-            if( !deck.needsLoading || deck.startPointer == nullptr )
+            if( !deck.needsLoading )
                 continue;
 
             track = trackBank->trackInfos(deck.trackIndex);
             SndfileHandle file(track.filepath);
 
-            file.read(deck.startPointer, track.channelCount * track.frameCount);
+            file.read(
+                trackBank->pointerToSample(deckIndex),
+                track.channelCount * track.frameCount
+            );
 
             deck.needsLoading = false;
             trackBank->setDeckInfos(deckIndex, deck);

@@ -5,9 +5,10 @@
 #include <string>
 #include "shared/constants.h"
 #include "shared/typedefs.h"
+#include "shared/structures.h"
 
 
-struct AudioClipRegistration{
+struct SampleInfos{
     std::string name = "";
     int channelCount = 0;
     nFrame frameCount = 0;
@@ -22,16 +23,16 @@ public:
     SampleBank() { }
     Sample left(int clipIndex, nFrame frame) const;
     Sample right(int clipIndex, nFrame frame) const;
-    void registerClip(AudioClipRegistration registration);
-    Sample * pointerToSample(AudioClipRegistration clip, nFrame frameOffset, bool updateProgress=true);
+    void registerAudioFile(AudioFileInfos audioFileInfos);
+    Sample * pointerToSample(SampleInfos sampleInfos, bool updateProgress=true);
     void incrementSample(nFrame value) { _samplesLoaded += value; }
     int loadingProgress() { return _samplesLoaded * 100 / _samples.size(); }
-    const std::vector<AudioClipRegistration> & registeredClips() { return _clips; }
+    const std::vector<SampleInfos> & registeredSamples() { return _samplesInfos; }
     nSample currentSample() { return _samplesLoaded; }
 
 private:
     std::vector<Sample> _samples;
-    std::vector<AudioClipRegistration> _clips;
+    std::vector<SampleInfos> _samplesInfos;
     nSample _samplesLoaded = 0;
 };
 

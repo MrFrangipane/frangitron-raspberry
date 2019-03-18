@@ -1,38 +1,37 @@
 #include "_samplebank.h"
 
-void SampleBank::registerClip(AudioClipRegistration clip)
+void SampleBank::registerAudioFile(AudioFileInfos audioFileInfos)
 {
-    clip.startSample = _samples.size();
-    _clips.push_back(clip);
-    _samples.resize(_samples.size() + clip.frameCount * clip.channelCount);
+    SampleInfos sampleInfos;
+    sampleInfos.name = audioFileInfos.name;
+    sampleInfos.filepath = audioFileInfos.filepath;
+    sampleInfos.frameCount = audioFileInfos.frameCount;
+    sampleInfos.channelCount = audioFileInfos.channelCount;
+    sampleInfos.startSample = _samples.size();
+
+    _samplesInfos.push_back(sampleInfos);
+    _samples.resize(_samples.size() + sampleInfos.frameCount * sampleInfos.channelCount);
 }
 
-Sample * SampleBank::pointerToSample(AudioClipRegistration clip, nFrame frameOffset, bool updateProgress)
+Sample * SampleBank::pointerToSample(SampleInfos sampleInfos, bool updateProgress)
 {
-    int sampleIndex = clip.startSample + frameOffset * clip.channelCount;
-
     if( updateProgress )
-        _samplesLoaded = sampleIndex;
+        _samplesLoaded = sampleInfos.startSample;
 
-    return (Sample*)(_samples.data() + sampleIndex);
+    return (Sample *)(_samples.data() + sampleInfos.startSample);
 }
 
 Sample SampleBank::left(int clipIndex, nFrame frame) const
 {
-    nFrame posF = frame % _clips[clipIndex].frameCount;
+    nFrame posF = frame % _samplesInfos[clipIndex].frameCount;
 
-    if( _clips[clipIndex].channelCount == 1)
-        return _samples[_clips[clipIndex].startSample + posF];
-
-    return _samples[_clips[clipIndex].startSample + posF];
+    return _samples[_samplesInfos[clipIndex].startSample + posF];
 }
 
 Sample SampleBank::right(int clipIndex, nFrame frame) const
 {
-    nFrame posF = frame % _clips[clipIndex].frameCount;
+    nFrame posF = frame % _samplesInfos[clipIndex].frameCount;
+    nSample channelOffset = _samplesInfos[clipIndex].channelCount - 1;
 
-    if( _clips[clipIndex].channelCount == 1)
-        return _samples[_clips[clipIndex].startSample + posF];
-
-    return _samples[_clips[clipIndex].startSample + posF + 1];
+    return _samples[_samplesInfos[clipIndex].startSample + posF + channelOffset];
 }

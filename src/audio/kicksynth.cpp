@@ -1,5 +1,4 @@
 #include "kicksynth.h"
-#include "iostream"
 
 KickSynth::KickSynth(const nFrame bufferSize) : AbstractModule(bufferSize)
 {

@@ -85,6 +85,9 @@ void MainWindow::_loadPatch()
         else if( configModule.type == std::string("samplePlayer") )
             _modules << new SamplePlayerWidget();
 
+        else if( configModule.type == std::string("djDeck") )
+            _modules << new DjDeckWidget();
+
         // DUMMY
         else if( configModule.type == std::string("dummy") )
         {

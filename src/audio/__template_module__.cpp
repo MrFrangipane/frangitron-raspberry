@@ -9,15 +9,13 @@ const ModuleStatus TemplateModule::status()
 {
     ModuleStatus status_;
 
-    status_.empty = false; // Will be updated by engine
-
     status_.levelOut = fmax(_outMeterL.rms.average, _outMeterR.rms.average);
-    status_.is_clipping = _outMeterL.isClipping() || _outMeterR.isClipping();
+    status_.isClipping = _outMeterL.isClipping() || _outMeterR.isClipping();
 
     return status_;
 }
 
-void TemplateModule::process(Sample const * bufferIn, const nFrame /*time*/)
+void TemplateModule::process(Sample const * bufferIn, const nFrame time, const SampleBank * /*sampleBank*/)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) 
     {

@@ -5,6 +5,24 @@
 #include "shared/typedefs.h"
 #include "shared/constants.h"
 
+
+// AUDIO FILES
+struct AudioFileMarkerInfos
+{
+    std::string name = "unknown";
+    nFrame position = -1;
+};
+
+
+struct AudioFileInfos
+{
+    std::string name = "unknown";
+    std::string filepath = "";
+    int channelCount = 0;
+    nFrame frameCount = 0;
+    AudioFileMarkerInfos markers[AUDIO_MARKER_COUNT_MAX];
+};
+
 // SHARED
 struct EncoderStatus {
     bool pressed = false;

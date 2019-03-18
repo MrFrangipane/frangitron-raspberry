@@ -122,21 +122,13 @@ void Engine::start()
 
     // DJ TRACK BANK
     _shared.djTrackBank = new DjTrackBank();
-    for( ConfAudioFile configDjTrack : _configuration->djTracks ) {
-        if( configDjTrack.filepath.empty() ) // Exit at first empty clip
+    for( AudioFileInfos audioFileInfos : _configuration->djTracks ) {
+        if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
             break;
 
-        _shared.djTrackBank->registerDjTrack(configDjTrack);
+        _shared.djTrackBank->registerAudioFile(audioFileInfos);
     }
     _shared.djTrackBank->start();
-
-    // HACKY DJTRACKBANK TEST ---
-    DjDeckInfos djDeckInfos;
-    djDeckInfos.name = "";
-    djDeckInfos.trackIndex = 0;
-    djDeckInfos.needsLoading = true;
-    _shared.djTrackBank->registerDjDeck(djDeckInfos);
-    // --------------------------
 
     // PATCH LOADING (AUDIO MODULES)
     int module = 0;
@@ -162,9 +154,10 @@ void Engine::start()
         {
             DjDeckInfos djDeckInfos;
             djDeckInfos.name = configModule.name;
+            djDeckInfos.moduleIndex = _shared.patch.size();
 
             _shared.djTrackBank->registerDjDeck(djDeckInfos);
-            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize)));
         }
 
         else continue;
@@ -264,46 +257,30 @@ void Engine::start()
 
     // AUDIO FILES
     _shared.sampleBank = new SampleBank();
-    for( ConfAudioFile configClip : _configuration->samples )
+    for( AudioFileInfos audioFileInfos: _configuration->samples )
     {
-        if( configClip.frameCount == 0 ) // Exit at first empty clip
+        if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
             break;
 
-        AudioClipRegistration registration;
-        registration.name = configClip.name;
-        registration.filepath = configClip.filepath;
-        registration.frameCount = configClip.frameCount;
-        registration.channelCount = configClip.channelCount;
+        SndfileHandle f_audio = SndfileHandle(audioFileInfos.filepath);
+        audioFileInfos.frameCount = f_audio.frames();
+        audioFileInfos.channelCount = f_audio.channels();
 
-        _shared.sampleBank->registerClip(registration);
+        _shared.sampleBank->registerAudioFile(audioFileInfos);
     }
 
-    for( AudioClipRegistration clip : _shared.sampleBank->registeredClips() )
+    for( SampleInfos sampleInfos : _shared.sampleBank->registeredSamples() )
     {
-        SndfileHandle f_clip = SndfileHandle(clip.filepath);
-        if( (nFrame)f_clip.frames() != clip.frameCount ||
-            f_clip.channels() != clip.channelCount )
-        {
-            std::cout << clip.filepath << " is not the expected file !" << std::endl;
-        }
-        else
-        {
-            // Fill RAM
-            // TODO : when more files are to be loaded : try to load the entire file at once, see if performance improves
-            for( nFrame frameIndex = 0; frameIndex < clip.frameCount; frameIndex++ )
-            {
-                f_clip.read(
-                    _shared.sampleBank->pointerToSample(clip, frameIndex, true),
-                    clip.channelCount
-                );
+        SndfileHandle f_audio = SndfileHandle(sampleInfos.filepath);
+        f_audio.read(
+            _shared.sampleBank->pointerToSample(sampleInfos, true),
+            sampleInfos.frameCount * sampleInfos.channelCount
+        );
 
-                // Ui
-                _shared.engine.loadingProgress = _shared.sampleBank->loadingProgress();
-                _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
-            }
+        _shared.engine.loadingProgress = _shared.sampleBank->loadingProgress();
+        _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
 
-            std::cout << "Loaded " << clip.filepath << std::endl;
-        }
+        std::cout << "Loaded " << sampleInfos.filepath << std::endl;
     }
 
     // RECORDER
@@ -445,6 +422,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
 
     // HACKY DJTRACKBANK TEST ---
+    /*
     DjDeckInfos deck = s->djTrackBank->deckInfos(0);
     if( (int)s->engine.modulesStatuses[2].params[2].value - 1 != deck.trackIndex )
     {
@@ -459,15 +437,14 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         sampleIndex = (s->time.engineFrame() * CHANNEL_COUNT + i) % (track.frameCount * track.channelCount);
         ioOut[i] = s->djTrackBank->sample(0, sampleIndex);
     }
+    */
     // --------------------------
 
     // PATCH -> OUTPUT
-    /*
     masterId = s->patch.size() - 1;
     for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
         ioOut[i] = s->patch[masterId]->output()[i];
     }
-    */
 
     // OUTPUT -> RECORDER
     s->recorder->write(ioOut);

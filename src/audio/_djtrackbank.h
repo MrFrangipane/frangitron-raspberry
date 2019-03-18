@@ -8,15 +8,16 @@
 #include <vector>
 #include <iostream>
 #include "sndfile.hh"
-#include "shared/configuration.h"
 #include "shared/typedefs.h"
+#include "shared/structures.h"
+#include "shared/configuration.h"
 
 
 struct DjDeckInfos {
     std::string name = "";
     bool needsLoading = false;
     int trackIndex = 0;
-    Sample * startPointer = nullptr;
+    int moduleIndex = 0;
 };
 
 
@@ -24,7 +25,7 @@ class DjTrackBank
 {
 public:
     DjTrackBank();
-    void registerDjTrack(ConfAudioFile configDjTrack);
+    void registerAudioFile(AudioFileInfos djTrack);
     void registerDjDeck(DjDeckInfos djDeckInfos);
     void start();
     int trackCount() { return _tracks.size(); }
@@ -32,14 +33,15 @@ public:
     void setDeckInfos(int deckIndex, DjDeckInfos infos) { _decks[deckIndex] = infos; }
     bool isRunning() { return _isRunning; }
     DjDeckInfos deckInfos(int deckIndex) { return _decks.at(deckIndex); }
-    ConfAudioFile trackInfos(int trackIndex) { return _tracks.at(trackIndex); }
+    AudioFileInfos trackInfos(int trackIndex) { return _tracks.at(trackIndex); }
     Sample sample(int deckIndex, int sampleIndex);
+    Sample * pointerToSample(int deckIndex) { return _samples.at(deckIndex).data(); }
 
 private:
     static void mainLoop(DjTrackBank * trackBank);
     std::thread _thread;
     bool _isRunning = false;
-    std::vector<ConfAudioFile> _tracks;
+    std::vector<AudioFileInfos> _tracks;
     std::vector<DjDeckInfos> _decks;
     std::vector<Buffer> _samples;
 };

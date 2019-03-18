@@ -22,6 +22,7 @@
 #include "ui/compwidget.h"
 #include "ui/kickwidget.h"
 #include "ui/sampleplayerwidget.h"
+#include "ui/djdeckwidget.h"
 
 
 namespace Ui {

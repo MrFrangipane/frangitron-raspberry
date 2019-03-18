@@ -1,20 +1,26 @@
 #ifndef DJDECK_H
 #define DJDECK_H
 
+#include <cmath>
 #include "shared/typedefs.h"
+#include "audio/_samplebank.h"
 #include "audio/abstractmodule.h"
+#include "audio/_djtrackbank.h"
 
 
 class DjDeck : public AbstractModule
 {
 public:
-    DjDeck(const nFrame bufferSize = 0, int deckIndex = -1) :
+    DjDeck(DjDeckInfos deckInfos, const nFrame bufferSize = 0) :
         AbstractModule(bufferSize),
-        _deckIndex(deckIndex)
+        _deckInfos(deckInfos)
     { }
+    ModuleStatus const status() override;
+    void update(ModuleStatus status_) override;
+    void process(Sample const * bufferIn, const nFrame time, const SampleBank * /*sampleBank*/) override;
 
 private:
-    int _deckIndex;
+    DjDeckInfos _deckInfos;
 };
 
 #endif // DJDECK_H

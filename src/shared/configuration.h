@@ -4,6 +4,7 @@
 #include <string>
 #include "shared/typedefs.h"
 #include "shared/constants.h"
+#include "shared/structures.h"
 
 
 struct ConfModuleParamOverride {
@@ -33,28 +34,11 @@ struct ConfModule
 };
 
 
-struct ConfAudioMarker
-{
-    std::string name = "unknown";
-    nFrame position = -1;
-};
-
-
-struct ConfAudioFile
-{
-    std::string name = "unknown";
-    std::string filepath = "";
-    int channelCount = 1;
-    nFrame frameCount = 0;
-    ConfAudioMarker markers[AUDIO_MARKER_COUNT_MAX];
-};
-
-
 struct Configuration
 {
     ConfModule modules[MODULE_MAX_COUNT];
-    ConfAudioFile samples[AUDIO_SAMPLE_MAX_COUNT];  // pre-loaded
-    ConfAudioFile djTracks[AUDIO_DJTRACK_MAX_COUNT];  // async-loaded
+    AudioFileInfos samples[AUDIO_SAMPLE_MAX_COUNT];  // pre-loaded
+    AudioFileInfos djTracks[AUDIO_DJTRACK_MAX_COUNT];  // async-loaded
 };
 
 

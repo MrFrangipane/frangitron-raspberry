@@ -14,23 +14,15 @@ void initSamples(Configuration* conf)
 {
     conf->samples[0].name = "Kick 01";    
     conf->samples[0].filepath = "/var/frangitron/samples/KIT111AI.wav";
-    conf->samples[0].channelCount = 2;
-    conf->samples[0].frameCount = 13264;
 
     conf->samples[1].name = "Kick 02";
     conf->samples[1].filepath = "/var/frangitron/samples/BD11_WAV.wav";
-    conf->samples[1].channelCount = 2;
-    conf->samples[1].frameCount = 29911;
 
     conf->samples[2].name = "Snare 01";
     conf->samples[2].filepath = "/var/frangitron/samples/SN_11.wav";
-    conf->samples[2].channelCount = 2;
-    conf->samples[2].frameCount = 20672;
 
     conf->samples[3].name = "Snare 02";
     conf->samples[3].filepath = "/var/frangitron/samples/SN_12.wav";
-    conf->samples[3].channelCount = 2;
-    conf->samples[3].frameCount = 16024;
 }
 
 
@@ -71,8 +63,8 @@ void initPatch(Configuration* conf)
     conf->modules[2].name = "IN COMP";
     conf->modules[2].type = "compressor";
     conf->modules[2].inputIndex = 1;
-    conf->modules[2].layout.row = 1;
-    conf->modules[2].layout.col = 1;
+    conf->modules[2].layout.row = 0;
+    conf->modules[2].layout.col = 5;
 
     conf->modules[3].name = "KICK 1";
     conf->modules[3].type = "kickSynth";
@@ -95,16 +87,24 @@ void initPatch(Configuration* conf)
     conf->modules[5].layout.row = 0;
     conf->modules[5].layout.col = 4;
 
-    conf->modules[6].type = "dummy";
-    conf->modules[6].layout.row = 0;
-    conf->modules[6].layout.col = 8;
-    conf->modules[6].layout.colStretch = 100;
+    conf->modules[6].name = "DECK A";
+    conf->modules[6].type = "djDeck";
+    conf->modules[6].inputIndex = 5;
+    conf->modules[6].layout.row = 1;
+    conf->modules[6].layout.col = 1;
+    conf->modules[6].layout.rowSpan = 2;
+    conf->modules[6].layout.colSpan = 3;
 
-    conf->modules[7].name = "OUT";
-    conf->modules[7].type = "levelMeter";
-    conf->modules[7].inputIndex = 5;
+    conf->modules[7].type = "dummy";
     conf->modules[7].layout.row = 0;
-    conf->modules[7].layout.col = 9;
-    conf->modules[7].layout.rowSpan = 3;
-    conf->modules[7].layout.colSpan = 1;
+    conf->modules[7].layout.col = 8;
+    conf->modules[7].layout.colStretch = 100;
+
+    conf->modules[8].name = "OUT";
+    conf->modules[8].type = "levelMeter";
+    conf->modules[8].inputIndex = 6;
+    conf->modules[8].layout.row = 0;
+    conf->modules[8].layout.col = 9;
+    conf->modules[8].layout.rowSpan = 3;
+    conf->modules[8].layout.colSpan = 1;
 }
