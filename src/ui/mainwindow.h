@@ -47,7 +47,7 @@ public:
 
 private:
     void _setupUi();
-    void _loadPatch();
+    void _loadPatch(EngineStatus engineStatus);
     Ui::MainWindow *ui;
     const Configuration *_configuration;
     EngineWorker *_engineWorker = nullptr;

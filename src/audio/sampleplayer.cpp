@@ -27,7 +27,7 @@ const ModuleStatus SamplePlayer::status()
     return status_;
 }
 
-void SamplePlayer::process(Sample const * bufferIn, const nFrame time, SampleBank const * sampleBank)
+void SamplePlayer::process(Sample const * bufferIn, const nFrame time)
 {
     for( nFrame i = 0; i < _bufferSize; i++ )
     {
@@ -40,8 +40,8 @@ void SamplePlayer::process(Sample const * bufferIn, const nFrame time, SampleBan
         if( elapsedSeconds <= _envAmplitude.duration() )
         {
             _amplitude = _envAmplitude.value(time + i);
-            _bufferOut[_left] = bufferIn[_left] + sampleBank->left(_sampleIndex, elapsedFrames) * _amplitude;
-            _bufferOut[_right] = bufferIn[_right] + sampleBank->right(_sampleIndex, elapsedFrames) * _amplitude;
+            _bufferOut[_left] = bufferIn[_left] + _sampleBank->left(_sampleIndex, elapsedFrames) * _amplitude;
+            _bufferOut[_right] = bufferIn[_right] + _sampleBank->right(_sampleIndex, elapsedFrames) * _amplitude;
         }
         else
         {

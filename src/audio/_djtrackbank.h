@@ -2,12 +2,16 @@
 #define _DJTRACKBANK_H
 
 #include <ctime>
+#include <math.h>
 #include <chrono>
 #include <thread>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <iostream>
+#include <sys/stat.h>
 #include "sndfile.hh"
+#include "shared/constants.h"
 #include "shared/typedefs.h"
 #include "shared/structures.h"
 #include "shared/configuration.h"
@@ -36,6 +40,7 @@ public:
     AudioFileInfos trackInfos(int trackIndex) { return _tracks.at(trackIndex); }
     Sample sample(int deckIndex, int sampleIndex);
     Sample * pointerToSample(int deckIndex) { return _samples.at(deckIndex).data(); }
+    Sample peak(int deckIndex, int peakIndex) { return _peaks.at(deckIndex).at(peakIndex); }
 
 private:
     static void mainLoop(DjTrackBank * trackBank);
@@ -44,6 +49,7 @@ private:
     std::vector<AudioFileInfos> _tracks;
     std::vector<DjDeckInfos> _decks;
     std::vector<Buffer> _samples;
+    std::vector<std::vector<Sample>> _peaks;
 };
 
 #endif // _DJTRACKBANK_H

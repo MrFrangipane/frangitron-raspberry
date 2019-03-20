@@ -43,7 +43,7 @@ void LevelMeter::update(ModuleStatus status)
 }
 
 
-void LevelMeter::process(const Sample *bufferIn, const nFrame /*time*/, const SampleBank * /*sampleBank*/)
+void LevelMeter::process(const Sample *bufferIn, const nFrame /*time*/)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;

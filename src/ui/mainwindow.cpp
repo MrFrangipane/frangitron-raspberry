@@ -31,6 +31,7 @@ void MainWindow::_setupUi()
     ui->setupUi(this);
     ui->patch->setVisible(false);
     ui->loading->setVisible(true);
+    ui->loadingMessage->setText("Loading ...");
 #ifdef RASPBERRYPI
     ui->devMode->setVisible(false);
 #else
@@ -63,7 +64,7 @@ void MainWindow::_setupUi()
 }
 
 
-void MainWindow::_loadPatch()
+void MainWindow::_loadPatch(EngineStatus engineStatus)
 {
     // MODULES
     int module = 0;
@@ -83,10 +84,10 @@ void MainWindow::_loadPatch()
             _modules << new KickWidget();
 
         else if( configModule.type == std::string("samplePlayer") )
-            _modules << new SamplePlayerWidget();
+            _modules << new SamplePlayerWidget(engineStatus.sampleBank);
 
         else if( configModule.type == std::string("djDeck") )
-            _modules << new DjDeckWidget();
+            _modules << new DjDeckWidget(engineStatus.trackBank);
 
         // DUMMY
         else if( configModule.type == std::string("dummy") )
@@ -174,13 +175,22 @@ void MainWindow::_refresh()
     {
         ui->loading->setVisible(true);
         ui->progress->setValue(engineStatus.loadingProgress);
+        ui->loadingMessage->setText("Loading ...");
+    }
+    else if ( engineStatus.status == EngineStatus::MIDI_ERROR )
+    {
+        ui->loadingMessage->setText("MIDI error");
+    }
+    else if ( engineStatus.status == EngineStatus::AUDIO_ERROR )
+    {
+        ui->loadingMessage->setText("Audio error");
     }
     else if ( engineStatus.status == EngineStatus::RUNNING )
     {
         if( !ui->patch->isVisible() ) { // Hacky : should be if( _isPatchLoaded )
             ui->loading->setVisible(false);
             ui->patch->setVisible(true);
-            _loadPatch();
+            _loadPatch(engineStatus);
         }
 
         uiStatus.frame += 1;

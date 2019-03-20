@@ -42,6 +42,7 @@ struct ModuleStatus {
     ModuleParameter params[MODULE_PARAM_COUNT];
     float levelOut = -60.0;
     bool isClipping = false;
+
 };
 
 struct ClockStatus {
@@ -49,23 +50,6 @@ struct ClockStatus {
     double seconds = 0.0;
     double bar = 0;
     nSequenceStep sequenceStep = 0;
-};
-
-// ENGINE
-struct EngineStatus {
-    enum Status {
-        IDLE = 0,
-        LOADING,
-        RUNNING,
-        STOPPED,
-        nActivities
-    };
-    int loadingProgress = 0;
-    Status status = IDLE;
-    ModuleStatus modulesStatuses[MODULE_MAX_COUNT];
-    int selectedModule = -1;
-    EncoderStatus encoders[MIDI_ENCODER_COUNT];
-    ClockStatus clock;
 };
 
 // UI

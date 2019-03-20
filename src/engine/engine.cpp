@@ -108,6 +108,8 @@ void Engine::start()
 {
     // STATE <- LOADING
     _shared.engine.status = EngineStatus::LOADING;
+    _shared.engine.sampleBank = new SampleBank();
+    _shared.engine.trackBank = new DjTrackBank();
 
     // WAIT FOR UI CALLBACK REGISTRATION
     while ( _shared.uiPtr == nullptr ) {
@@ -121,14 +123,13 @@ void Engine::start()
     // --------------------------------------------------------------
 
     // DJ TRACK BANK
-    _shared.djTrackBank = new DjTrackBank();
     for( AudioFileInfos audioFileInfos : _configuration->djTracks ) {
         if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
             break;
 
-        _shared.djTrackBank->registerAudioFile(audioFileInfos);
+        _shared.engine.trackBank->registerAudioFile(audioFileInfos);
     }
-    _shared.djTrackBank->start();
+    _shared.engine.trackBank->start();
 
     // PATCH LOADING (AUDIO MODULES)
     int module = 0;
@@ -148,7 +149,7 @@ void Engine::start()
             _shared.patch.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
 
         else if( configModule.type == std::string("samplePlayer") )
-            _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize, _shared.engine.sampleBank)));
 
         else if( configModule.type == std::string("djDeck") )
         {
@@ -156,7 +157,7 @@ void Engine::start()
             djDeckInfos.name = configModule.name;
             djDeckInfos.moduleIndex = _shared.patch.size();
 
-            _shared.djTrackBank->registerDjDeck(djDeckInfos);
+            _shared.engine.trackBank->registerDjDeck(djDeckInfos);
             _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize)));
         }
 
@@ -192,6 +193,8 @@ void Engine::start()
     catch( RtMidiError &error ) {
         std::cout << "Error while allocating Midi" << std::endl;
         std::cout << error.getMessage() << std::endl;
+        _shared.engine.status = EngineStatus::AUDIO_ERROR;
+        _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
         return;
     }
 
@@ -207,6 +210,8 @@ void Engine::start()
     catch( RtMidiError &error ) {
         std::cout << "Error while opening midi port and setting callback" << std::endl;
         std::cout << error.getMessage() << std::endl;
+        _shared.engine.status = EngineStatus::AUDIO_ERROR;
+        _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
         return;
     }
 
@@ -218,6 +223,8 @@ void Engine::start()
     catch( RtAudioError &error ) {
         std::cout << "Error while allocating Audio" << std::endl;
         std::cout << error.getMessage() << std::endl;
+        _shared.engine.status = EngineStatus::AUDIO_ERROR;
+        _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
         return;
     }
 
@@ -253,10 +260,11 @@ void Engine::start()
     catch( RtAudioError &error ) {
         std::cout << "Error while opening audio device and setting callback" << std::endl;
         std::cout << error.getMessage() << std::endl;
+        _shared.engine.status = EngineStatus::AUDIO_ERROR;
+        _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
     }
 
     // AUDIO FILES
-    _shared.sampleBank = new SampleBank();
     for( AudioFileInfos audioFileInfos: _configuration->samples )
     {
         if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
@@ -266,18 +274,18 @@ void Engine::start()
         audioFileInfos.frameCount = f_audio.frames();
         audioFileInfos.channelCount = f_audio.channels();
 
-        _shared.sampleBank->registerAudioFile(audioFileInfos);
+        _shared.engine.sampleBank->registerAudioFile(audioFileInfos);
     }
 
-    for( SampleInfos sampleInfos : _shared.sampleBank->registeredSamples() )
+    for( SampleInfos sampleInfos : _shared.engine.sampleBank->registeredSamples() )
     {
         SndfileHandle f_audio = SndfileHandle(sampleInfos.filepath);
         f_audio.read(
-            _shared.sampleBank->pointerToSample(sampleInfos, true),
+            _shared.engine.sampleBank->pointerToSample(sampleInfos, true),
             sampleInfos.frameCount * sampleInfos.channelCount
         );
 
-        _shared.engine.loadingProgress = _shared.sampleBank->loadingProgress();
+        _shared.engine.loadingProgress = _shared.engine.sampleBank->loadingProgress();
         _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
 
         std::cout << "Loaded " << sampleInfos.filepath << std::endl;
@@ -411,10 +419,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         inputId = s->patchWires[moduleId];
 
         if( inputId == -1 ) {  // Hardware Input
-            module->process(ioIn, s->time.engineFrame(), s->sampleBank);
+            module->process(ioIn, s->time.engineFrame());
         }
         else if( inputId >= 0 ) {  // Module Input
-           module->process(s->patch[inputId]->output(), s->time.engineFrame(), s->sampleBank);
+           module->process(s->patch[inputId]->output(), s->time.engineFrame());
         }
 
         moduleId++;

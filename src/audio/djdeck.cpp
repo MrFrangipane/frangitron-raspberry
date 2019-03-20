@@ -15,7 +15,7 @@ const ModuleStatus DjDeck::status()
     return status_;
 }
 
-void DjDeck::process(Sample const * bufferIn, const nFrame /*time*/, const SampleBank * /*sampleBank*/)
+void DjDeck::process(Sample const * bufferIn, const nFrame /*time*/)
 {
     for( nFrame i = 0; i < _bufferSize; i++ )
     {

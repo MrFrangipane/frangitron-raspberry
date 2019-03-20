@@ -13,7 +13,7 @@ public:
         AbstractModule(bufferSize) { }
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
-    void process(Sample const * bufferIn, const nFrame /*time*/, const SampleBank * /*sampleBank*/) override;
+    void process(Sample const * bufferIn, const nFrame /*time*/) override;
 private:
     nFrame _nCycles = 0;
     nFrame _time = 0;

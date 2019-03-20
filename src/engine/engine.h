@@ -31,6 +31,28 @@
 #include "audio/djdeck.h"
 
 
+// ENGINE
+struct EngineStatus {
+    enum Status {
+        IDLE = 0,
+        LOADING,
+        RUNNING,
+        STOPPED,
+        AUDIO_ERROR,
+        MIDI_ERROR,
+        nActivities
+    };
+    int loadingProgress = 0;
+    Status status = IDLE;
+    ModuleStatus modulesStatuses[MODULE_MAX_COUNT];
+    int selectedModule = -1;
+    EncoderStatus encoders[MIDI_ENCODER_COUNT];
+    ClockStatus clock;
+    SampleBank * sampleBank = nullptr;
+    DjTrackBank * trackBank = nullptr;
+};
+
+
 typedef UiStatus(*GetStatusCallback)(void* /*uiPtr*/);
 typedef void(*SetStatusCallback)(void* /*uiPtr*/, EngineStatus /*status*/);
 
@@ -59,8 +81,6 @@ struct Shared {
     Encoder midiEncoders[MIDI_ENCODER_COUNT] = {};
     nFrame uiFrame = 0;
     bool midiNoteOn[MIDI_NOTE_COUNT] = {};
-    SampleBank * sampleBank = nullptr;
-    DjTrackBank * djTrackBank = nullptr;
     Recorder * recorder = nullptr;
 };
 

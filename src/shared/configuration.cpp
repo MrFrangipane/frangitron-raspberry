@@ -95,16 +95,24 @@ void initPatch(Configuration* conf)
     conf->modules[6].layout.rowSpan = 2;
     conf->modules[6].layout.colSpan = 3;
 
-    conf->modules[7].type = "dummy";
-    conf->modules[7].layout.row = 0;
-    conf->modules[7].layout.col = 8;
-    conf->modules[7].layout.colStretch = 100;
+    conf->modules[7].name = "DECK B";
+    conf->modules[7].type = "djDeck";
+    conf->modules[7].inputIndex = 6;
+    conf->modules[7].layout.row = 1;
+    conf->modules[7].layout.col = 4;
+    conf->modules[7].layout.rowSpan = 2;
+    conf->modules[7].layout.colSpan = 3;
 
-    conf->modules[8].name = "OUT";
-    conf->modules[8].type = "levelMeter";
-    conf->modules[8].inputIndex = 6;
+    conf->modules[8].type = "dummy";
     conf->modules[8].layout.row = 0;
-    conf->modules[8].layout.col = 9;
-    conf->modules[8].layout.rowSpan = 3;
-    conf->modules[8].layout.colSpan = 1;
+    conf->modules[8].layout.col = 6;
+    conf->modules[8].layout.colStretch = 100;
+
+    conf->modules[9].name = "OUT";
+    conf->modules[9].type = "levelMeter";
+    conf->modules[9].inputIndex = 7;
+    conf->modules[9].layout.row = 0;
+    conf->modules[9].layout.col = 9;
+    conf->modules[9].layout.rowSpan = 3;
+    conf->modules[9].layout.colSpan = 1;
 }

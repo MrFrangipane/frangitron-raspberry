@@ -22,7 +22,7 @@
 #define DJTRACK_BANK_SLEEP_DURATION 20 // in milliseconds
 #define AUDIO_SAMPLE_MAX_COUNT 64
 #define AUDIO_MARKER_COUNT_MAX 64
-
+#define PEAK_FRAME_COUNT 64
 
 #define DECK_LENGTH_SECONDS 300 // 5 minutes
 

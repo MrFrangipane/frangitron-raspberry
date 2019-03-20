@@ -1,19 +1,73 @@
 #include "_djtrackbank.h"
 
+
 DjTrackBank::DjTrackBank() { }
 
 void DjTrackBank::registerAudioFile(AudioFileInfos djTrack)
 {
+    // REGISTER
     std::cout << "Registering DjTrack " << djTrack.filepath << std::endl;
 
-    SndfileHandle file(djTrack.filepath);
-    if( file.error() != 0 )
-        std::cout << file.strError() << std::endl;
+    SndfileHandle f_audio(djTrack.filepath);
+    if( f_audio.error() != 0 )
+        std::cout << f_audio.strError() << std::endl;
 
-    djTrack.frameCount = file.frames();
-    djTrack.channelCount = file.channels();
+    djTrack.frameCount = f_audio.frames();
+    djTrack.channelCount = f_audio.channels();
 
     _tracks.push_back(djTrack);
+    std::vector<Sample> peaks;
+    peaks.resize(280);
+
+    // PEAKS
+    std::string peak_filepath = djTrack.filepath + ".frangipeaks";
+    struct stat buf;
+    if( stat(peak_filepath.c_str(), &buf) == 0 )
+    {
+        // READ
+        std::fstream f_peaks(peak_filepath);
+        std::string line;
+        int index = 0;
+
+        while (std::getline(f_peaks, line))
+        {
+            peaks[index] = std::stod(line);
+            index++;
+        }
+    }
+    else
+    {
+        // WRITE
+        int stepFrame = f_audio.frames() / 280;
+        nFrame frame = 0;
+        Sample buf[PEAK_FRAME_COUNT * f_audio.channels()];
+        Sample value = 0;
+        std::ofstream f_peaks(peak_filepath);
+
+        if( !f_peaks.is_open() ) {
+            std::cout << "Impossible to open " << peak_filepath << std::endl;
+            return;
+        }
+
+        for( int step = 0; step < 280;  step++ )
+        {
+            frame = step * stepFrame;
+            f_audio.seek(frame, SEEK_SET);
+            f_audio.readf(buf, PEAK_FRAME_COUNT);
+            for( int i = 0; i < PEAK_FRAME_COUNT; i++ )
+            {
+                value += buf[i * f_audio.channels()] * buf[i * f_audio.channels()];
+            }
+            value /= PEAK_FRAME_COUNT;
+            value = sqrt(value);
+
+            f_peaks << value << std::endl;
+            peaks[step] = value;
+        }
+        f_peaks.close();
+    }
+
+    _peaks.push_back(peaks);
 }
 
 void DjTrackBank::registerDjDeck(DjDeckInfos djDeckInfos)

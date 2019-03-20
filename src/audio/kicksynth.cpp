@@ -129,7 +129,7 @@ void KickSynth::update(ModuleStatus status)
     _sidechainAmount = status.params[4].value;
 }
 
-void KickSynth::process(Sample const * bufferIn, const nFrame time, const SampleBank * /*sampleBank*/)
+void KickSynth::process(Sample const * bufferIn, const nFrame time)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;
