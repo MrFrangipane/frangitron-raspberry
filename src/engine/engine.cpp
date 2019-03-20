@@ -157,8 +157,8 @@ void Engine::start()
             djDeckInfos.name = configModule.name;
             djDeckInfos.moduleIndex = _shared.patch.size();
 
-            _shared.engine.trackBank->registerDjDeck(djDeckInfos);
-            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize)));
+            djDeckInfos = _shared.engine.trackBank->registerDjDeck(djDeckInfos);
+            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize, _shared.engine.trackBank)));
         }
 
         else continue;

@@ -115,4 +115,6 @@ void initPatch(Configuration* conf)
     conf->modules[9].layout.col = 9;
     conf->modules[9].layout.rowSpan = 3;
     conf->modules[9].layout.colSpan = 1;
+    conf->modules[9].overrides[2].isActive = true;
+    conf->modules[9].overrides[2].value = -6.0;  // -6dB on Master Out
 }

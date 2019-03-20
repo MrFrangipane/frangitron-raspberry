@@ -16,65 +16,42 @@ void DjTrackBank::registerAudioFile(AudioFileInfos djTrack)
     djTrack.channelCount = f_audio.channels();
 
     _tracks.push_back(djTrack);
-    std::vector<Sample> peaks;
-    peaks.resize(280);
 
     // PEAKS
-    std::string peak_filepath = djTrack.filepath + ".frangipeaks";
-    struct stat buf;
-    if( stat(peak_filepath.c_str(), &buf) == 0 )
+    nFrame frame = 0;
+    Sample value = 0;
+    std::vector<Sample> peaks;
+    peaks.resize(PEAK_IMAGE_WIDTH);
+    int stepFrame = f_audio.frames() / PEAK_IMAGE_WIDTH;
+    Sample buf[PEAK_RMS_FRAME_COUNT * f_audio.channels()];
+
+    for( int step = 0; step < PEAK_IMAGE_WIDTH;  step++ )
     {
-        // READ
-        std::fstream f_peaks(peak_filepath);
-        std::string line;
-        int index = 0;
-
-        while (std::getline(f_peaks, line))
+        frame = step * stepFrame;
+        f_audio.seek(frame, SEEK_SET);
+        f_audio.readf(buf, PEAK_RMS_FRAME_COUNT);
+        for( int i = 0; i < PEAK_RMS_FRAME_COUNT; i++ )
         {
-            peaks[index] = std::stod(line);
-            index++;
+            value += buf[i * f_audio.channels()] * buf[i * f_audio.channels()];
         }
-    }
-    else
-    {
-        // WRITE
-        int stepFrame = f_audio.frames() / 280;
-        nFrame frame = 0;
-        Sample buf[PEAK_FRAME_COUNT * f_audio.channels()];
-        Sample value = 0;
-        std::ofstream f_peaks(peak_filepath);
+        value /= PEAK_RMS_FRAME_COUNT;
+        value = sqrt(value);
 
-        if( !f_peaks.is_open() ) {
-            std::cout << "Impossible to open " << peak_filepath << std::endl;
-            return;
-        }
-
-        for( int step = 0; step < 280;  step++ )
-        {
-            frame = step * stepFrame;
-            f_audio.seek(frame, SEEK_SET);
-            f_audio.readf(buf, PEAK_FRAME_COUNT);
-            for( int i = 0; i < PEAK_FRAME_COUNT; i++ )
-            {
-                value += buf[i * f_audio.channels()] * buf[i * f_audio.channels()];
-            }
-            value /= PEAK_FRAME_COUNT;
-            value = sqrt(value);
-
-            f_peaks << value << std::endl;
-            peaks[step] = value;
-        }
-        f_peaks.close();
+        peaks[step] = value;
     }
 
     _peaks.push_back(peaks);
 }
 
-void DjTrackBank::registerDjDeck(DjDeckInfos djDeckInfos)
+DjDeckInfos DjTrackBank::registerDjDeck(DjDeckInfos djDeckInfos)
 {
     _samples.push_back(std::vector<Sample>());
     _samples.back().resize(DECK_LENGTH_SECONDS * CHANNEL_COUNT * SAMPLE_RATE);
+
+    djDeckInfos.index = _decks.size();
     _decks.push_back(djDeckInfos);
+
+    return djDeckInfos;
 }
 
 void DjTrackBank::start()
@@ -99,7 +76,7 @@ void DjTrackBank::mainLoop(DjTrackBank *trackBank)
     auto sleepDuration = std::chrono::milliseconds(DJTRACK_BANK_SLEEP_DURATION);
 
     while( trackBank->isRunning() ) {
-        for( int deckIndex = 0; deckIndex < trackBank->deckCount(); deckIndex++ ) {
+        for( int deckIndex = 0; deckIndex < trackBank->deckCount() - 1; deckIndex++ ) {
             deck = trackBank->deckInfos(deckIndex);
             if( !deck.needsLoading )
                 continue;

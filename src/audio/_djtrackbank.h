@@ -18,6 +18,7 @@
 
 
 struct DjDeckInfos {
+    int index = 0;
     std::string name = "";
     bool needsLoading = false;
     int trackIndex = 0;
@@ -30,7 +31,7 @@ class DjTrackBank
 public:
     DjTrackBank();
     void registerAudioFile(AudioFileInfos djTrack);
-    void registerDjDeck(DjDeckInfos djDeckInfos);
+    DjDeckInfos registerDjDeck(DjDeckInfos djDeckInfos);
     void start();
     int trackCount() { return _tracks.size(); }
     int deckCount() { return _decks.size(); }
@@ -40,7 +41,7 @@ public:
     AudioFileInfos trackInfos(int trackIndex) { return _tracks.at(trackIndex); }
     Sample sample(int deckIndex, int sampleIndex);
     Sample * pointerToSample(int deckIndex) { return _samples.at(deckIndex).data(); }
-    Sample peak(int deckIndex, int peakIndex) { return _peaks.at(deckIndex).at(peakIndex); }
+    Sample peak(int trackIndex, int peakIndex) { return _peaks.at(trackIndex).at(peakIndex); }
 
 private:
     static void mainLoop(DjTrackBank * trackBank);
