@@ -9,7 +9,7 @@ void DjDeckWidget::_drawPeaks()
         pixmap.fill(Qt::transparent);
 
         QPainter painter(&pixmap);
-        painter.setPen(Qt::white);
+        painter.setPen(_lightGrey);
 
         for( int i = 0; i < PEAK_IMAGE_WIDTH; i++ )
         {
@@ -28,8 +28,13 @@ void DjDeckWidget::_drawPeaks()
 void DjDeckWidget::paint_(QRect rect)
 {
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
     painter.drawPixmap(rect.x(), rect.y(), _peaks.at(_status.params[2].value));
+
+    painter.setPen(Qt::white);
+    painter.drawLine(
+        rect.left() + _status.params[5].value * PEAK_IMAGE_WIDTH, rect.top(),
+        rect.left() + _status.params[5].value * PEAK_IMAGE_WIDTH, rect.top() + PEAK_IMAGE_HEIGHT
+    );
 }
 
 QString DjDeckWidget::formatParameter(int paramId)

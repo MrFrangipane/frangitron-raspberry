@@ -24,6 +24,7 @@ private:
     DjDeckInfos _deckInfos;
     DjTrackBank * const _trackBank;
     int _trackIndex = 0;
+    float _position = 0.0;
 };
 
 #endif // DJDECK_H

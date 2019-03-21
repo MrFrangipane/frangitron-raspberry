@@ -23,18 +23,19 @@ void DjTrackBank::registerAudioFile(AudioFileInfos djTrack)
     std::vector<Sample> peaks;
     peaks.resize(PEAK_IMAGE_WIDTH);
     int stepFrame = f_audio.frames() / PEAK_IMAGE_WIDTH;
-    Sample buf[PEAK_RMS_FRAME_COUNT * f_audio.channels()];
+    nSample rms_frame_count = (int)((float)stepFrame * 0.25);
+    Sample buf[rms_frame_count * f_audio.channels()];
 
     for( int step = 0; step < PEAK_IMAGE_WIDTH;  step++ )
     {
         frame = step * stepFrame;
         f_audio.seek(frame, SEEK_SET);
-        f_audio.readf(buf, PEAK_RMS_FRAME_COUNT);
-        for( int i = 0; i < PEAK_RMS_FRAME_COUNT; i++ )
+        f_audio.readf(buf, rms_frame_count);
+        for( int i = 0; i < rms_frame_count; i++ )
         {
             value += buf[i * f_audio.channels()] * buf[i * f_audio.channels()];
         }
-        value /= PEAK_RMS_FRAME_COUNT;
+        value /= rms_frame_count;
         value = sqrt(value);
 
         peaks[step] = value;
