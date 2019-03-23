@@ -40,7 +40,7 @@ void DjDeckWidget::paint_(QRect rect)
 QString DjDeckWidget::formatParameter(int paramId)
 {
     if( paramId == 2) { // Track
-        return QString::fromStdString(_trackBank->trackInfos(_status.params[2].value).name);
+        return QString::fromStdString(_trackBank->audioFileInfos(_status.params[2].value).name);
     }
 
     return AbstractWidget::formatParameter(paramId);

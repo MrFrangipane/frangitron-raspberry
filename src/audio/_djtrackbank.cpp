@@ -3,27 +3,27 @@
 
 DjTrackBank::DjTrackBank() { }
 
-void DjTrackBank::registerAudioFile(AudioFileInfos djTrack)
+void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
 {
     // REGISTER
-    std::cout << "Registering DjTrack " << djTrack.filepath << std::endl;
+    std::cout << "Registering DjTrack " << audioFile.filepath << std::endl;
 
-    SndfileHandle f_audio(djTrack.filepath);
+    SndfileHandle f_audio(audioFile.filepath);
     if( f_audio.error() != 0 )
         std::cout << f_audio.strError() << std::endl;
 
-    djTrack.frameCount = f_audio.frames();
-    djTrack.channelCount = f_audio.channels();
+    audioFile.frameCount = f_audio.frames();
+    audioFile.channelCount = f_audio.channels();
 
-    _tracks.push_back(djTrack);
+    _tracksInfos.push_back(audioFile);
 
     // PEAKS
     nFrame frame = 0;
     Sample value = 0;
-    std::vector<Sample> peaks;
+    Buffer peaks;
     peaks.resize(PEAK_IMAGE_WIDTH);
     int stepFrame = f_audio.frames() / PEAK_IMAGE_WIDTH;
-    nSample rms_frame_count = (int)((float)stepFrame * 0.25);
+    nSample rms_frame_count = (int)((float)stepFrame * PEAK_RMS_RATIO);
     Sample buf[rms_frame_count * f_audio.channels()];
 
     for( int step = 0; step < PEAK_IMAGE_WIDTH;  step++ )
@@ -31,7 +31,7 @@ void DjTrackBank::registerAudioFile(AudioFileInfos djTrack)
         frame = step * stepFrame;
         f_audio.seek(frame, SEEK_SET);
         f_audio.readf(buf, rms_frame_count);
-        for( int i = 0; i < rms_frame_count; i++ )
+        for( nSample i = 0; i < rms_frame_count; i++ )
         {
             value += buf[i * f_audio.channels()] * buf[i * f_audio.channels()];
         }
@@ -46,8 +46,8 @@ void DjTrackBank::registerAudioFile(AudioFileInfos djTrack)
 
 DjDeckInfos DjTrackBank::registerDjDeck(DjDeckInfos djDeckInfos)
 {
-    _samples.push_back(std::vector<Sample>());
-    _samples.back().resize(DECK_LENGTH_SECONDS * CHANNEL_COUNT * SAMPLE_RATE);
+    _decksData.push_back(Buffer());
+    _decksData.back().resize(DECK_LENGTH_SECONDS * CHANNEL_COUNT * SAMPLE_RATE);
 
     djDeckInfos.index = _decks.size();
     _decks.push_back(djDeckInfos);
@@ -58,7 +58,7 @@ DjDeckInfos DjTrackBank::registerDjDeck(DjDeckInfos djDeckInfos)
 void DjTrackBank::start()
 {
     _isRunning = true;
-    _thread = std::thread(mainLoop, this);
+    _thread = std::thread(_mainLoop, this);
     _thread.detach();
 }
 
@@ -67,27 +67,27 @@ Sample DjTrackBank::sample(int deckIndex, int sampleIndex)
     if( _decks.at(deckIndex).needsLoading )
         return 0.0;
 
-    return _samples[deckIndex][sampleIndex];
+    return _decksData.at(deckIndex).at(sampleIndex);
 }
 
-void DjTrackBank::mainLoop(DjTrackBank *trackBank)
+void DjTrackBank::_mainLoop(DjTrackBank *trackBank)
 {
     DjDeckInfos deck;
-    AudioFileInfos track;
+    AudioFileInfos audioFile;
     auto sleepDuration = std::chrono::milliseconds(DJTRACK_BANK_SLEEP_DURATION);
 
     while( trackBank->isRunning() ) {
-        for( int deckIndex = 0; deckIndex < trackBank->deckCount() - 1; deckIndex++ ) {
+        for( int deckIndex = 0; deckIndex < trackBank->deckCount(); deckIndex++ ) {
             deck = trackBank->deckInfos(deckIndex);
             if( !deck.needsLoading )
                 continue;
 
-            track = trackBank->trackInfos(deck.trackIndex);
-            SndfileHandle file(track.filepath);
+            audioFile = trackBank->audioFileInfos(deck.audioFileIndex);
+            SndfileHandle f_audio(audioFile.filepath);
 
-            file.read(
-                trackBank->pointerToSample(deckIndex),
-                track.channelCount * track.frameCount
+            f_audio.read(
+                trackBank->_pointerToDeckData(deck.index),
+                audioFile.channelCount * audioFile.frameCount
             );
 
             deck.needsLoading = false;

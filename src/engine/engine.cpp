@@ -122,6 +122,9 @@ void Engine::start()
     #endif
     // --------------------------------------------------------------
 
+    // EMPTY BUFFER
+    _shared.engine.emptyBuffer.resize(_bufferSize * CHANNEL_COUNT);
+
     // DJ TRACK BANK
     for( AudioFileInfos audioFileInfos : _configuration->djTracks ) {
         if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
@@ -324,7 +327,6 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 {
     int moduleId = 0;
     int inputId = -2;
-    int masterId = 0;
     Sample * ioIn = (Sample*)bufferIn;
     Sample * ioOut = (Sample*)bufferOut;
     Shared * s = (Shared*)userData;
@@ -424,34 +426,17 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         else if( inputId >= 0 ) {  // Module Input
            module->process(s->patch[inputId]->output(), s->time.engineFrame());
         }
+        else // No Input
+        {
+           module->process(s->engine.emptyBuffer.data(), s->time.engineFrame());
+        }
 
         moduleId++;
     }
 
-
-    // HACKY DJTRACKBANK TEST ---
-    /*
-    DjDeckInfos deck = s->djTrackBank->deckInfos(0);
-    if( (int)s->engine.modulesStatuses[2].params[2].value - 1 != deck.trackIndex )
-    {
-        deck.trackIndex = (int)s->engine.modulesStatuses[2].params[2].value - 1;
-        deck.needsLoading = true;
-        s->djTrackBank->setDeckInfos(0, deck);
-    }
-
-    ConfAudioFile track = s->djTrackBank->trackInfos(deck.trackIndex);
-    int sampleIndex = 0;
-    for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
-        sampleIndex = (s->time.engineFrame() * CHANNEL_COUNT + i) % (track.frameCount * track.channelCount);
-        ioOut[i] = s->djTrackBank->sample(0, sampleIndex);
-    }
-    */
-    // --------------------------
-
     // PATCH -> OUTPUT
-    masterId = s->patch.size() - 1;
     for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
-        ioOut[i] = s->patch[masterId]->output()[i];
+        ioOut[i] = s->patch.back()->output()[i];
     }
 
     // OUTPUT -> RECORDER

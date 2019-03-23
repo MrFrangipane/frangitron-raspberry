@@ -24,6 +24,7 @@
 #define AUDIO_MARKER_COUNT_MAX 64
 #define PEAK_IMAGE_WIDTH 280
 #define PEAK_IMAGE_HEIGHT 75
+#define PEAK_RMS_RATIO 0.25  // how much is sampled for RMS peak calculation
 
 #define DECK_LENGTH_SECONDS 300 // 5 minutes
 

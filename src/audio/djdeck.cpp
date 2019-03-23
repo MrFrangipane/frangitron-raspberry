@@ -10,11 +10,13 @@ const ModuleStatus DjDeck::status()
 {
     ModuleStatus status_;
 
-    if( _trackIndex != _deckInfos.trackIndex )
+    if( _trackIndex != _deckInfos.audioFileIndex )
     {
-        _deckInfos.trackIndex = _trackIndex;
+        _deckInfos.audioFileIndex = _trackIndex;
         _deckInfos.needsLoading = true;
         _trackBank->setDeckInfos(_deckInfos.index, _deckInfos);
+    } else {
+        _deckInfos = _trackBank->deckInfos(_deckInfos.index);
     }
 
     status_.params[2].name = "Track";
@@ -35,18 +37,19 @@ const ModuleStatus DjDeck::status()
 
 void DjDeck::process(Sample const * bufferIn, const nFrame time)
 {
-    AudioFileInfos track = _trackBank->trackInfos(_deckInfos.trackIndex);
+    AudioFileInfos track = _trackBank->audioFileInfos(_deckInfos.audioFileIndex);
     nFrame trackPosition = (time % track.frameCount);
+    nSample sampleIndex = trackPosition * track.channelCount;
     _position = (float)trackPosition / (float)track.frameCount;
 
     for( nFrame i = 0; i < _bufferSize; i++ )
     {
         _left = i * 2;
         _right = _left + 1;
-        trackPosition = ((trackPosition + i) % track.frameCount) * track.channelCount;
+        sampleIndex = ((trackPosition + i) % track.frameCount) * track.channelCount;
 
-        _bufferOut[_left] = bufferIn[_left] + _trackBank->sample(_deckInfos.index, trackPosition);
-        _bufferOut[_right] = bufferIn[_right] + _trackBank->sample(_deckInfos.index, trackPosition + 1);
+        _bufferOut[_left] = bufferIn[_left] + _trackBank->sample(_deckInfos.index, sampleIndex);
+        _bufferOut[_right] = bufferIn[_right] + _trackBank->sample(_deckInfos.index, sampleIndex + 1);
 
         _outMeterL.stepCompute(_bufferOut[_left]);
         _outMeterR.stepCompute(_bufferOut[_right]);

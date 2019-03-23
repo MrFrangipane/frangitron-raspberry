@@ -50,6 +50,7 @@ struct EngineStatus {
     ClockStatus clock;
     SampleBank * sampleBank = nullptr;
     DjTrackBank * trackBank = nullptr;
+    Buffer emptyBuffer;
 };
 
 

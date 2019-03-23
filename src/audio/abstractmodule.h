@@ -12,7 +12,7 @@ public:
     AbstractModule(const nFrame bufferSize) :
         _bufferSize(bufferSize)
     {
-        _bufferOut.reserve(bufferSize * 2);
+        _bufferOut.resize(bufferSize * CHANNEL_COUNT);
     }
     virtual ModuleStatus const status() { return ModuleStatus(); }
     virtual void update(ModuleStatus /*status_*/) { }
