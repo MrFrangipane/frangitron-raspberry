@@ -22,7 +22,7 @@ const ModuleStatus DjDeck::status()
     status_.params[2].name = "Track";
     status_.params[2].isVisible = true;
     status_.params[2].min = 0;
-    status_.params[2].max = _trackBank->trackCount() - 1;
+    status_.params[2].max = _trackBank->audioFileCount() - 1;
     status_.params[2].value = _trackIndex;
     status_.params[2].step = 1;
 

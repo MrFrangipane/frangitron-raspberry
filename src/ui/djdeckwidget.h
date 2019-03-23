@@ -2,6 +2,7 @@
 #define DJDECKWIDGET_H
 
 #include <QList>
+#include <QFont>
 #include <QPixmap>
 #include "ui/abstractwidget.h"
 #include "audio/djdeck.h"
@@ -18,6 +19,7 @@ public:
         _contentMinimumWidth = PEAK_IMAGE_WIDTH;
         _contentMinimumHeight = PEAK_IMAGE_HEIGHT;
         _drawPeaks();
+        _font.setPixelSize(UI_DECK_ROW_HEIGHT - 2);
     }
     QString formatParameter(int paramId) override;
 
@@ -26,6 +28,7 @@ private:
     void paint_(QRect rect) override;
     QList<QPixmap> _peaks;
     DjTrackBank * const _trackBank;
+    QFont _font;
 };
 
 #endif // DJDECKWIDGET_H

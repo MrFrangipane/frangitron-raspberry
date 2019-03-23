@@ -22,11 +22,11 @@
 #define DJTRACK_BANK_SLEEP_DURATION 20 // in milliseconds
 #define AUDIO_SAMPLE_MAX_COUNT 64
 #define AUDIO_MARKER_COUNT_MAX 64
-#define PEAK_IMAGE_WIDTH 280
-#define PEAK_IMAGE_HEIGHT 40
+#define PEAK_IMAGE_WIDTH 310
+#define PEAK_IMAGE_HEIGHT 64
 #define PEAK_RMS_RATIO 0.25  // how much is sampled for RMS peak calculation
 
-#define DECK_LENGTH_SECONDS 300 // 5 minutes
+#define DECK_LENGTH_SECONDS 600 // 10 minutes
 
 #define MODULE_MAX_COUNT 16
 #define MODULE_PARAM_COUNT 16
@@ -43,5 +43,8 @@
 #define UI_LEVEL_HANDLE_SIZE 10
 #define UI_LEVEL_MAGIC_COEFF 0.0045
 #define UI_ASPECT_RATIO 0.95 // 800x480 as 16:9
+#define UI_DECK_ROW_HEIGHT 15
+#define UI_DECK_ROW_COUNT 5
+#define UI_DECK_SELECTED_ROW 2
 
 #endif // CONSTANTS_H

@@ -33,7 +33,7 @@ public:
     void registerAudioFile(AudioFileInfos audioFile);
     DjDeckInfos registerDjDeck(DjDeckInfos djDeckInfos);
     void start();
-    int trackCount() { return _tracksInfos.size(); }
+    int audioFileCount() { return _tracksInfos.size(); }
     int deckCount() { return _decks.size(); }
     void setDeckInfos(int deckIndex, DjDeckInfos infos) { _decks[deckIndex] = infos; }
     bool isRunning() { return _isRunning; }
