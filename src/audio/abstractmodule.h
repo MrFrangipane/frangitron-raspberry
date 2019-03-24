@@ -12,7 +12,7 @@ class AbstractModule
 public:
     AbstractModule(const nFrame bufferSize, const bool isRoutedToMaster_) :
         _bufferSize(bufferSize),
-        isRoutedToMaster(isRoutedToMaster_)
+        isRoutedToMasterBus(isRoutedToMaster_)
     {
         _bufferOut.resize(bufferSize * CHANNEL_COUNT);
     }
@@ -21,7 +21,7 @@ public:
     virtual void process(Sample const * /*bufferIn*/, const ClockStatus /*time*/) { }
     virtual void gate(ClockStatus /*time*/) { }
     Sample const * output() { return _bufferOut.data(); }
-    const bool isRoutedToMaster = false;
+    const bool isRoutedToMasterBus = false;
 
 protected:
     Buffer _bufferOut;

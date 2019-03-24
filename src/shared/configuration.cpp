@@ -52,7 +52,7 @@ void initPatch(Configuration* conf)
     conf->modules[0].overrides[10].value = 1.0;     // level
     conf->modules[0].layout.row = 0;
     conf->modules[0].layout.col = 2;
-    conf->modules[0].routedToMaster = true;
+    conf->modules[0].routedToMasterBus = true;
 
     // DECK A
     conf->modules[1].name = "DECK A";
@@ -75,7 +75,7 @@ void initPatch(Configuration* conf)
     conf->modules[3].inputIndex = 2;
     conf->modules[3].layout.row = 1;
     conf->modules[3].layout.col = 2;
-    conf->modules[3].routedToMaster = true;
+    conf->modules[3].routedToMasterBus = true;
 
     // DECK B
     conf->modules[4].name = "DECK B";
@@ -98,7 +98,7 @@ void initPatch(Configuration* conf)
     conf->modules[6].inputIndex = 5;
     conf->modules[6].layout.row = 1;
     conf->modules[6].layout.col = 3;
-    conf->modules[6].routedToMaster = true;
+    conf->modules[6].routedToMasterBus = true;
 
     // MASTER OUT
     conf->modules[7].name = "OUT";

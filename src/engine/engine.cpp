@@ -146,19 +146,19 @@ void Engine::start()
     {
         // TYPE
         if( configModule.type == std::string("levelMeter") )
-            _shared.patch.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize, configModule.routedToMaster)));
+            _shared.patch.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize, configModule.routedToMasterBus)));
 
         else if( configModule.type == std::string("filter") )
-            _shared.patch.push_back(std::make_shared<Filter>(Filter(_bufferSize, configModule.routedToMaster)));
+            _shared.patch.push_back(std::make_shared<Filter>(Filter(_bufferSize, configModule.routedToMasterBus)));
 
         else if( configModule.type == std::string("compressor") )
-            _shared.patch.push_back(std::make_shared<Compressor>(Compressor(_bufferSize, configModule.routedToMaster)));
+            _shared.patch.push_back(std::make_shared<Compressor>(Compressor(_bufferSize, configModule.routedToMasterBus)));
 
         else if( configModule.type == std::string("kickSynth") )
-            _shared.patch.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize, configModule.routedToMaster)));
+            _shared.patch.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize, configModule.routedToMasterBus)));
 
         else if( configModule.type == std::string("samplePlayer") )
-            _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize, _shared.engine.sampleBank, configModule.routedToMaster)));
+            _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize, _shared.engine.sampleBank, configModule.routedToMasterBus)));
 
         else if( configModule.type == std::string("djDeck") )
         {
@@ -167,7 +167,7 @@ void Engine::start()
             djDeckInfos.moduleIndex = _shared.patch.size();
 
             djDeckInfos = _shared.engine.trackBank->registerDjDeck(djDeckInfos);
-            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize, _shared.engine.trackBank, configModule.routedToMaster)));
+            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize, _shared.engine.trackBank, configModule.routedToMasterBus)));
         }
 
         else continue;
@@ -440,7 +440,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         {
            module->process(s->engine.emptyBuffer.data(), s->time.status());
         }
-        else if( inputId == MODULE_INPUT_MASTER_BUS ) // TODO : unify with modules.back() -> master !!
+        else if( inputId == MODULE_INPUT_MASTER_BUS )
         {
            module->process(s->engine.summingBuffer.data(), s->time.status());
         }
@@ -448,7 +448,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
            module->process(s->patch[inputId]->output(), s->time.status());
         }
 
-        if( module->isRoutedToMaster )
+        if( module->isRoutedToMasterBus )
         {
             for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ )
             {

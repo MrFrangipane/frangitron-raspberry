@@ -31,7 +31,7 @@ struct ConfModule
     int midiNote = -1;
     ConfModuleParamOverride overrides[MODULE_PARAM_COUNT];
     ConfModuleLayout layout;
-    bool routedToMaster = false;
+    bool routedToMasterBus = false;
 };
 
 
