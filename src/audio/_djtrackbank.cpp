@@ -64,7 +64,7 @@ void DjTrackBank::start()
 
 Sample DjTrackBank::sample(int deckIndex, int sampleIndex)
 {
-    if( _decks.at(deckIndex).needsLoading )
+    if( _decks.at(deckIndex).needsLoading || _decks.at(deckIndex).audioFileIndex < 0 )
         return 0.0;
 
     return _decksData.at(deckIndex).at(sampleIndex);
@@ -79,7 +79,7 @@ void DjTrackBank::_mainLoop(DjTrackBank *trackBank)
     while( trackBank->isRunning() ) {
         for( int deckIndex = 0; deckIndex < trackBank->deckCount(); deckIndex++ ) {
             deck = trackBank->deckInfos(deckIndex);
-            if( !deck.needsLoading )
+            if( !deck.needsLoading || deck.audioFileIndex < 0 )
                 continue;
 
             audioFile = trackBank->audioFileInfos(deck.audioFileIndex);

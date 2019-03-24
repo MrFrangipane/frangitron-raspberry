@@ -21,7 +21,7 @@ struct DjDeckInfos {
     int index = 0;
     std::string name = "";
     bool needsLoading = false;
-    int audioFileIndex = 0;
+    int audioFileIndex = -1;
     int moduleIndex = 0;
 };
 

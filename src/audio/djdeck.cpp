@@ -21,7 +21,7 @@ const ModuleStatus DjDeck::status()
 
     status_.params[2].name = "Track";
     status_.params[2].isVisible = true;
-    status_.params[2].min = 0;
+    status_.params[2].min = -1;
     status_.params[2].max = _trackBank->audioFileCount() - 1;
     status_.params[2].value = _trackIndex;
     status_.params[2].step = 1;
@@ -37,6 +37,14 @@ const ModuleStatus DjDeck::status()
 
 void DjDeck::process(Sample const * bufferIn, const nFrame time)
 {
+    // NO FILE SELECTED
+    if( _deckInfos.audioFileIndex < 0 ) {
+        for( nFrame i = 0; i < _bufferSize * CHANNEL_COUNT; i++ )
+            _bufferOut[i] = bufferIn[i];
+        return;
+    }
+
+    // FILE SELECTED
     AudioFileInfos track = _trackBank->audioFileInfos(_deckInfos.audioFileIndex);
     nFrame trackPosition = (time % track.frameCount);
     nSample sampleIndex = trackPosition * track.channelCount;

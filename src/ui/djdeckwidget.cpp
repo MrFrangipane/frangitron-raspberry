@@ -29,7 +29,8 @@ void DjDeckWidget::paint_(QRect rect)
 {
     QPainter painter(this);
     painter.setFont(_font);
-    painter.drawPixmap(rect.x(), rect.y(), _peaks.at(_status.params[2].value));
+    if( _status.params[2].value >= 0 )
+        painter.drawPixmap(rect.x(), rect.y(), _peaks.at(_status.params[2].value));
 
     // WAVEFORM
     painter.setPen(Qt::white);
@@ -42,8 +43,6 @@ void DjDeckWidget::paint_(QRect rect)
     for( int row = 0; row < UI_DECK_ROW_COUNT; row++ )
     {
         int audioFileIndex = row + int(_status.params[2].value) - UI_DECK_SELECTED_ROW;
-        if( audioFileIndex < 0 || audioFileIndex >= _trackBank->audioFileCount())
-            continue;
 
         QRect rectText(
             rect.left(),
@@ -62,6 +61,10 @@ void DjDeckWidget::paint_(QRect rect)
             painter.setBrush(Qt::transparent);
             painter.setPen(Qt::white);
         }
+
+        if( audioFileIndex < 0 || audioFileIndex >= _trackBank->audioFileCount())
+            continue;
+
         painter.drawText(
             rectText,
             QString::fromStdString(_trackBank->audioFileInfos(audioFileIndex).name)
@@ -73,7 +76,10 @@ void DjDeckWidget::paint_(QRect rect)
 QString DjDeckWidget::formatParameter(int paramId)
 {
     if( paramId == 2) { // Track
-        return QString::fromStdString(_trackBank->audioFileInfos(_status.params[2].value).name);
+        if( _status.params[2].value < 0 )
+            return QString("");
+        else
+            return QString::fromStdString(_trackBank->audioFileInfos(_status.params[2].value).name);
     }
 
     return AbstractWidget::formatParameter(paramId);

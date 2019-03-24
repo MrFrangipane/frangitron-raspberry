@@ -23,7 +23,7 @@ public:
 private:
     DjDeckInfos _deckInfos;
     DjTrackBank * const _trackBank;
-    int _trackIndex = 0;
+    int _trackIndex = -1;
     float _position = 0.0;
 };
 
