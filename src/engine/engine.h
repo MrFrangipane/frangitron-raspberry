@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <thread>
 #include <chrono>
+#include <thread>
 #include "sndfile.hh"
 #include "../include/rtaudio/RtAudio.h"
 #include "../include/rtmidi/RtMidi.h"
@@ -83,6 +84,7 @@ struct Shared {
     nFrame uiFrame = 0;
     bool midiNoteOn[MIDI_NOTE_COUNT] = {};
     Recorder * recorder = nullptr;
+    int midiPortNumber = 0;
 };
 
 
@@ -99,7 +101,7 @@ private:
     Shared _shared;
     const Configuration *_configuration;
     RtAudio* _audio = nullptr;
-    RtMidiIn* _midi = nullptr;
+    RtMidiIn* _midiIn = nullptr;
     Recorder* _recorder = nullptr;
     void _setAudioDeviceIndex();
     void _setMidiDeviceIndex();
@@ -111,14 +113,16 @@ private:
         RtAudioStreamStatus status,
         void *userData
     );
-    static void _midiCallback(
+    static void _midiInCallback(
         double deltaTime,
         std::vector<unsigned char> *message,
         void *userData
     );
+    static void _midiOutLoop(Shared * shared);
     unsigned int _midiDeviceIndex = 0;
     unsigned int _audioDeviceIndex = 0;
     unsigned int _bufferSize = BUFFER_SIZE;
+    std::thread _midiOutThread;
 };
 
 #endif // ENGINE_H

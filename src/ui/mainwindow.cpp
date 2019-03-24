@@ -196,10 +196,10 @@ void MainWindow::_refresh()
         uiStatus.frame += 1;
 
         // ENGINE STATUS -> INFOS
-        ui->sequencer->setStep(int(engineStatus.clock.sequenceStep));
+        ui->sequencer->setStep(int(engineStatus.clock.step));
         ui->labelTime->setText(
             QTime(0,0,0,0).addMSecs(engineStatus.clock.seconds * 1000.0).toString("hh:mm:ss.zzz") +
-            QString(" s - ") + QString::number(engineStatus.clock.bar, 'f', 1) +
+            QString(" s - ") + QString::number(engineStatus.clock.bar) + QString(".") + QString::number(engineStatus.clock.beat % 4) +
             QString(" bar - ") +
             QString::number(engineStatus.clock.tempo, 'f', 1) +
             QString(" bpm")
@@ -282,9 +282,7 @@ void MainWindow::_refresh()
 
                 // ENGINE -> UI
                 if( engineStatus.encoders[paramId].pressed ) {
-                    text = QString("*");
                     text += QString::fromStdString(engineStatus.modulesStatuses[selectedModule].params[paramId].name);
-                    text += QString("*");
                     _nameLabels[paramId]->setText(text);
                 }
                 else {

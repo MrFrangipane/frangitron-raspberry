@@ -93,7 +93,9 @@ void Engine::_setMidiDeviceIndex()
         for( std::string interfaceName : interfaceNames ) {
             if( portName.find(interfaceName) != std::string::npos )
             {
+                // TODO : unify data structures !!
                 _midiDeviceIndex = i;
+                _shared.midiPortNumber = i;
                 delete midiIn;
                 return;
             }
@@ -101,6 +103,7 @@ void Engine::_setMidiDeviceIndex()
     }
 
     delete midiIn;
+    _shared.midiPortNumber = 0;
     _midiDeviceIndex = 0;
 }
 
@@ -188,32 +191,32 @@ void Engine::start()
         module++;
     }
 
-    // MIDI DEVICE
+    // MIDI IN
     _setMidiDeviceIndex();
     try {
-        _midi = new RtMidiIn();
+        _midiIn = new RtMidiIn();
     }
     catch( RtMidiError &error ) {
-        std::cout << "Error while allocating Midi" << std::endl;
+        std::cout << "Error while allocating Midi in" << std::endl;
         std::cout << error.getMessage() << std::endl;
-        _shared.engine.status = EngineStatus::AUDIO_ERROR;
+        _shared.engine.status = EngineStatus::MIDI_ERROR;
         _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
         return;
     }
 
     try {
-        std::cout << "Opening midi port (" << _midiDeviceIndex << ") " <<
-                     "and setting callback : " << _midi->getPortName(_midiDeviceIndex) << std::endl;
+        std::cout << "Opening midi in port (" << _midiDeviceIndex << ") " <<
+                     "and setting callback : " << _midiIn->getPortName(_midiDeviceIndex) << std::endl;
 
-        _midi->openPort(_midiDeviceIndex);
+        _midiIn->openPort(_midiDeviceIndex);
 
-        _midi->setCallback(&_midiCallback, &_shared);
-        _midi->ignoreTypes(false, false, false);
+        _midiIn->setCallback(&_midiInCallback, &_shared);
+        _midiIn->ignoreTypes(false, false, false);
     }
     catch( RtMidiError &error ) {
-        std::cout << "Error while opening midi port and setting callback" << std::endl;
+        std::cout << "Error while opening midi in port and setting callback" << std::endl;
         std::cout << error.getMessage() << std::endl;
-        _shared.engine.status = EngineStatus::AUDIO_ERROR;
+        _shared.engine.status = EngineStatus::MIDI_ERROR;
         _shared.uiSetStatus(_shared.uiPtr, _shared.engine);
         return;
     }
@@ -300,6 +303,13 @@ void Engine::start()
 
     // STATE <- RUNNING
     _shared.engine.status = EngineStatus::RUNNING;
+
+    // TEMPO
+    _shared.time.setTempo(120.0);
+
+    // MIDI OUT
+    _midiOutThread = std::thread(_midiOutLoop, &_shared);
+    _midiOutThread.detach();
 }
 
 void Engine::stop()
@@ -320,7 +330,7 @@ void Engine::stop()
     if ( _audio->isStreamOpen() ) _audio->closeStream();
 
     // MIDI
-    delete _midi;
+    delete _midiIn;
 }
 
 int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferSize, double /*streamTime*/, RtAudioStreamStatus /*status*/, void* userData)
@@ -460,7 +470,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     return 0;
 }
 
-void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *message, void *userData)
+void Engine::_midiInCallback(double /*deltaTime*/, std::vector<unsigned char> *message, void *userData)
 {
     int encoder = 0;
     Shared* shared = (Shared*)userData;
@@ -477,10 +487,6 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     if( message->at(0) == 250 ) shared->time.start();
     if( message->at(0) == 252 ) shared->time.stop();
     if( message->at(0) == 251 ) shared->time.resume();
-
-    if( message->at(0) == 248 && shared->time.isPlaying() ) { // Midi Clock Pulse
-        shared->time.incrementPpqn();
-    }
 
     // NOTE ON
     if( message->at(0) >= 144 && message->at(0) <= 159) {
@@ -535,5 +541,30 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
             default:
             break;
         }
+    }
+}
+
+void Engine::_midiOutLoop(Shared *shared)
+{
+    RtMidiOut midi;
+    midi.openPort(shared->midiPortNumber);
+
+    std::vector<unsigned char> clockPulseMessage;
+    clockPulseMessage.push_back(248);
+
+    ClockStatus clock;
+    nPulse lastPulse = 0;
+
+    auto sleepDuration = std::chrono::milliseconds(MIDI_OUT_LOOP_SLEEP);
+
+    while( shared->engine.status == EngineStatus::RUNNING )
+    {
+        clock = shared->time.status();
+        if( clock.enginePulse > lastPulse )
+        {
+            lastPulse = clock.enginePulse;
+            midi.sendMessage(&clockPulseMessage);
+        }
+        std::this_thread::sleep_for(sleepDuration);
     }
 }

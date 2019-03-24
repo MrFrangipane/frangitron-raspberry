@@ -27,6 +27,7 @@ private:
     int _previousAudioFileIndex = -1;
     float _position = 0.0;
     nFrame _frameStart = 0;
+    nBar _previousBar = 0;
 };
 
 #endif // DJDECK_H

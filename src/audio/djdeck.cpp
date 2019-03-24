@@ -38,13 +38,17 @@ const ModuleStatus DjDeck::status()
 void DjDeck::process(Sample const * bufferIn, const ClockStatus time)
 {
     bool noFileSelected = _deckInfos.audioFileIndex < 0;
-    bool fileChanged = _previousAudioFileIndex != _audioFileIndex;
+    bool hasFileChanged = _previousAudioFileIndex != _audioFileIndex;
+    bool hasBarChanged = _previousBar < time.bar;
 
-    if( fileChanged )
+    if( hasFileChanged )
         _previousAudioFileIndex = -2; // Ensure file changed until next bar
 
+    if( hasBarChanged )
+        _previousBar = time.bar;
+
     // NO OUTPUT
-    if( noFileSelected || (fileChanged && !time.isAtBar) || !time.isPlaying ) {
+    if( noFileSelected || (hasFileChanged && hasBarChanged) || !time.isPlaying ) {
         for( nFrame i = 0; i < _bufferSize * CHANNEL_COUNT; i++ )
             _bufferOut[i] = bufferIn[i];
         _position = 0.0;
@@ -52,10 +56,10 @@ void DjDeck::process(Sample const * bufferIn, const ClockStatus time)
     }
 
     // NEW FILE
-    if( fileChanged && time.isAtBar )
+    if( hasFileChanged && hasBarChanged )
     {
         _previousAudioFileIndex = _audioFileIndex;
-        _frameStart = time.lastBarFrame;
+        _frameStart = time.barAsFrame;
     }
 
     // FILE READ
@@ -66,7 +70,7 @@ void DjDeck::process(Sample const * bufferIn, const ClockStatus time)
     nSample audioFileSample = 0;
 
     // REALIGN
-    if( time.isAtBar && (lasting < time.framePerBar / 16 || elapsed < time.framePerBar / 16) )
+    if( hasBarChanged && (lasting < time.framePerBar / 16 || elapsed < time.framePerBar / 16) )
     {
         audioFileFrame = 0;
         _frameStart = time.frame;

@@ -4,62 +4,30 @@
 
 void MasterClock::_update()
 {
-    double ppqnCount_ = float(_frame) * _ppqnPerFrame; // HACKY WHACKY 120 BPM
+    _status.seconds = (double)_status.frame / SAMPLE_RATE;
 
-    int note = ppqnCount_ / 24;
-    int bar = note / 4;
+    _status.pulse = _pulsePerSecond * (double)_status.frame / SAMPLE_RATE;
+    _status.enginePulse = _pulsePerSecond * (double)_status.engineFrame / SAMPLE_RATE;
 
-    _status.bar = bar + (double)(note % 4) * 0.1;
-    _status.seconds = (double)_frame / SAMPLE_RATE;
-    _status.sequenceStep = ppqnCount_ / 6.0;
-    _status.frame = _frame;
-    _status.engineFrame = _engineFrame;
+    _status.step = 4 * _status.pulse / MIDI_PULSE_PER_BEAT;
+    _status.beat = _status.step / 4;
+    _status.bar = _status.beat / 4;
 
-    _status.isPlaying = _isPlaying;
-    _status.isAtBar = fmod(_status.sequenceStep, 4.0) == 0.0;
+    _status.barAsFrame = _status.bar * 4 * MIDI_PULSE_PER_BEAT;
+}
 
-    if( _status.isAtBar )
-        _status.lastBarFrame = _frame;
-
-    if( isPlaying() && false ) // HACKY WHACKY 120 BPM
-    {
-        _tempoAveraging += _ppqnPerFrame / 24 * SAMPLE_RATE * 60;
-        _tempoCycles += 1;
-        if( _status.seconds - _lastTempoAveraging > MIDI_TEMPO_AVERAGE_DURATION )
-        {
-            _lastTempoAveraging = _status.seconds;
-            _status.tempo = _tempoAveraging / _tempoCycles;
-            _tempoAveraging = 0;
-            _tempoCycles = 0;
-            _status.framePerBar = SAMPLE_RATE / (_status.tempo / 60.0) * 4.0;
-        }
-    }
-    else
-    {
-        _lastTempoAveraging = 0;
-        _status.tempo = 120.0;
-        _status.framePerBar = SAMPLE_RATE / (_status.tempo / 60.0) * 4.0;
-    }
+void MasterClock::setTempo(float tempo)
+{
+    _status.tempo = tempo;
+    _pulsePerSecond = (_status.tempo / 60.0) * MIDI_PULSE_PER_BEAT;
+    _status.framePerBar = SAMPLE_RATE / (_status.tempo / 60.0);
+    _update();
 }
 
 void MasterClock::incrementFrame(nFrame count)
 {
-    _engineFrame += count;
-    if( _isPlaying ) _frame += count;
+    _status.engineFrame += count;
+    if( _status.isPlaying ) _status.frame += count;
 
     _update();
-}
-
-void MasterClock::incrementPpqn()
-{
-    // HACKY WHACKY 120 BPM ---
-
-    //nFrame elapsed = _engineFrame - _lastPpqnUpdate;
-    //_lastPpqnUpdate = _engineFrame;
-    _ppqnPerFrame = 0.001;
-
-    //_ppqnCount += 1;
-    _update();
-
-    // ------------------------
 }
