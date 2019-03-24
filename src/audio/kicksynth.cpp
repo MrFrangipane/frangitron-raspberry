@@ -129,17 +129,17 @@ void KickSynth::update(ModuleStatus status)
     _sidechainAmount = status.params[4].value;
 }
 
-void KickSynth::process(Sample const * bufferIn, const nFrame time)
+void KickSynth::process(Sample const * bufferIn, const ClockStatus time)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         _left = i * 2;
         _right = _left + 1;
-        float elapsed = (float)(time + i - _envAmplitude.lastGate()) / SAMPLE_RATE;
+        float elapsed = (float)(time.engineFrame + i - _envAmplitude.lastGate()) / SAMPLE_RATE;
 
         if( elapsed <= _envAmplitude.duration() )
         {
-            _amplitude = _envAmplitude.value(time + i);
-            _pichitude = _envPitch.value(time + i);
+            _amplitude = _envAmplitude.value(time.engineFrame + i);
+            _pichitude = _envPitch.value(time.engineFrame + i);
             Sample _sample = std::cos(elapsed * 2.0 * M_PI * _pitch * _pichitude) * _amplitude;
             _sample = _hiPass1.process(_sample) * 0.7;
             _sample = _hiPass2.process(_sample) * 0.7;
@@ -160,8 +160,8 @@ void KickSynth::process(Sample const * bufferIn, const nFrame time)
     }
 }
 
-void KickSynth::gate(nFrame time)
+void KickSynth::gate(ClockStatus time)
 {
-    _envAmplitude.gate(time);
-    _envPitch.gate(time);
+    _envAmplitude.gate(time.engineFrame);
+    _envPitch.gate(time.engineFrame);
 }

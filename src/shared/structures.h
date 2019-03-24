@@ -45,13 +45,6 @@ struct ModuleStatus {
 
 };
 
-struct ClockStatus {
-    bool isPlaying = false;
-    double seconds = 0.0;
-    double bar = 0;
-    nSequenceStep sequenceStep = 0;
-};
-
 // UI
 struct UiStatus {
     float paramIncrements[MIDI_ENCODER_COUNT] = {0.0, 0.0, 0.0, 0.0, 0.0};

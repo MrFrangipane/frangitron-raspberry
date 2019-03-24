@@ -16,7 +16,7 @@ public:
 
     ModuleStatus const status() override;
     void update(ModuleStatus status);
-    void process(Sample const * bufferIn, const nFrame /*time*/) override;
+    void process(Sample const * bufferIn, const ClockStatus /*time*/) override;
 private:
     float _level = 0.0;
     bool _isLevelLocked = false;

@@ -3,16 +3,18 @@
 
 #include "shared/constants.h"
 #include "shared/typedefs.h"
+#include "shared/masterclock.h"
+
 
 class Encoder
 {
 public:
     Encoder() {}
-    void setIncrement(float increment, nFrame time) { _increment = increment; _lastIncrementUpdate = time; }
-    void setPressed(bool pressed, nFrame time) { _pressed = pressed; _lastPressedUpdate = time; }
-    bool clicked(nFrame /*time*/);
-    bool pressed(nFrame /*time*/);
-    float increment(nFrame /*time*/);
+    void setIncrement(float increment, ClockStatus time) { _increment = increment; _lastIncrementUpdate = time.engineFrame; }
+    void setPressed(bool pressed, ClockStatus time) { _pressed = pressed; _lastPressedUpdate = time.engineFrame; }
+    bool clicked(ClockStatus /*time*/);
+    bool pressed(ClockStatus /*time*/);
+    float increment(ClockStatus /*time*/);
 
 
 private:

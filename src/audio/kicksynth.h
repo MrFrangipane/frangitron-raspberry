@@ -17,8 +17,8 @@ public:
     KickSynth(const nFrame bufferSize = 0);
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
-    void process(Sample const * bufferIn, const nFrame time) override;
-    void gate(nFrame time) override;
+    void process(Sample const * bufferIn, const ClockStatus time) override;
+    void gate(ClockStatus time) override;
 private:
     float _pitch = 65.0;
     float _hardSoft = 0.05;

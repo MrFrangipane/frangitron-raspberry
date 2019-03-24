@@ -3,6 +3,7 @@
 
 #include "shared/typedefs.h"
 #include "shared/structures.h"
+#include "shared/masterclock.h"
 #include "audio/_samplemeter.h"
 #include "audio/_samplebank.h"
 
@@ -16,14 +17,14 @@ public:
     }
     virtual ModuleStatus const status() { return ModuleStatus(); }
     virtual void update(ModuleStatus /*status_*/) { }
-    virtual void process(Sample const * /*bufferIn*/, const nFrame /*time*/) { }
-    virtual void gate(nFrame /*time*/) { }
+    virtual void process(Sample const * /*bufferIn*/, const ClockStatus /*time*/) { }
+    virtual void gate(ClockStatus /*time*/) { }
     Sample const * output() { return _bufferOut.data(); }
 
 protected:
     Buffer _bufferOut;
     nFrame _bufferSize;
-    nFrame _time = 0;
+    ClockStatus _time;
     nFrame _left = 0;
     nFrame _right = 0;
     _SampleMeter _outMeterL;

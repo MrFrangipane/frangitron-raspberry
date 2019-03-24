@@ -1,16 +1,16 @@
 #include "encoder.h"
 
-bool Encoder::clicked(nFrame /*time*/)
+bool Encoder::clicked(ClockStatus /*time*/)
 {
     return false;
 }
 
-bool Encoder::pressed(nFrame /*time*/)
+bool Encoder::pressed(ClockStatus /*time*/)
 {
     return _pressed;
 }
 
-float Encoder::increment(nFrame /*time*/)
+float Encoder::increment(ClockStatus /*time*/)
 {
     return _increment;
 }

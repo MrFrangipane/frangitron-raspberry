@@ -65,7 +65,7 @@ const ModuleStatus Filter::status()
     return status_;
 }
 
-void Filter::process(Sample const * bufferIn, const nFrame /*time*/)
+void Filter::process(Sample const * bufferIn, const ClockStatus /*time*/)
 {
     switch (_mode) {
 

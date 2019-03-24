@@ -63,7 +63,7 @@ const ModuleStatus Compressor::status()
     return status_;
 }
 
-void Compressor::process(Sample const * bufferIn, const nFrame /*time*/)
+void Compressor::process(Sample const * bufferIn, const ClockStatus /*time*/)
 {
     for( nFrame i = 0; i < _bufferSize; i++ ) {
         // TRESHOLD

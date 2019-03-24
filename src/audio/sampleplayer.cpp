@@ -27,19 +27,19 @@ const ModuleStatus SamplePlayer::status()
     return status_;
 }
 
-void SamplePlayer::process(Sample const * bufferIn, const nFrame time)
+void SamplePlayer::process(Sample const * bufferIn, const ClockStatus time)
 {
     for( nFrame i = 0; i < _bufferSize; i++ )
     {
         _left = i * 2;
         _right = _left + 1;
-        _amplitude = _envAmplitude.value(time + i);
-        nFrame elapsedFrames = time + i - _envAmplitude.lastGate();
+        _amplitude = _envAmplitude.value(time.engineFrame + i);
+        nFrame elapsedFrames = time.engineFrame + i - _envAmplitude.lastGate();
         float elapsedSeconds = (float)elapsedFrames / SAMPLE_RATE;
 
         if( elapsedSeconds <= _envAmplitude.duration() )
         {
-            _amplitude = _envAmplitude.value(time + i);
+            _amplitude = _envAmplitude.value(time.engineFrame + i);
             _bufferOut[_left] = bufferIn[_left] + _sampleBank->left(_sampleIndex, elapsedFrames) * _amplitude;
             _bufferOut[_right] = bufferIn[_right] + _sampleBank->right(_sampleIndex, elapsedFrames) * _amplitude;
         }
@@ -55,8 +55,8 @@ void SamplePlayer::process(Sample const * bufferIn, const nFrame time)
     }
 }
 
-void SamplePlayer::gate(nFrame time)
+void SamplePlayer::gate(ClockStatus time)
 {
-    _envAmplitude.gate(time);
-    _envSidechain.gate(time);
+    _envAmplitude.gate(time.engineFrame);
+    _envSidechain.gate(time.engineFrame);
 }

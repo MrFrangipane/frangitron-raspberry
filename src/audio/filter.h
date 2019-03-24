@@ -23,7 +23,7 @@ public:
         _hiPassR(_SampleFilterMode::HIPASS) { }
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
-    void process(Sample const * bufferIn, const nFrame /*time*/) override;
+    void process(Sample const * bufferIn, const ClockStatus /*time*/) override;
 private:
     FilterMode _mode = FilterMode::PASSTHROUGH;
     _SampleFilter _lowPassL;

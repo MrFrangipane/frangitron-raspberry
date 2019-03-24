@@ -35,7 +35,7 @@ const ModuleStatus DjDeck::status()
     return status_;
 }
 
-void DjDeck::process(Sample const * bufferIn, const nFrame time)
+void DjDeck::process(Sample const * bufferIn, const ClockStatus time)
 {
     // NO FILE SELECTED
     if( _deckInfos.audioFileIndex < 0 ) {
@@ -46,7 +46,7 @@ void DjDeck::process(Sample const * bufferIn, const nFrame time)
 
     // FILE SELECTED
     AudioFileInfos track = _trackBank->audioFileInfos(_deckInfos.audioFileIndex);
-    nFrame trackPosition = (time % track.frameCount);
+    nFrame trackPosition = (time.engineFrame % track.frameCount);
     nSample sampleIndex = trackPosition * track.channelCount;
     _position = (float)trackPosition / (float)track.frameCount;
 

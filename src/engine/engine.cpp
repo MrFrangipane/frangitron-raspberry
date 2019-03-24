@@ -378,8 +378,8 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         {
             if( paramId >= MIDI_ENCODER_COUNT ) break;
 
-            pressed = s->midiEncoders[paramId].pressed(s->time.engineFrame());
-            increment = s->midiEncoders[paramId].increment(s->time.engineFrame());
+            pressed = s->midiEncoders[paramId].pressed(s->time.status());
+            increment = s->midiEncoders[paramId].increment(s->time.status());
             s->engine.encoders[paramId].pressed = pressed;
 
             if( increment != 0 )
@@ -391,7 +391,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
                     parameter.min, fmin(parameter.value + increment, parameter.max)
                 );
 
-                s->midiEncoders[paramId].setIncrement(0, s->time.engineFrame());
+                s->midiEncoders[paramId].setIncrement(0, s->time.status());
             }
 
             paramId++;
@@ -409,7 +409,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // NOTE ON -> PATCH
     for( SubscribedNote note : s->subscribedNotes ) {
         if( s->midiNoteOn[note.noteNumber] )
-            s->patch[note.moduleIndex]->gate(s->time.engineFrame());
+            s->patch[note.moduleIndex]->gate(s->time.status());
     }
     // TODO : use note off from midi ?
     for( SubscribedNote note : s->subscribedNotes )
@@ -421,14 +421,14 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         inputId = s->patchWires[moduleId];
 
         if( inputId == -1 ) {  // Hardware Input
-            module->process(ioIn, s->time.engineFrame());
+            module->process(ioIn, s->time.status());
         }
         else if( inputId >= 0 ) {  // Module Input
-           module->process(s->patch[inputId]->output(), s->time.engineFrame());
+           module->process(s->patch[inputId]->output(), s->time.status());
         }
         else // No Input
         {
-           module->process(s->engine.emptyBuffer.data(), s->time.engineFrame());
+           module->process(s->engine.emptyBuffer.data(), s->time.status());
         }
 
         moduleId++;
@@ -450,10 +450,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // INCREMENT TIME
-    s->engine.clock.bar = s->time.bar();
-    s->engine.clock.seconds = s->time.seconds();
-    s->engine.clock.sequenceStep = s->time.sequenceStep();
-    s->engine.clock.isPlaying = s->time.isPlaying();
+    s->engine.clock = s->time.status();
     s->time.incrementFrame(bufferSize);
 
     // ENGINE -> UI
@@ -470,10 +467,11 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
 
     if( shared->engine.status != EngineStatus::RUNNING ) return;
 
-//     DEBUG COUT
-//    unsigned int nBytes = message->size();
-//    for ( unsigned int i=0; i<nBytes; i++ )
-//      std::cout << "Byte " << i << " = " << (int)message->at(i) << ", " << std::endl;
+#ifdef MIDI_DEBUG
+    unsigned int nBytes = message->size();
+    for ( unsigned int i=0; i<nBytes; i++ )
+      std::cout << "Byte " << i << " = " << (int)message->at(i) << ", " << std::endl;
+#endif
 
     // TIMING
     if( message->at(0) == 250 ) shared->time.start();
@@ -503,7 +501,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
             case 23: {}
             case 24:
                 encoder = (int)message->at(1) - 20;
-                shared->midiEncoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time.engineFrame());
+                shared->midiEncoders[encoder].setPressed((bool)((int)message->at(2) / 127), shared->time.status());
             break;
 
             // NRPN MSB
@@ -519,7 +517,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
             // DECREASE
             case 97:
                 encoder = (shared->midiLsb << 7) | shared->midiMsb;
-                shared->midiEncoders[encoder].setIncrement(-1, shared->time.engineFrame());
+                shared->midiEncoders[encoder].setIncrement(-1, shared->time.status());
 
                 shared->midiMsb = -1;
                 shared->midiLsb = -1;
@@ -528,7 +526,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
             // INCREASE
             case 96:
                 encoder = (shared->midiLsb << 7) | shared->midiMsb;
-                shared->midiEncoders[encoder].setIncrement(1, shared->time.engineFrame());
+                shared->midiEncoders[encoder].setIncrement(1, shared->time.status());
 
                 shared->midiMsb = -1;
                 shared->midiLsb = -1;
