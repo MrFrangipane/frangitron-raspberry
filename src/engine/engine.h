@@ -52,6 +52,7 @@ struct EngineStatus {
     SampleBank * sampleBank = nullptr;
     DjTrackBank * trackBank = nullptr;
     Buffer emptyBuffer;
+    Buffer summingBuffer;
 };
 
 

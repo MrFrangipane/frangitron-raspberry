@@ -47,16 +47,17 @@ void initPatch(Configuration* conf)
     // INPUT
     conf->modules[0].name = "IN";
     conf->modules[0].type = "levelMeter";
-    conf->modules[0].inputIndex = -1;
+    conf->modules[0].inputIndex = MODULE_INPUT_SOUNDCARD;
     conf->modules[0].overrides[10].isActive = true; // locked
     conf->modules[0].overrides[10].value = 1.0;     // level
     conf->modules[0].layout.row = 0;
     conf->modules[0].layout.col = 2;
+    conf->modules[0].routedToMaster = true;
 
     // DECK A
     conf->modules[1].name = "DECK A";
     conf->modules[1].type = "djDeck";
-    conf->modules[1].inputIndex = 0;
+    conf->modules[1].inputIndex = MODULE_INPUT_NONE;
     conf->modules[1].layout.row = 1;
     conf->modules[1].layout.col = 0;
     conf->modules[1].layout.colSpan = 2;
@@ -74,11 +75,12 @@ void initPatch(Configuration* conf)
     conf->modules[3].inputIndex = 2;
     conf->modules[3].layout.row = 1;
     conf->modules[3].layout.col = 2;
+    conf->modules[3].routedToMaster = true;
 
     // DECK B
     conf->modules[4].name = "DECK B";
     conf->modules[4].type = "djDeck";
-    conf->modules[4].inputIndex = 3; // None
+    conf->modules[4].inputIndex = MODULE_INPUT_NONE;
     conf->modules[4].layout.row = 1;
     conf->modules[4].layout.col = 4;
     conf->modules[4].layout.colSpan = 2;
@@ -96,11 +98,12 @@ void initPatch(Configuration* conf)
     conf->modules[6].inputIndex = 5;
     conf->modules[6].layout.row = 1;
     conf->modules[6].layout.col = 3;
+    conf->modules[6].routedToMaster = true;
 
     // MASTER OUT
     conf->modules[7].name = "OUT";
     conf->modules[7].type = "levelMeter";
-    conf->modules[7].inputIndex = 6;
+    conf->modules[7].inputIndex = MODULE_INPUT_MASTER_BUS;
     conf->modules[7].layout.row = 0;
     conf->modules[7].layout.col = 3;
     conf->modules[7].overrides[2].isActive = true;

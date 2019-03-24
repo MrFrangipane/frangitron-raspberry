@@ -13,8 +13,12 @@
 class SamplePlayer : public AbstractModule
 {
 public:
-    SamplePlayer(const nFrame bufferSize = 0, SampleBank * const sampleBank = nullptr) :
-        AbstractModule(bufferSize),
+    SamplePlayer(
+        const nFrame bufferSize = 0,
+        SampleBank * const sampleBank = nullptr,
+        const bool isRoutedToMaster = false
+    ) :
+        AbstractModule(bufferSize, isRoutedToMaster),
         _sampleBank(sampleBank)
     { }
     ModuleStatus const status() override;

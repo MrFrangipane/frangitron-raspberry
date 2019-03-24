@@ -15,8 +15,8 @@ public:
         nFilterMode
     };
 
-    Filter(const nFrame bufferSize = 0) :
-        AbstractModule(bufferSize),
+    Filter(const nFrame bufferSize = 0, const bool isRoutedToMaster = false) :
+        AbstractModule(bufferSize, isRoutedToMaster),
         _lowPassL(_SampleFilterMode::LOWPASS),
         _lowPassR(_SampleFilterMode::LOWPASS),
         _hiPassL(_SampleFilterMode::HIPASS),

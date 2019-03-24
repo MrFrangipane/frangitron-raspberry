@@ -9,8 +9,8 @@
 class Compressor : public AbstractModule
 {
 public:
-    Compressor(const nFrame bufferSize = 0) :
-        AbstractModule(bufferSize) { }
+    Compressor(const nFrame bufferSize = 0, const bool isRoutedToMaster = false) :
+        AbstractModule(bufferSize, isRoutedToMaster) { }
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
     void process(Sample const * bufferIn, const ClockStatus /*time*/) override;

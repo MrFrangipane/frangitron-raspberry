@@ -11,8 +11,13 @@
 class DjDeck : public AbstractModule
 {
 public:
-    DjDeck(DjDeckInfos deckInfos, const nFrame bufferSize = 0, DjTrackBank * const trackBank = nullptr) :
-        AbstractModule(bufferSize),
+    DjDeck(
+        DjDeckInfos deckInfos,
+        const nFrame bufferSize = 0,
+        DjTrackBank * const trackBank = nullptr,
+        const bool isRoutedToMaster = false
+    ) :
+        AbstractModule(bufferSize, isRoutedToMaster),
         _deckInfos(deckInfos),
         _trackBank(trackBank)
     { }

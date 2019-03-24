@@ -128,6 +128,9 @@ void Engine::start()
     // EMPTY BUFFER
     _shared.engine.emptyBuffer.resize(_bufferSize * CHANNEL_COUNT);
 
+    // MASTER SUMMING
+    _shared.engine.summingBuffer.resize(_bufferSize * CHANNEL_COUNT);
+
     // DJ TRACK BANK
     for( AudioFileInfos audioFileInfos : _configuration->djTracks ) {
         if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
@@ -143,19 +146,19 @@ void Engine::start()
     {
         // TYPE
         if( configModule.type == std::string("levelMeter") )
-            _shared.patch.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<LevelMeter>(LevelMeter(_bufferSize, configModule.routedToMaster)));
 
         else if( configModule.type == std::string("filter") )
-            _shared.patch.push_back(std::make_shared<Filter>(Filter(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<Filter>(Filter(_bufferSize, configModule.routedToMaster)));
 
         else if( configModule.type == std::string("compressor") )
-            _shared.patch.push_back(std::make_shared<Compressor>(Compressor(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<Compressor>(Compressor(_bufferSize, configModule.routedToMaster)));
 
         else if( configModule.type == std::string("kickSynth") )
-            _shared.patch.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize)));
+            _shared.patch.push_back(std::make_shared<KickSynth>(KickSynth(_bufferSize, configModule.routedToMaster)));
 
         else if( configModule.type == std::string("samplePlayer") )
-            _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize, _shared.engine.sampleBank)));
+            _shared.patch.push_back(std::make_shared<SamplePlayer>(SamplePlayer(_bufferSize, _shared.engine.sampleBank, configModule.routedToMaster)));
 
         else if( configModule.type == std::string("djDeck") )
         {
@@ -164,7 +167,7 @@ void Engine::start()
             djDeckInfos.moduleIndex = _shared.patch.size();
 
             djDeckInfos = _shared.engine.trackBank->registerDjDeck(djDeckInfos);
-            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize, _shared.engine.trackBank)));
+            _shared.patch.push_back(std::make_shared<DjDeck>(DjDeck(djDeckInfos, _bufferSize, _shared.engine.trackBank, configModule.routedToMaster)));
         }
 
         else continue;
@@ -430,15 +433,27 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     for( std::shared_ptr<AbstractModule> module : s->patch ) {
         inputId = s->patchWires[moduleId];
 
-        if( inputId == -1 ) {  // Hardware Input
+        if( inputId == MODULE_INPUT_SOUNDCARD ) {
             module->process(ioIn, s->time.status());
+        }
+        else if( inputId == MODULE_INPUT_NONE )
+        {
+           module->process(s->engine.emptyBuffer.data(), s->time.status());
+        }
+        else if( inputId == MODULE_INPUT_MASTER_BUS ) // TODO : unify with modules.back() -> master !!
+        {
+           module->process(s->engine.summingBuffer.data(), s->time.status());
         }
         else if( inputId >= 0 ) {  // Module Input
            module->process(s->patch[inputId]->output(), s->time.status());
         }
-        else // No Input
+
+        if( module->isRoutedToMaster )
         {
-           module->process(s->engine.emptyBuffer.data(), s->time.status());
+            for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ )
+            {
+               s->engine.summingBuffer[i] += module->output()[i];
+            }
         }
 
         moduleId++;
@@ -447,7 +462,8 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     // PATCH -> OUTPUT
     for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
         ioOut[i] = s->patch.back()->output()[i];
-    }
+    }    
+    std::fill(s->engine.summingBuffer.begin(), s->engine.summingBuffer.end(), 0.0);
 
     // OUTPUT -> RECORDER
     s->recorder->write(ioOut);

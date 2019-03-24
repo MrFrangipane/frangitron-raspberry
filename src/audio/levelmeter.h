@@ -12,7 +12,8 @@
 class LevelMeter : public AbstractModule
 {
 public:
-    LevelMeter(const nFrame bufferSize = 0) : AbstractModule(bufferSize) { }
+    LevelMeter(const nFrame bufferSize = 0, const bool isRoutedToMaster = false) :
+        AbstractModule(bufferSize, isRoutedToMaster) { }
 
     ModuleStatus const status() override;
     void update(ModuleStatus status);

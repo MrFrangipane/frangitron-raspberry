@@ -42,7 +42,6 @@ struct ModuleStatus {
     ModuleParameter params[MODULE_PARAM_COUNT];
     float levelOut = -60.0;
     bool isClipping = false;
-
 };
 
 // UI

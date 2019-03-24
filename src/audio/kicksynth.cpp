@@ -1,6 +1,7 @@
 #include "kicksynth.h"
 
-KickSynth::KickSynth(const nFrame bufferSize) : AbstractModule(bufferSize)
+KickSynth::KickSynth(const nFrame bufferSize, const bool isRoutedToMaster) :
+    AbstractModule(bufferSize, isRoutedToMaster)
 {
     _sidechainAmount = 0.25;
 
