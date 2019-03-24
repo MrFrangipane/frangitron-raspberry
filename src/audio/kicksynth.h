@@ -14,7 +14,7 @@
 class KickSynth : public AbstractModule
 {
 public:
-    KickSynth(const nFrame bufferSize = 0, const bool isRoutedToMaster = false);
+    KickSynth(const nFrame bufferSize = 0, const bool isRoutedToMasterBus = false);
     ModuleStatus const status() override;
     void update(ModuleStatus status_) override;
     void process(Sample const * bufferIn, const ClockStatus time) override;

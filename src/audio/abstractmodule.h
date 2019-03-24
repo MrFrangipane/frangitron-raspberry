@@ -11,8 +11,8 @@ class AbstractModule
 {
 public:
     AbstractModule(const nFrame bufferSize, const bool isRoutedToMaster_) :
-        _bufferSize(bufferSize),
-        isRoutedToMasterBus(isRoutedToMaster_)
+        isRoutedToMasterBus(isRoutedToMaster_),
+        _bufferSize(bufferSize)
     {
         _bufferOut.resize(bufferSize * CHANNEL_COUNT);
     }
