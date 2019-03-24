@@ -3,16 +3,16 @@
 
 void DjDeck::update(ModuleStatus status)
 {
-    _trackIndex = status.params[2].value;
+    _audioFileIndex = status.params[2].value;
 }
 
 const ModuleStatus DjDeck::status()
 {
     ModuleStatus status_;
 
-    if( _trackIndex != _deckInfos.audioFileIndex )
+    if( _audioFileIndex != _deckInfos.audioFileIndex )
     {
-        _deckInfos.audioFileIndex = _trackIndex;
+        _deckInfos.audioFileIndex = _audioFileIndex;
         _deckInfos.needsLoading = true;
         _trackBank->setDeckInfos(_deckInfos.index, _deckInfos);
     } else {
@@ -23,7 +23,7 @@ const ModuleStatus DjDeck::status()
     status_.params[2].isVisible = true;
     status_.params[2].min = -1;
     status_.params[2].max = _trackBank->audioFileCount() - 1;
-    status_.params[2].value = _trackIndex;
+    status_.params[2].value = _audioFileIndex;
     status_.params[2].step = 1;
 
     status_.params[5].name = "Position";
@@ -37,30 +37,53 @@ const ModuleStatus DjDeck::status()
 
 void DjDeck::process(Sample const * bufferIn, const ClockStatus time)
 {
-    // NO FILE SELECTED
-    if( _deckInfos.audioFileIndex < 0 ) {
+    bool noFileSelected = _deckInfos.audioFileIndex < 0;
+    bool fileChanged = _previousAudioFileIndex != _audioFileIndex;
+
+    if( fileChanged )
+        _previousAudioFileIndex = -2; // Ensure file changed until next bar
+
+    // NO OUTPUT
+    if( noFileSelected || (fileChanged && !time.isAtBar) || !time.isPlaying ) {
         for( nFrame i = 0; i < _bufferSize * CHANNEL_COUNT; i++ )
             _bufferOut[i] = bufferIn[i];
+        _position = 0.0;
         return;
     }
 
-    // FILE SELECTED
-    AudioFileInfos track = _trackBank->audioFileInfos(_deckInfos.audioFileIndex);
-    nFrame trackPosition = (time.engineFrame % track.frameCount);
-    nSample sampleIndex = trackPosition * track.channelCount;
-    _position = (float)trackPosition / (float)track.frameCount;
+    // NEW FILE
+    if( fileChanged && time.isAtBar )
+    {
+        _previousAudioFileIndex = _audioFileIndex;
+        _frameStart = time.lastBarFrame;
+    }
+
+    // FILE READ
+    AudioFileInfos audioFile = _trackBank->audioFileInfos(_deckInfos.audioFileIndex);
+    nFrame elapsed = time.frame - _frameStart;
+    nFrame lasting = audioFile.frameCount - elapsed;
+    nFrame audioFileFrame = elapsed % audioFile.frameCount;
+    nSample audioFileSample = 0;
+
+    // REALIGN
+    if( time.isAtBar && (lasting < time.framePerBar / 16 || elapsed < time.framePerBar / 16) )
+    {
+        audioFileFrame = 0;
+        _frameStart = time.frame;
+    }
+
+    _position = (float)audioFileFrame / (float)audioFile.frameCount;
 
     for( nFrame i = 0; i < _bufferSize; i++ )
     {
         _left = i * 2;
         _right = _left + 1;
-        sampleIndex = ((trackPosition + i) % track.frameCount) * track.channelCount;
+        audioFileSample = ((audioFileFrame + i) % audioFile.frameCount) * audioFile.channelCount;
 
-        _bufferOut[_left] = bufferIn[_left] + _trackBank->sample(_deckInfos.index, sampleIndex);
-        _bufferOut[_right] = bufferIn[_right] + _trackBank->sample(_deckInfos.index, sampleIndex + 1);
+        _bufferOut[_left] = bufferIn[_left] + _trackBank->sample(_deckInfos.index, audioFileSample);
+        _bufferOut[_right] = bufferIn[_right] + _trackBank->sample(_deckInfos.index, audioFileSample + 1);
 
         _outMeterL.stepCompute(_bufferOut[_left]);
         _outMeterR.stepCompute(_bufferOut[_right]);
     }
 }
-

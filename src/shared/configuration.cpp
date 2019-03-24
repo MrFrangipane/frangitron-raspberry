@@ -60,6 +60,8 @@ void initPatch(Configuration* conf)
     conf->modules[1].layout.row = 1;
     conf->modules[1].layout.col = 0;
     conf->modules[1].layout.colSpan = 2;
+    conf->modules[1].overrides[2].isActive = true;
+    conf->modules[1].overrides[2].value = 0;  // Audio File 0
 
     conf->modules[2].name = "FILTER A";
     conf->modules[2].type = "filter";
@@ -72,8 +74,6 @@ void initPatch(Configuration* conf)
     conf->modules[3].inputIndex = 2;
     conf->modules[3].layout.row = 1;
     conf->modules[3].layout.col = 2;
-    conf->modules[3].overrides[2].isActive = true;
-    conf->modules[3].overrides[2].value = -60.0;  // -oo dB
 
     // DECK B
     conf->modules[4].name = "DECK B";
@@ -82,6 +82,8 @@ void initPatch(Configuration* conf)
     conf->modules[4].layout.row = 1;
     conf->modules[4].layout.col = 4;
     conf->modules[4].layout.colSpan = 2;
+    conf->modules[4].overrides[2].isActive = true;
+    conf->modules[4].overrides[2].value = 0;  // Audio File 0
 
     conf->modules[5].name = "FILTER B";
     conf->modules[5].type = "filter";
@@ -94,8 +96,6 @@ void initPatch(Configuration* conf)
     conf->modules[6].inputIndex = 5;
     conf->modules[6].layout.row = 1;
     conf->modules[6].layout.col = 3;
-    conf->modules[6].overrides[2].isActive = true;
-    conf->modules[6].overrides[2].value = -60.0;  // -oo dB
 
     // MASTER OUT
     conf->modules[7].name = "OUT";
@@ -104,7 +104,7 @@ void initPatch(Configuration* conf)
     conf->modules[7].layout.row = 0;
     conf->modules[7].layout.col = 3;
     conf->modules[7].overrides[2].isActive = true;
-    conf->modules[7].overrides[2].value = -6.0;  // -6dB on Master Out
+    conf->modules[7].overrides[2].value = -10.0;  // -10dB on Master Out
 
     // DUMMIES MUST BE AT THE END
     conf->modules[8].type = "dummy";

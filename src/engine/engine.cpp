@@ -479,7 +479,7 @@ void Engine::_midiCallback(double /*deltaTime*/, std::vector<unsigned char> *mes
     if( message->at(0) == 251 ) shared->time.resume();
 
     if( message->at(0) == 248 && shared->time.isPlaying() ) { // Midi Clock Pulse
-        shared->time.incrementPpqn(1);
+        shared->time.incrementPpqn();
     }
 
     // NOTE ON

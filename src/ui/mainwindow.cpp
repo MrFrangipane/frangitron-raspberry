@@ -196,8 +196,14 @@ void MainWindow::_refresh()
         uiStatus.frame += 1;
 
         // ENGINE STATUS -> INFOS
-        ui->sequencer->setStep(engineStatus.clock.sequenceStep);
-        ui->labelTime->setText(QTime(0,0,0,0).addMSecs(engineStatus.clock.seconds * 1000.0).toString("hh:mm:ss.zzz") + QString(" s ") + QString::number(engineStatus.clock.bar, 'f', 1) + QString(" bar"));
+        ui->sequencer->setStep(int(engineStatus.clock.sequenceStep));
+        ui->labelTime->setText(
+            QTime(0,0,0,0).addMSecs(engineStatus.clock.seconds * 1000.0).toString("hh:mm:ss.zzz") +
+            QString(" s - ") + QString::number(engineStatus.clock.bar, 'f', 1) +
+            QString(" bar - ") +
+            QString::number(engineStatus.clock.tempo, 'f', 1) +
+            QString(" bpm")
+        );
 
         // ENGINE STATUS -> MODULE WIDGETS
         int selectedModule = -1;

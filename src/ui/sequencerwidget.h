@@ -16,13 +16,13 @@ class SequencerWidget : public QWidget
     Q_OBJECT
 public:
     explicit SequencerWidget(QWidget *parent = nullptr) : QWidget(parent) { }
-    void setStep(nSequenceStep step) { _step = step; update(); }
+    void setStep(int step) { _step = step; update(); }
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    nSequenceStep _step = 0;
+    int _step = 0;
 
 signals:
 

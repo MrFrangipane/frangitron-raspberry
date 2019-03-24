@@ -17,6 +17,7 @@
 #define MIDI_ENCODER_COUNT 5
 #define MIDI_PUSHED_FACTOR 6
 #define MIDI_CLICKED_TIME_TRESHOLD 128 // in audio frames
+#define MIDI_TEMPO_AVERAGE_DURATION 0.25 // in seconds
 
 #define AUDIO_DJTRACK_MAX_COUNT 128
 #define DJTRACK_BANK_SLEEP_DURATION 20 // in milliseconds

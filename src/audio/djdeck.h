@@ -23,8 +23,10 @@ public:
 private:
     DjDeckInfos _deckInfos;
     DjTrackBank * const _trackBank;
-    int _trackIndex = -1;
+    int _audioFileIndex = -1;
+    int _previousAudioFileIndex = -1;
     float _position = 0.0;
+    nFrame _frameStart = 0;
 };
 
 #endif // DJDECK_H
