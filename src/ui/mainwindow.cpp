@@ -201,7 +201,7 @@ void MainWindow::_refresh()
             QTime(0,0,0,0).addMSecs(engineStatus.clock.seconds * 1000.0).toString("hh:mm:ss.zzz") +
             QString(" s - ") + QString::number(engineStatus.clock.bar) + QString(".") + QString::number(engineStatus.clock.beat % 4) +
             QString(" bar @ ") +
-            QString::number(engineStatus.clock.tempo, 'f', 1) +
+            QString::number(engineStatus.clock.tempo, 'f', 1)
         );
 
         // ENGINE STATUS -> MODULE WIDGETS
