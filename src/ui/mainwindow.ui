@@ -220,7 +220,7 @@ QProgressBar::chunk {
        <number>0</number>
       </property>
       <item>
-       <widget class="QSlider" name="sliderEnc1">
+       <widget class="ParamSlider" name="sliderEnc1">
         <property name="maximum">
          <number>1000</number>
         </property>
@@ -233,7 +233,7 @@ QProgressBar::chunk {
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="sliderEnc2">
+       <widget class="ParamSlider" name="sliderEnc2">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -261,7 +261,7 @@ QProgressBar::chunk {
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="sliderEnc3">
+       <widget class="ParamSlider" name="sliderEnc3">
         <property name="minimum">
          <number>0</number>
         </property>
@@ -277,7 +277,7 @@ QProgressBar::chunk {
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="sliderEnc4">
+       <widget class="ParamSlider" name="sliderEnc4">
         <property name="maximum">
          <number>1000</number>
         </property>
@@ -290,7 +290,7 @@ QProgressBar::chunk {
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="sliderEnc5">
+       <widget class="ParamSlider" name="sliderEnc5">
         <property name="maximum">
          <number>1000</number>
         </property>
@@ -532,6 +532,11 @@ border: 0px;</string>
    <extends>QWidget</extends>
    <header>ui/sequencerwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ParamSlider</class>
+   <extends>QSlider</extends>
+   <header>ui/paramslider.h</header>
   </customwidget>
  </customwidgets>
  <resources>

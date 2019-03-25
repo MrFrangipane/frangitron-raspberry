@@ -75,6 +75,8 @@ void initPatch(Configuration* conf)
     conf->modules[3].inputIndex = 2;
     conf->modules[3].layout.row = 1;
     conf->modules[3].layout.col = 2;
+    conf->modules[3].overrides[2].isActive = true;
+    conf->modules[3].overrides[2].value = -12.0;  // dB
     conf->modules[3].routedToMasterBus = true;
 
     // DECK B
@@ -98,6 +100,8 @@ void initPatch(Configuration* conf)
     conf->modules[6].inputIndex = 5;
     conf->modules[6].layout.row = 1;
     conf->modules[6].layout.col = 3;
+    conf->modules[6].overrides[2].isActive = true;
+    conf->modules[6].overrides[2].value = -12.0;  // dB
     conf->modules[6].routedToMasterBus = true;
 
     // MASTER OUT
@@ -107,7 +111,7 @@ void initPatch(Configuration* conf)
     conf->modules[7].layout.row = 0;
     conf->modules[7].layout.col = 3;
     conf->modules[7].overrides[2].isActive = true;
-    conf->modules[7].overrides[2].value = -10.0;  // -10dB on Master Out
+    conf->modules[7].overrides[2].value = -6.0;  // dB
 
     // DUMMIES MUST BE AT THE END
     conf->modules[8].type = "dummy";

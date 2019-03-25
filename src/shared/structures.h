@@ -24,10 +24,6 @@ struct AudioFileInfos
 };
 
 // SHARED
-struct EncoderStatus {
-    bool pressed = false;
-};
-
 struct ModuleParameter {
     std::string name = "";
     float value = 0.0;
@@ -35,6 +31,8 @@ struct ModuleParameter {
     float max = 1.0;
     float step = 0.0078; // 1.0 / 128
     bool isVisible = false;
+    bool pressed = false;
+    bool clicked = false;
 };
 
 struct ModuleStatus {
@@ -47,6 +45,8 @@ struct ModuleStatus {
 // UI
 struct UiStatus {
     float paramIncrements[MIDI_ENCODER_COUNT] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    bool paramPressed[MIDI_ENCODER_COUNT] = {false, false, false, false, false};
+    bool paramClicked[MIDI_ENCODER_COUNT] = {false, false, false, false, false};
     int selectedModule = -1;
     nFrame frame = 0;
     bool isRunning = true;

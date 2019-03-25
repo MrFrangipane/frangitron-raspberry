@@ -47,12 +47,11 @@ struct EngineStatus {
     Status status = IDLE;
     ModuleStatus modulesStatuses[MODULE_MAX_COUNT];
     int selectedModule = -1;
-    EncoderStatus encoders[MIDI_ENCODER_COUNT];
     ClockStatus clock;
     SampleBank * sampleBank = nullptr;
     DjTrackBank * trackBank = nullptr;
-    Buffer emptyBuffer;
-    Buffer summingBuffer;
+    Buffer silence;
+    Buffer masterBus;
 };
 
 

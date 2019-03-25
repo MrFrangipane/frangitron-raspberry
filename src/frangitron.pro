@@ -55,7 +55,8 @@ SOURCES += \
     audio/_samplebank.cpp \
     audio/djdeck.cpp \
     audio/_djtrackbank.cpp \
-    ui/djdeckwidget.cpp
+    ui/djdeckwidget.cpp \
+    ui/paramslider.cpp
 
 
 HEADERS += \
@@ -94,7 +95,8 @@ HEADERS += \
     audio/_samplebank.h \
     audio/djdeck.h \
     audio/_djtrackbank.h \
-    ui/djdeckwidget.h
+    ui/djdeckwidget.h \
+    ui/paramslider.h
 
 RESOURCES += \
     images.qrc

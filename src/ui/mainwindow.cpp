@@ -200,9 +200,8 @@ void MainWindow::_refresh()
         ui->labelTime->setText(
             QTime(0,0,0,0).addMSecs(engineStatus.clock.seconds * 1000.0).toString("hh:mm:ss.zzz") +
             QString(" s - ") + QString::number(engineStatus.clock.bar) + QString(".") + QString::number(engineStatus.clock.beat % 4) +
-            QString(" bar - ") +
+            QString(" bar @ ") +
             QString::number(engineStatus.clock.tempo, 'f', 1) +
-            QString(" bpm")
         );
 
         // ENGINE STATUS -> MODULE WIDGETS
@@ -278,18 +277,10 @@ void MainWindow::_refresh()
             }
             // UPDATE STATUS
             for( int paramId = 0; paramId < MIDI_ENCODER_COUNT; paramId++ ) {
-                if( !engineStatus.modulesStatuses[selectedModule].params[paramId].isVisible ) continue;
+                if( !engineStatus.modulesStatuses[selectedModule].params[paramId].isVisible )
+                    continue;
 
                 // ENGINE -> UI
-                if( engineStatus.encoders[paramId].pressed ) {
-                    text += QString::fromStdString(engineStatus.modulesStatuses[selectedModule].params[paramId].name);
-                    _nameLabels[paramId]->setText(text);
-                }
-                else {
-                    text = QString::fromStdString(engineStatus.modulesStatuses[selectedModule].params[paramId].name);
-                    _nameLabels[paramId]->setText(text);
-                }
-
                 _valueLabels[paramId]->setText(_modules[selectedModule]->formatParameter(paramId));
 
                 #ifndef RASPBERRYPI

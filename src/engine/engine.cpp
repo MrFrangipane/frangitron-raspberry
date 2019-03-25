@@ -125,15 +125,13 @@ void Engine::start()
     #endif
     // --------------------------------------------------------------
 
-    // EMPTY BUFFER
-    _shared.engine.emptyBuffer.resize(_bufferSize * CHANNEL_COUNT);
-
-    // MASTER SUMMING
-    _shared.engine.summingBuffer.resize(_bufferSize * CHANNEL_COUNT);
+    // BUFFERS
+    _shared.engine.silence.resize(_bufferSize * CHANNEL_COUNT);
+    _shared.engine.masterBus.resize(_bufferSize * CHANNEL_COUNT);
 
     // DJ TRACK BANK
     for( AudioFileInfos audioFileInfos : _configuration->djTracks ) {
-        if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
+        if( audioFileInfos.filepath.empty() )
             break;
 
         _shared.engine.trackBank->registerAudioFile(audioFileInfos);
@@ -276,7 +274,7 @@ void Engine::start()
     // AUDIO FILES
     for( AudioFileInfos audioFileInfos: _configuration->samples )
     {
-        if( audioFileInfos.filepath.empty() ) // Exit at first empty clip
+        if( audioFileInfos.filepath.empty() )
             break;
 
         SndfileHandle f_audio = SndfileHandle(audioFileInfos.filepath);
@@ -358,54 +356,62 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     s->engine.selectedModule = uiStatus.selectedModule;
     if( s->engine.selectedModule != -1 )
     {
-        // UI SLIDERS -> ENGINE
+        int paramId = 0;
+        float increment = 0;
+        bool pressed = false;
+        bool clicked = false;
+
+        // UI SLIDERS -> ENGINE ---
         #ifndef RASPBERRYPI
         if( s->uiFrame != uiStatus.frame ) {
             s->uiFrame = uiStatus.frame;
 
-            int paramId = 0;
-            for( ModuleParameter moduleParameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
+            paramId = 0;
+            for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
             {
                 if( paramId >= MIDI_ENCODER_COUNT ) break;
-                if( !moduleParameter.isVisible ) {
+                if( !parameter.isVisible ) {
                     paramId++;
                     continue;
                 }
 
-                float increment = uiStatus.paramIncrements[paramId];
+                pressed = uiStatus.paramPressed[paramId];
+                clicked = uiStatus.paramClicked[paramId];
+                increment = uiStatus.paramIncrements[paramId];
 
+                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
+                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
                 s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
-                    moduleParameter.min, fmin(moduleParameter.value + increment, moduleParameter.max)
+                    parameter.min, fmin(parameter.value + increment, parameter.max)
                 );
 
                 paramId++;
             }
         }
         #endif
+        // ------------------------
 
         // MIDI ENCODERS -> ENGINE
-        int paramId = 0;
-        float increment = 0;
-        bool pressed = false;
-        for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params)
+        paramId = 0;
+        for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
         {
             if( paramId >= MIDI_ENCODER_COUNT ) break;
+            if( !parameter.isVisible ) {
+                paramId++;
+                continue;
+            }
 
             pressed = s->midiEncoders[paramId].pressed(s->time.status());
-            increment = s->midiEncoders[paramId].increment(s->time.status());
-            s->engine.encoders[paramId].pressed = pressed;
+            clicked = s->midiEncoders[paramId].clicked(s->time.status());
+            increment = s->midiEncoders[paramId].increment(s->time.status()) * parameter.step;
 
-            if( increment != 0 )
-            {
-                increment *= parameter.step;
-                increment *= ((int)pressed * (MIDI_PUSHED_FACTOR - 1)) + 1;
+            s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
+            s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
+            s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
+                parameter.min, fmin(parameter.value + increment, parameter.max)
+            );
 
-                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
-                    parameter.min, fmin(parameter.value + increment, parameter.max)
-                );
-
-                s->midiEncoders[paramId].setIncrement(0, s->time.status());
-            }
+            s->midiEncoders[paramId].setIncrement(0, s->time.status());
 
             paramId++;
         }
@@ -438,11 +444,11 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         }
         else if( inputId == MODULE_INPUT_NONE )
         {
-           module->process(s->engine.emptyBuffer.data(), s->time.status());
+           module->process(s->engine.silence.data(), s->time.status());
         }
         else if( inputId == MODULE_INPUT_MASTER_BUS )
         {
-           module->process(s->engine.summingBuffer.data(), s->time.status());
+           module->process(s->engine.masterBus.data(), s->time.status());
         }
         else if( inputId >= 0 ) {  // Module Input
            module->process(s->patch[inputId]->output(), s->time.status());
@@ -452,7 +458,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
         {
             for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ )
             {
-               s->engine.summingBuffer[i] += module->output()[i];
+               s->engine.masterBus[i] += module->output()[i];
             }
         }
 
@@ -463,7 +469,7 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     for( nSample i = 0; i < bufferSize * CHANNEL_COUNT; i++ ) {
         ioOut[i] = s->patch.back()->output()[i];
     }    
-    std::fill(s->engine.summingBuffer.begin(), s->engine.summingBuffer.end(), 0.0);
+    std::fill(s->engine.masterBus.begin(), s->engine.masterBus.end(), 0.0);
 
     // OUTPUT -> RECORDER
     s->recorder->write(ioOut);
