@@ -39,6 +39,12 @@ void initDjTracks(Configuration* conf)
 
     conf->djTracks[3].name = "Aviate Bridge";
     conf->djTracks[3].filepath = "/var/frangitron/djtracks/04-bridge.wav";
+
+    conf->djTracks[4].name = "Temp Break";
+    conf->djTracks[4].filepath = "/var/frangitron/djtracks/01-break.wav";
+
+    conf->djTracks[5].name = "Temp Long";
+    conf->djTracks[5].filepath = "/var/frangitron/djtracks/02-long.wav";
 }
 
 
@@ -62,7 +68,7 @@ void initPatch(Configuration* conf)
     conf->modules[1].layout.col = 0;
     conf->modules[1].layout.colSpan = 2;
     conf->modules[1].overrides[2].isActive = true;
-    conf->modules[1].overrides[2].value = 0;  // Audio File 0
+    conf->modules[1].overrides[2].value = -1;  // No Audio File
 
     conf->modules[2].name = "FILTER A";
     conf->modules[2].type = "filter";
@@ -87,7 +93,7 @@ void initPatch(Configuration* conf)
     conf->modules[4].layout.col = 4;
     conf->modules[4].layout.colSpan = 2;
     conf->modules[4].overrides[2].isActive = true;
-    conf->modules[4].overrides[2].value = 0;  // Audio File 0
+    conf->modules[4].overrides[2].value = 5;  // Audio File 5
 
     conf->modules[5].name = "FILTER B";
     conf->modules[5].type = "filter";

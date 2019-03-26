@@ -306,7 +306,7 @@ void Engine::start()
     _shared.engine.status = EngineStatus::RUNNING;
 
     // TEMPO
-    _shared.time.setTempo(120.0);
+    _shared.time.setTempo(_configuration->tempo);
 
     // MIDI OUT
     _midiOutThread = std::thread(_midiOutLoop, &_shared);
