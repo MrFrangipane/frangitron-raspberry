@@ -88,7 +88,7 @@ void DjDeckWidget::paint_(QRect rect)
 
     // REGION
     int selectedAudioFile = int(_status.params[2].value);
-    int selectedCue = int(_status.params[3].value);
+    int selectedCue = int(_status.params[3].value) / 2; // TODO : WOWOWOWOWO !!!!
 
     if( selectedAudioFile >= 0 )
     {
@@ -122,7 +122,7 @@ QString DjDeckWidget::formatParameter(int paramId)
             return QString::fromStdString(_trackBank->audioFileInfos(_status.params[2].value).name);
     }
     else if( paramId == 3 ) { // Cue
-        return QString::number(int(_status.params[3].value));
+        return QString::number(int(_status.params[3].value) / 2);
     }
 
     return AbstractWidget::formatParameter(paramId);
