@@ -6,7 +6,7 @@ void DjDeck::update(ModuleStatus status)
     _audioFileIndex = status.params[2].value;
 
     _cueFloat = status.params[3].value;
-    _cue = _cueFloat / 2;
+    _cue = _cueFloat / DECK_ENCODER_REGION_RATIO;
 }
 
 const ModuleStatus DjDeck::status()

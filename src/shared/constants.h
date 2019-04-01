@@ -29,6 +29,7 @@
 #define PEAK_RMS_RATIO 0.25  // how much is sampled for RMS peak calculation
 
 #define DECK_LENGTH_SECONDS 600 // 10 minutes
+#define DECK_ENCODER_REGION_RATIO 3
 
 #define MODULE_MAX_COUNT 16
 #define MODULE_PARAM_COUNT 16
