@@ -16,18 +16,22 @@ void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
     audioFile.channelCount = f_audio.channels();
 
     // CUES
+    audioFile.cueCount = 1; // Begining is first cue
+    audioFile.cues[0].position = 0;
+    audioFile.cues[0].imagePosition = 0;
+
     SF_CUES * cueInfo = new SF_CUES();
     f_audio.command(SFC_GET_CUE, cueInfo, sizeof(SF_CUES));
     if( cueInfo->cue_count > 0 )
     {
-        audioFile.cueCount = cueInfo->cue_count;
+        audioFile.cueCount += cueInfo->cue_count;
 
-        for( uint32_t cueIndex = 0; cueIndex < cueInfo->cue_count; cueIndex++ )
+        for( uint32_t fileCueIndex = 0; fileCueIndex < cueInfo->cue_count; fileCueIndex++ )
         {
-            audioFile.cues[cueIndex].position = cueInfo->cue_points[cueIndex].position;
+            audioFile.cues[fileCueIndex + 1].position = cueInfo->cue_points[fileCueIndex].position;
 
-            float relativePosition = (float)audioFile.cues[cueIndex].position / (float)audioFile.frameCount;
-            audioFile.cues[cueIndex].imagePosition = relativePosition * PEAK_IMAGE_WIDTH;
+            float relativePosition = (float)audioFile.cues[fileCueIndex + 1].position / (float)audioFile.frameCount;
+            audioFile.cues[fileCueIndex + 1].imagePosition = relativePosition * PEAK_IMAGE_WIDTH;
         }
     }
     delete cueInfo;
@@ -36,7 +40,11 @@ void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
     audioFile.peaks.resize(PEAK_IMAGE_WIDTH);
     std::string peaksFilepath = audioFile.filepath + ".frangipeaks";
     struct stat buf;
-    if( stat(peaksFilepath.c_str(), &buf) == 0 )
+#ifdef RASPBERRYPI
+    if( stat(peaksFilepath.c_str(), &buf) == 0)
+#else // HACK POTTER !! (frangipeak file reading doesnt work on desktop computer)
+    if( stat(peaksFilepath.c_str(), &buf) == 0 && false)
+#endif
     {
         // READ
         std::fstream f_peaks(peaksFilepath);

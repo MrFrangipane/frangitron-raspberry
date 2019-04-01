@@ -26,7 +26,7 @@ public:
 private:
     void _drawPeaks();
     void paint_(QRect rect) override;
-    QList<QPixmap> _peaks;
+    QList<QPixmap> _peaksPixmaps;
     DjTrackBank * const _trackBank;
     QFont _font;
 };

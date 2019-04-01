@@ -4,6 +4,7 @@
 void DjDeck::update(ModuleStatus status)
 {
     _audioFileIndex = status.params[2].value;
+    _cue = status.params[3].value;
 }
 
 const ModuleStatus DjDeck::status()
@@ -15,6 +16,13 @@ const ModuleStatus DjDeck::status()
         _deckInfos.audioFileIndex = _audioFileIndex;
         _deckInfos.needsLoading = true;
         _trackBank->setDeckInfos(_deckInfos.index, _deckInfos);
+
+        _cue = 0;
+
+        if( _audioFileIndex > -1 )
+            _audioFile = _trackBank->audioFileInfos(_audioFileIndex);
+        else
+            _audioFile = AudioFileInfos();
     } else {
         _deckInfos = _trackBank->deckInfos(_deckInfos.index);
     }
@@ -25,6 +33,13 @@ const ModuleStatus DjDeck::status()
     status_.params[2].max = _trackBank->audioFileCount() - 1;
     status_.params[2].value = _audioFileIndex;
     status_.params[2].step = 1;
+
+    status_.params[3].name = "Cue";
+    status_.params[3].isVisible = true;
+    status_.params[3].min = 0;
+    status_.params[3].max = _audioFile.cueCount - 1;
+    status_.params[3].value = _cue;
+    status_.params[3].step = 1;
 
     status_.params[5].name = "Position";
     status_.params[5].value = _position;

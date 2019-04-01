@@ -286,6 +286,10 @@ void MainWindow::_refresh()
                 #ifndef RASPBERRYPI
                 // SLIDER MOVED
                 float sliderValue = _sliders[paramId]->value();
+
+                _sliders[paramId]->setMinimum(engineStatus.modulesStatuses[selectedModule].params[paramId].min * 1000);
+                _sliders[paramId]->setMaximum(engineStatus.modulesStatuses[selectedModule].params[paramId].max * 1000);
+
                 if( _previousValues[paramId] != sliderValue ) {
                     uiStatus.paramIncrements[paramId] = (float)(sliderValue - _previousValues[paramId]) / 1000.0;
                     _previousValues[paramId] = sliderValue;
