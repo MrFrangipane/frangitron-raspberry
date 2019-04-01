@@ -55,21 +55,19 @@ const ModuleStatus DjDeck::status()
 
 void DjDeck::process(Sample const * bufferIn, const ClockStatus time)
 {
+    nFrame regionStart = _audioFile.cues[_cue].position;
+    nFrame regionEnd = _audioFile.cues[_cue + 1].position + 1;
+
     bool noFileSelected = _deckInfos.audioFileIndex < 0;
     bool hasFileChanged = _previousAudioFileIndex != _audioFileIndex;
-    bool hasBarChanged = _previousBar < time.bar;
-
-    if( hasFileChanged )
-        _previousAudioFileIndex = -2; // Ensure file changed until next bar
-
-    if( hasBarChanged )
-        _previousBar = time.bar;
+    bool hasBarChanged = _previousBar != time.bar;
 
     // NO OUTPUT
-    if( noFileSelected || (hasFileChanged && hasBarChanged) || !time.isPlaying ) {
+    if( noFileSelected || !time.isPlaying || (hasFileChanged && !hasBarChanged) ) {
         for( nFrame i = 0; i < _bufferSize * CHANNEL_COUNT; i++ )
             _bufferOut[i] = bufferIn[i];
-        _position = 0.0;
+        _position = regionStart;
+        _audioFileFrame = regionStart;
         return;
     }
 
@@ -77,33 +75,31 @@ void DjDeck::process(Sample const * bufferIn, const ClockStatus time)
     if( hasFileChanged && hasBarChanged )
     {
         _previousAudioFileIndex = _audioFileIndex;
-        _frameStart = time.barAsFrame;
+        _audioFileFrame = regionStart;
+    }
+
+    if( hasBarChanged )
+    {
+        _previousBar = time.bar;
     }
 
     // FILE READ
-    AudioFileInfos audioFile = _trackBank->audioFileInfos(_deckInfos.audioFileIndex);
-    nFrame elapsed = time.frame - _frameStart;
-    nFrame lasting = audioFile.frameCount - elapsed;
-    nFrame audioFileFrame = elapsed % audioFile.frameCount;
-    nSample audioFileSample = 0;
-
-    // REALIGN
-    if( hasBarChanged && (lasting < time.framePerBar / 16 || elapsed < time.framePerBar / 16) )
-    {
-        audioFileFrame = 0;
-        _frameStart = time.frame;
-    }
-
-    _position = (float)audioFileFrame / (float)audioFile.frameCount;
+    _position = (float)_audioFileFrame / (float)_audioFile.frameCount;
 
     for( nFrame i = 0; i < _bufferSize; i++ )
     {
         _left = i * 2;
         _right = _left + 1;
-        audioFileSample = ((audioFileFrame + i) % audioFile.frameCount) * audioFile.channelCount;
 
-        _bufferOut[_left] = bufferIn[_left] + _trackBank->sample(_deckInfos.index, audioFileSample);
-        _bufferOut[_right] = bufferIn[_right] + _trackBank->sample(_deckInfos.index, audioFileSample + 1);
+        _audioFileFrame += 1;
+        if( _audioFileFrame == regionEnd)
+            _audioFileFrame = regionStart;
+
+        if( _audioFileFrame == _audioFile.frameCount)
+            _audioFileFrame = 0;
+
+        _bufferOut[_left] = bufferIn[_left] + _trackBank->sample(_deckInfos.index, _audioFileFrame * _audioFile.channelCount);
+        _bufferOut[_right] = bufferIn[_right] + _trackBank->sample(_deckInfos.index, _audioFileFrame * _audioFile.channelCount + 1);
 
         _outMeterL.stepCompute(_bufferOut[_left]);
         _outMeterR.stepCompute(_bufferOut[_right]);

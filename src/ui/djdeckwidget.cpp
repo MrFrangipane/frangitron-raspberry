@@ -46,14 +46,8 @@ void DjDeckWidget::paint_(QRect rect)
     if( _status.params[2].value >= 0 )
         painter.drawPixmap(rect.x(), rect.y(), _peaksPixmaps.at(_status.params[2].value));
 
-    // PLAY CURSOR
-    painter.setPen(Qt::white);
-    painter.drawLine(
-        rect.left() + _status.params[5].value * PEAK_IMAGE_WIDTH, rect.top(),
-        rect.left() + _status.params[5].value * PEAK_IMAGE_WIDTH, rect.top() + PEAK_IMAGE_HEIGHT
-    );
-
     // LIST
+    painter.setPen(Qt::white);
     painter.setFont(_font);
     for( int row = 0; row < UI_DECK_ROW_COUNT; row++ )
     {
@@ -93,13 +87,8 @@ void DjDeckWidget::paint_(QRect rect)
     if( selectedAudioFile >= 0 )
     {
         AudioFileInfos infos = _trackBank->audioFileInfos(selectedAudioFile);
-        int regionWidth = 0;
         int regionLeft = infos.cues[selectedCue].imagePosition;
-
-        if( selectedCue < infos.cueCount - 1)
-            regionWidth = infos.cues[selectedCue + 1].imagePosition - regionLeft;
-        else
-            regionWidth = PEAK_IMAGE_WIDTH - regionLeft;
+        int regionWidth = infos.cues[selectedCue + 1].imagePosition - regionLeft;
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Qt::cyan);
@@ -107,10 +96,18 @@ void DjDeckWidget::paint_(QRect rect)
         painter.drawRect(
             rect.x() + regionLeft,
             rect.y(),
-            regionWidth,
+            regionWidth + 1,
             PEAK_IMAGE_HEIGHT
         );
     }
+
+    // PLAY CURSOR
+    painter.setPen(Qt::white);
+    painter.setOpacity(1.0);
+    painter.drawLine(
+        rect.left() + _status.params[5].value * PEAK_IMAGE_WIDTH, rect.top(),
+        rect.left() + _status.params[5].value * PEAK_IMAGE_WIDTH, rect.top() + PEAK_IMAGE_HEIGHT
+    );
 }
 
 QString DjDeckWidget::formatParameter(int paramId)

@@ -36,6 +36,7 @@ private:
     nBar _previousBar = 0;
     int _cue = 0;
     float _cueFloat = 0.0;
+    nFrame _audioFileFrame = 0;
 };
 
 #endif // DJDECK_H

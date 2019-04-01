@@ -33,6 +33,10 @@ void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
             float relativePosition = (float)audioFile.cues[fileCueIndex + 1].position / (float)audioFile.frameCount;
             audioFile.cues[fileCueIndex + 1].imagePosition = relativePosition * PEAK_IMAGE_WIDTH;
         }
+
+        // Hacky ~ (this cue will never be used, but makes region calculations generic)
+        audioFile.cues[cueInfo->cue_count + 1].position = audioFile.frameCount - 1;
+        audioFile.cues[cueInfo->cue_count + 1].imagePosition = PEAK_IMAGE_WIDTH - 1;
     }
     delete cueInfo;
 
