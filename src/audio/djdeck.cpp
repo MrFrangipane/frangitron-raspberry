@@ -40,7 +40,7 @@ const ModuleStatus DjDeck::status()
     status_.params[3].name = "Cue";
     status_.params[3].isVisible = true;
     status_.params[3].min = 0;
-    status_.params[3].max = (_audioFile.cueCount - 1) * 2;
+    status_.params[3].max = (_audioFile.cueCount - 1) * DECK_ENCODER_REGION_RATIO;
     status_.params[3].value = _cueFloat;
     status_.params[3].step = 1;
 
