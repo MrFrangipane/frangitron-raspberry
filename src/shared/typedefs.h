@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 
+typedef uint_fast32_t nCue;
 typedef uint_fast32_t nFrame;
 typedef uint_fast32_t nSample;
 typedef uint_fast32_t nBar;

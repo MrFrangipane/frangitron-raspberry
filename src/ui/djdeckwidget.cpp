@@ -3,8 +3,10 @@
 
 void DjDeckWidget::_drawPeaks()
 {
-    for( int trackIndex = 0; trackIndex < _trackBank->audioFileCount(); trackIndex++ )
+    for( int fileIndex = 0; fileIndex < _trackBank->audioFileCount(); fileIndex++ )
     {
+        AudioFileInfos infos = _trackBank->audioFileInfos(fileIndex);
+
         QPixmap pixmap(PEAK_IMAGE_WIDTH, PEAK_IMAGE_HEIGHT);
         pixmap.fill(Qt::transparent);
 
@@ -15,9 +17,19 @@ void DjDeckWidget::_drawPeaks()
         {
             painter.drawLine(
                 i,
-                PEAK_IMAGE_HEIGHT * 0.5 * (1 - _trackBank->peak(trackIndex, i)),
+                PEAK_IMAGE_HEIGHT * 0.5 * (1 - infos.peaks.at(i)),
                 i,
-                PEAK_IMAGE_HEIGHT * 0.5 * (1 + _trackBank->peak(trackIndex, i))
+                PEAK_IMAGE_HEIGHT * 0.5 * (1 + infos.peaks.at(i))
+            );
+        }
+
+        for( int i = 0; i < infos.cueCount; i++ )
+        {
+            float pos = (float)infos.cues[i].position / (float)infos.frameCount;
+            pos = pos * PEAK_IMAGE_WIDTH;
+            painter.drawLine(
+                pos, 0,
+                pos, PEAK_IMAGE_HEIGHT
             );
         }
 

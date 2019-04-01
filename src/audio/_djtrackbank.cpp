@@ -5,7 +5,7 @@ DjTrackBank::DjTrackBank() { }
 
 void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
 {
-    // REGISTER
+    // CHANNEL & DURATION
     std::cout << "Registering DjTrack " << audioFile.filepath << std::endl;
 
     SndfileHandle f_audio(audioFile.filepath);
@@ -15,11 +15,25 @@ void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
     audioFile.frameCount = f_audio.frames();
     audioFile.channelCount = f_audio.channels();
 
-    _tracksInfos.push_back(audioFile);
+    // CUES
+    SF_CUES * cueInfo = new SF_CUES();
+    f_audio.command(SFC_GET_CUE, cueInfo, sizeof(SF_CUES));
+    if( cueInfo->cue_count > 0 )
+    {
+        audioFile.cueCount = cueInfo->cue_count;
+
+        for( uint32_t cueIndex = 0; cueIndex < cueInfo->cue_count; cueIndex++ )
+        {
+            audioFile.cues[cueIndex].position = cueInfo->cue_points[cueIndex].position;
+
+            float relativePosition = (float)audioFile.cues[cueIndex].position / (float)audioFile.frameCount;
+            audioFile.cues[cueIndex].imagePosition = relativePosition * PEAK_IMAGE_WIDTH;
+        }
+    }
+    delete cueInfo;
 
     // PEAKS
-    Buffer peaks;
-    peaks.resize(PEAK_IMAGE_WIDTH);
+    audioFile.peaks.resize(PEAK_IMAGE_WIDTH);
     std::string peaksFilepath = audioFile.filepath + ".frangipeaks";
     struct stat buf;
     if( stat(peaksFilepath.c_str(), &buf) == 0 )
@@ -31,7 +45,7 @@ void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
 
         while (std::getline(f_peaks, line))
         {
-            peaks[index] = std::stod(line);
+            audioFile.peaks.at(index) = std::stod(line);
             index++;
         }
     }
@@ -63,12 +77,13 @@ void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
             value = sqrt(value);
 
             f_peaks << value << std::endl;
-            peaks[step] = value;
+            audioFile.peaks[step] = value;
         }
         f_peaks.close();
     }
 
-    _peaks.push_back(peaks);
+    // SAVE
+    _tracksInfos.push_back(audioFile);
 }
 
 DjDeckInfos DjTrackBank::registerDjDeck(DjDeckInfos djDeckInfos)

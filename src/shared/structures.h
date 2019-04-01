@@ -9,8 +9,8 @@
 // AUDIO FILES
 struct AudioFileMarkerInfos
 {
-    std::string name = "unknown";
     nFrame position = -1;
+    nFrame imagePosition = -1;
 };
 
 
@@ -20,7 +20,9 @@ struct AudioFileInfos
     std::string filepath = "";
     int channelCount = 0;
     nFrame frameCount = 0;
-    AudioFileMarkerInfos markers[AUDIO_MARKER_COUNT_MAX];
+    AudioFileMarkerInfos cues[AUDIO_MARKER_COUNT_MAX];
+    nCue cueCount = 0;
+    Buffer peaks;
 };
 
 // SHARED

@@ -40,7 +40,6 @@ public:
     DjDeckInfos deckInfos(int deckIndex) { return _decks.at(deckIndex); }
     AudioFileInfos audioFileInfos(int trackIndex) { return _tracksInfos.at(trackIndex); }
     Sample sample(int deckIndex, int sampleIndex);
-    Sample peak(int trackIndex, int peakIndex) { return _peaks.at(trackIndex).at(peakIndex); }
 
 private:
     static void _mainLoop(DjTrackBank * trackBank);
@@ -50,7 +49,6 @@ private:
     std::vector<AudioFileInfos> _tracksInfos;
     std::vector<DjDeckInfos> _decks;
     std::vector<Buffer> _decksData;
-    std::vector<Buffer> _peaks;
 };
 
 #endif // _DJTRACKBANK_H
