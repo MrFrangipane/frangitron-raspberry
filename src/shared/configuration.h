@@ -2,6 +2,11 @@
 #define CONFIGURATION_H
 
 #include <string>
+#include <iostream>
+
+#include <QDir>
+#include <QStringList>
+
 #include "shared/typedefs.h"
 #include "shared/constants.h"
 #include "shared/structures.h"
@@ -37,7 +42,7 @@ struct ConfModule
 
 struct Configuration
 {
-    float tempo = 125.0;
+    float tempo = 60.0;
     ConfModule modules[MODULE_MAX_COUNT];
     AudioFileInfos samples[AUDIO_SAMPLE_MAX_COUNT];  // pre-loaded
     AudioFileInfos djTracks[AUDIO_DJTRACK_MAX_COUNT];  // async-loaded

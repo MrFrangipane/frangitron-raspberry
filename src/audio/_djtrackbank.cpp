@@ -18,27 +18,54 @@ void DjTrackBank::registerAudioFile(AudioFileInfos audioFile)
     _tracksInfos.push_back(audioFile);
 
     // PEAKS
-    nFrame frame = 0;
-    Sample value = 0;
     Buffer peaks;
     peaks.resize(PEAK_IMAGE_WIDTH);
-    int stepFrame = f_audio.frames() / PEAK_IMAGE_WIDTH;
-    nSample rms_frame_count = (int)((float)stepFrame * PEAK_RMS_RATIO);
-    Sample buf[rms_frame_count * f_audio.channels()];
-
-    for( int step = 0; step < PEAK_IMAGE_WIDTH;  step++ )
+    std::string peaksFilepath = audioFile.filepath + ".frangipeaks";
+    struct stat buf;
+    if( stat(peaksFilepath.c_str(), &buf) == 0 )
     {
-        frame = step * stepFrame;
-        f_audio.seek(frame, SEEK_SET);
-        f_audio.readf(buf, rms_frame_count);
-        for( nSample i = 0; i < rms_frame_count; i++ )
-        {
-            value += buf[i * f_audio.channels()] * buf[i * f_audio.channels()];
-        }
-        value /= rms_frame_count;
-        value = sqrt(value);
+        // READ
+        std::fstream f_peaks(peaksFilepath);
+        std::string line;
+        int index = 0;
 
-        peaks[step] = value;
+        while (std::getline(f_peaks, line))
+        {
+            peaks[index] = std::stod(line);
+            index++;
+        }
+    }
+    else
+    {
+        // WRITE
+        nFrame frame = 0;
+        Sample value = 0;
+        int stepFrame = f_audio.frames() / PEAK_IMAGE_WIDTH;
+        nSample rmsFrameCount = (int)((float)stepFrame * PEAK_RMS_RATIO);
+        Sample buf[rmsFrameCount * f_audio.channels()];
+        std::ofstream f_peaks(peaksFilepath);
+
+        if( !f_peaks.is_open() ) {
+            std::cout << "Impossible to open " << peaksFilepath << std::endl;
+            return;
+        }
+
+        for( int step = 0; step < PEAK_IMAGE_WIDTH;  step++ )
+        {
+            frame = step * stepFrame;
+            f_audio.seek(frame, SEEK_SET);
+            f_audio.readf(buf, rmsFrameCount);
+            for( nSample i = 0; i < rmsFrameCount; i++ )
+            {
+                value += buf[i * f_audio.channels()] * buf[i * f_audio.channels()];
+            }
+            value /= rmsFrameCount;
+            value = sqrt(value);
+
+            f_peaks << value << std::endl;
+            peaks[step] = value;
+        }
+        f_peaks.close();
     }
 
     _peaks.push_back(peaks);

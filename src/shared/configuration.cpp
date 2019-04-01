@@ -3,6 +3,7 @@
 
 void initConfig(Configuration* conf)
 {
+    conf->tempo = 123.0;
     initPatch(conf);
     initSamples(conf);
     initDjTracks(conf);
@@ -28,23 +29,18 @@ void initSamples(Configuration* conf)
 
 void initDjTracks(Configuration* conf)
 {
-    conf->djTracks[0].name = "Aviate Intro";
-    conf->djTracks[0].filepath = "/var/frangitron/djtracks/01-intro.wav";
+    int index = 0;
+    QString root("/var/frangitron/djtracks");
+    QDir rootDir(root);
+    QStringList files = rootDir.entryList(QStringList() << "*.wav" << "*.WAV", QDir::Files);
 
-    conf->djTracks[1].name = "Aviate Bridge";
-    conf->djTracks[1].filepath = "/var/frangitron/djtracks/02-bridge.wav";
+    for( QString file : files )
+    {
+        conf->djTracks[index].name = file.split(".", QString::SkipEmptyParts).at(0).toStdString();
+        conf->djTracks[index].filepath = (root + QString('/') + file).toStdString();
 
-    conf->djTracks[2].name = "Aviate Loop";
-    conf->djTracks[2].filepath = "/var/frangitron/djtracks/03-loop.wav";
-
-    conf->djTracks[3].name = "Aviate Bridge";
-    conf->djTracks[3].filepath = "/var/frangitron/djtracks/04-bridge.wav";
-
-    conf->djTracks[4].name = "Temp Break";
-    conf->djTracks[4].filepath = "/var/frangitron/djtracks/01-break.wav";
-
-    conf->djTracks[5].name = "Temp Long";
-    conf->djTracks[5].filepath = "/var/frangitron/djtracks/02-long.wav";
+        index ++;
+    }
 }
 
 
@@ -92,8 +88,6 @@ void initPatch(Configuration* conf)
     conf->modules[4].layout.row = 1;
     conf->modules[4].layout.col = 4;
     conf->modules[4].layout.colSpan = 2;
-    conf->modules[4].overrides[2].isActive = true;
-    conf->modules[4].overrides[2].value = 5;  // Audio File 5
 
     conf->modules[5].name = "FILTER B";
     conf->modules[5].type = "filter";
