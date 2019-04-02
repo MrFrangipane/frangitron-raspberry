@@ -39,7 +39,7 @@ const ModuleStatus Filter::status()
     status_.params[1].name = "Cutoff";
     status_.params[1].min = -1.0;
     status_.params[1].max = 1.0;
-    status_.params[1].step = 0.01;
+    status_.params[1].step = 0.010;
     status_.params[1].isVisible = true;
 
     if( _mode == FilterMode::LOWPASS ) {
@@ -55,7 +55,7 @@ const ModuleStatus Filter::status()
     status_.params[3].name = "Resonance";
     status_.params[3].min = 0.0;
     status_.params[3].max = 0.6;
-    status_.params[3].step = 0.003;
+    status_.params[3].step = 0.012;
     status_.params[3].isVisible = true;
     status_.params[3].value = _hiPassL.resonance();
 

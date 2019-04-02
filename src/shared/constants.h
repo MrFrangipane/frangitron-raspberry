@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 1024
 #define SAMPLE_RATE 48000
 #define CHANNEL_COUNT 2
 #define RECORDER_CACHE_BUFFER_COUNT 512 // 512 * 512 = about 5.5s
