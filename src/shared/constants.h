@@ -1,12 +1,12 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 512
 #define SAMPLE_RATE 48000
 #define CHANNEL_COUNT 2
 #define RECORDER_CACHE_BUFFER_COUNT 512 // 512 * 512 = about 5.5s
 #define RECORDER_OUTPUT_FILE "/var/frangitron/recordings/frangitron_%d-%m-%Y_%H.%M.%S.wav"
-#define RECORDER_SLEEP_MS 5 // Sleep 5ms if file write is ahead of engine
+#define RECORDER_SLEEP_MS 5 // Sleep time if file write is ahead of engine
 #define LEVEL_METER_RMS_SAMPLE_COUNT 60
 #define LEVEL_METER_AVERAGE_CYCLE_COUNT 15
 #define COMPRESSOR_UPDATE_SAMPLE_COUNT 60
@@ -17,7 +17,7 @@
 #define MIDI_ENCODER_COUNT 5
 #define MIDI_PUSHED_FACTOR 6
 #define MIDI_CLICKED_TIME_TRESHOLD 128 // in audio frames
-#define MIDI_OUT_LOOP_SLEEP 10 // in milliseconds, should allow ~ 240 bpm max
+#define MIDI_OUT_LOOP_SLEEP 5 // in milliseconds, should allow ~ 240 bpm max
 #define MIDI_PULSE_PER_BEAT 24
 
 #define AUDIO_DJTRACK_MAX_COUNT 128
