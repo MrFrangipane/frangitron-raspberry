@@ -353,7 +353,16 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
     // SELECTED MODULE -> ENGINE
     UiStatus uiStatus = s->uiStatus(s->uiPtr);
-    s->engine.selectedModule = uiStatus.selectedModule;
+
+    // SELECTION CHANGED
+    if( s->engine.selectedModule != uiStatus.selectedModule)
+    {
+        s->engine.selectedModule = uiStatus.selectedModule;
+        for( int i = 0; i < MIDI_ENCODER_COUNT; i++ )
+            s->midiEncoders[i].reset();
+    }
+
+    // SOMETHING SELECTED
     if( s->engine.selectedModule != -1 )
     {
         int paramId = 0;

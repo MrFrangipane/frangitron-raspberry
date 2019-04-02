@@ -12,6 +12,7 @@ public:
     Encoder() {}
     void setIncrement(float increment, ClockStatus time) { _increment = increment; _lastIncrementUpdate = time.engineFrame; }
     void setPressed(bool pressed, ClockStatus time) { _pressed = pressed; _lastPressedUpdate = time.engineFrame; }
+    void reset() {_increment = 0; _pressed = 0; _lastIncrementUpdate = 0; _lastPressedUpdate = 0; }
     bool clicked(ClockStatus /*time*/);
     bool pressed(ClockStatus /*time*/);
     float increment(ClockStatus /*time*/);
