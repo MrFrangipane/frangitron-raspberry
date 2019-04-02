@@ -1,5 +1,4 @@
 #include "masterclock.h"
-#include <iostream>
 
 
 void MasterClock::_update()
@@ -8,13 +7,15 @@ void MasterClock::_update()
 
     _status.pulse = _pulsePerSecond * (double)_status.frame / SAMPLE_RATE;
     _status.enginePulse = _pulsePerSecond * (double)_status.engineFrame / SAMPLE_RATE;
-    _status.enginePulseLatencyCompensated = _pulsePerSecond * double(_status.engineFrame - LATENCY_COMPENSATION) / SAMPLE_RATE;
 
     _status.step = 4 * _status.pulse / MIDI_PULSE_PER_BEAT;
     _status.beat = _status.step / 4;
     _status.bar = _status.beat / 4;
 
     _status.barAsFrame = _status.bar * 4 * MIDI_PULSE_PER_BEAT;
+
+    if( _status.engineFrame > LATENCY_COMPENSATION)
+        _status.enginePulseLatencyCompensated = _pulsePerSecond * double(_status.engineFrame - LATENCY_COMPENSATION) / SAMPLE_RATE;
 }
 
 void MasterClock::setTempo(float tempo)
