@@ -132,6 +132,9 @@ void DjTrackBank::_mainLoop(DjTrackBank *trackBank)
 
     while( trackBank->isRunning() ) {
         for( int deckIndex = 0; deckIndex < trackBank->deckCount(); deckIndex++ ) {
+            // TAKE A BREATH
+            std::this_thread::sleep_for(sleepDuration);
+
             deck = trackBank->deckInfos(deckIndex);
             if( !deck.needsLoading || deck.audioFileIndex < 0 )
                 continue;
@@ -144,14 +147,11 @@ void DjTrackBank::_mainLoop(DjTrackBank *trackBank)
                 audioFile.channelCount * audioFile.frameCount
             );
 
-            // SIMULATE WAIT
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            // TAKE A BREATH
+            std::this_thread::sleep_for(sleepDuration);
 
             deck.needsLoading = false;
             trackBank->setDeckInfos(deckIndex, deck);
-
         }
-
-        std::this_thread::sleep_for(sleepDuration);
     }
 }

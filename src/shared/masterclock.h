@@ -8,12 +8,13 @@
 
 struct ClockStatus {
     bool isPlaying = false;
-    float tempo = 0.0;
+    double tempo = 0.0;
     nSecond seconds = 0.0;
     nBar bar = 0;
     nBeat beat = 0;
     nStep step = 0;
     nPulse pulse = 0;
+    nPulse pulseLatencyCompensated = 0;
     nFrame frame = 0;
     nFrame engineFrame = 0;
     nPulse enginePulse = 0;
@@ -37,7 +38,7 @@ public:
 private:
     void _update();
     ClockStatus _status;
-    float _pulsePerSecond = 0;
+    double _pulsePerSecond = 0.0;
 };
 
 #endif // MASTERCLOCK_H

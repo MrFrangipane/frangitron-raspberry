@@ -3,6 +3,7 @@
 
 #define BUFFER_SIZE 512
 #define SAMPLE_RATE 48000
+#define LATENCY_COMPENSATION 300 // in samples
 #define CHANNEL_COUNT 2
 #define RECORDER_CACHE_BUFFER_COUNT 512 // 512 * 512 = about 5.5s
 #define RECORDER_OUTPUT_FILE "/var/frangitron/recordings/frangitron_%d-%m-%Y_%H.%M.%S.wav"
@@ -21,7 +22,7 @@
 #define MIDI_PULSE_PER_BEAT 24
 
 #define AUDIO_DJTRACK_MAX_COUNT 128
-#define DJTRACK_BANK_SLEEP_DURATION 20 // in milliseconds
+#define DJTRACK_BANK_SLEEP_DURATION 200 // in milliseconds
 #define AUDIO_SAMPLE_MAX_COUNT 64
 #define AUDIO_MARKER_COUNT_MAX 64
 #define PEAK_IMAGE_WIDTH 310
