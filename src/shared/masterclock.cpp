@@ -7,8 +7,8 @@ void MasterClock::_update()
     _status.seconds = (double)_status.frame / SAMPLE_RATE;
 
     _status.pulse = _pulsePerSecond * (double)_status.frame / SAMPLE_RATE;
-    _status.pulseLatencyCompensated = _pulsePerSecond * double(_status.frame - LATENCY_COMPENSATION) / SAMPLE_RATE;
     _status.enginePulse = _pulsePerSecond * (double)_status.engineFrame / SAMPLE_RATE;
+    _status.enginePulseLatencyCompensated = _pulsePerSecond * double(_status.engineFrame - LATENCY_COMPENSATION) / SAMPLE_RATE;
 
     _status.step = 4 * _status.pulse / MIDI_PULSE_PER_BEAT;
     _status.beat = _status.step / 4;

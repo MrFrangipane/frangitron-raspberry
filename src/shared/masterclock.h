@@ -14,10 +14,10 @@ struct ClockStatus {
     nBeat beat = 0;
     nStep step = 0;
     nPulse pulse = 0;
-    nPulse pulseLatencyCompensated = 0;
     nFrame frame = 0;
     nFrame engineFrame = 0;
     nPulse enginePulse = 0;
+    nPulse enginePulseLatencyCompensated = 0;
     nFrame barAsFrame = 0;
     nFrame framePerBar = 0;
 };

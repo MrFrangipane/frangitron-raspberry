@@ -17,7 +17,6 @@ public:
     bool pressed(ClockStatus /*time*/);
     float increment(ClockStatus /*time*/);
 
-
 private:
     float _increment = 0.0;
     bool _pressed = 0.0;

@@ -591,9 +591,9 @@ void Engine::_midiOutLoop(Shared *shared)
     while( shared->engine.status == EngineStatus::RUNNING )
     {
         clock = shared->time.status();
-        if( clock.enginePulse > lastPulse )
+        if( clock.enginePulseLatencyCompensated > lastPulse )
         {
-            lastPulse = clock.enginePulse;
+            lastPulse = clock.enginePulseLatencyCompensated;
             midi.sendMessage(&clockPulseMessage);
         }
         std::this_thread::sleep_for(sleepDuration);
