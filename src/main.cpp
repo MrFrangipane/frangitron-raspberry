@@ -1,4 +1,6 @@
 #include "assert.h"
+#include <mutex>
+#include "shared/structures.h"
 #include "ui/mainwindow.h"
 #include "ui/engineworker.h"
 #include "engine/engine.h"

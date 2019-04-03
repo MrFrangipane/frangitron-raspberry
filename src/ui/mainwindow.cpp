@@ -7,7 +7,9 @@ MainWindow::MainWindow(const Configuration *configuration, EngineWorker *engineW
     ui(new Ui::MainWindow),
     _configuration(configuration),
     _engineWorker(engineWorker)
-{
+{   
+    _uiStatusHolder = new UiStatusHolder();
+
     _engineWorker->setStatusCallbacks(this, MainWindow::callbackGetStatus, MainWindow::callbackSetStatus);
 
     _setupUi();
@@ -23,6 +25,7 @@ MainWindow::MainWindow(const Configuration *configuration, EngineWorker *engineW
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete _uiStatusHolder;
 }
 
 void MainWindow::_setupUi()
@@ -145,7 +148,7 @@ void MainWindow::callbackSetStatus(void *thisPtr, EngineStatus status) {
 }
 
 UiStatus MainWindow::getStatus() {
-    return _uiStatus;
+    return _uiStatusHolder->get();
 }
 
 void MainWindow::setEngineStatus(EngineStatus engineStatus) {
@@ -168,7 +171,7 @@ void MainWindow::_refresh()
 
     // MEMBERS -> TEMP
     EngineStatus engineStatus = _engineStatus;
-    UiStatus uiStatus = _uiStatus;
+    UiStatus uiStatus = _uiStatusHolder->get();
 
     // LOADING
     if( engineStatus.status == EngineStatus::LOADING )
@@ -305,7 +308,7 @@ void MainWindow::_refresh()
         }
 
         // TEMP -> MEMBERS
-        _uiStatus = uiStatus;
+        _uiStatusHolder->set(uiStatus);
     }
 }
 
