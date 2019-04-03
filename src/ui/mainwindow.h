@@ -54,7 +54,7 @@ private:
     QTimer *_timerRefresh = nullptr;
     bool _started = false;
     EngineStatus _engineStatus;
-    UiStatusHolder * _uiStatusHolder;
+    UiStatus _uiStatus;
     QList<AbstractWidget*> _modules;
     QList<QLabel*> _nameLabels;
     QList<QLabel*> _valueLabels;

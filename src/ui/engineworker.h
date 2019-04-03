@@ -3,14 +3,13 @@
 
 #include <QObject>
 #include "engine/engine.h"
-#include "shared/structures.h"
 #include "shared/configuration.h"
 
 class EngineWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit EngineWorker(const Configuration * configuration, QObject *parent = nullptr) :
+    explicit EngineWorker(const Configuration *configuration, QObject *parent = nullptr) :
         QObject(parent),
         _engine(configuration)
         { }

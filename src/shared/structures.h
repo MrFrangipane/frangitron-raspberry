@@ -1,7 +1,6 @@
 #ifndef SHARED_H
 #define SHARED_H
 
-#include <mutex>
 #include <string>
 #include "shared/typedefs.h"
 #include "shared/constants.h"
@@ -53,23 +52,6 @@ struct UiStatus {
     int selectedModule = -1;
     nFrame frame = 0;
     bool isRunning = true;
-};
-
-
-class UiStatusHolder {
-    UiStatus _status;
-    std::mutex mutex;
-
-public:
-    void set(UiStatus status) {
-        std::lock_guard<std::mutex> lock(mutex);
-        _status = status;
-    }
-
-    UiStatus get() {
-        std::lock_guard<std::mutex> lock(mutex);
-        return _status;
-    }
 };
 
 #endif // SHARED_H
