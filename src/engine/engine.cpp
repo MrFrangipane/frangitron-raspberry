@@ -352,54 +352,56 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     }
 
     // SELECTED MODULE -> ENGINE
-    UiStatus uiStatus = s->uiStatus(s->uiPtr);
+    int paramId = 0;
+    float increment = 0;
+    bool pressed = false;
+    bool clicked = false;
 
-    // SELECTION CHANGED
-    if( s->engine.selectedModule != uiStatus.selectedModule)
+    if( s->uiPtr != nullptr )
     {
-        s->engine.selectedModule = uiStatus.selectedModule;
-        for( int i = 0; i < MIDI_ENCODER_COUNT; i++ )
-            s->midiEncoders[i].reset();
-    }
+        UiStatus uiStatus = s->uiStatus(s->uiPtr);
 
-    // SOMETHING SELECTED
-    if( s->engine.selectedModule != -1 )
-    {
-        int paramId = 0;
-        float increment = 0;
-        bool pressed = false;
-        bool clicked = false;
-
-        // UI SLIDERS -> ENGINE ---
-        #ifndef RASPBERRYPI
-        if( s->uiFrame != uiStatus.frame ) {
-            s->uiFrame = uiStatus.frame;
-
-            paramId = 0;
-            for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
-            {
-                if( paramId >= MIDI_ENCODER_COUNT ) break;
-                if( !parameter.isVisible ) {
-                    paramId++;
-                    continue;
-                }
-
-                pressed = uiStatus.paramPressed[paramId];
-                clicked = uiStatus.paramClicked[paramId];
-                increment = uiStatus.paramIncrements[paramId];
-
-                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
-                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
-                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
-                    parameter.min, fmin(parameter.value + increment, parameter.max)
-                );
-
-                paramId++;
-            }
+        // SELECTION CHANGED
+        if( s->engine.selectedModule != uiStatus.selectedModule)
+        {
+            s->engine.selectedModule = uiStatus.selectedModule;
+            for( int i = 0; i < MIDI_ENCODER_COUNT; i++ )
+                s->midiEncoders[i].reset();
         }
-        #endif
-        // ------------------------
 
+        // SOMETHING SELECTED
+        if( s->engine.selectedModule != -1 )
+        {
+            // UI SLIDERS -> ENGINE ---
+            #ifndef RASPBERRYPI
+            if( s->uiFrame != uiStatus.frame ) {
+                s->uiFrame = uiStatus.frame;
+
+                paramId = 0;
+                for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
+                {
+                    if( paramId >= MIDI_ENCODER_COUNT ) break;
+                    if( !parameter.isVisible ) {
+                        paramId++;
+                        continue;
+                    }
+
+                    pressed = uiStatus.paramPressed[paramId];
+                    clicked = uiStatus.paramClicked[paramId];
+                    increment = uiStatus.paramIncrements[paramId];
+
+                    s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
+                    s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
+                    s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
+                        parameter.min, fmin(parameter.value + increment, parameter.max)
+                    );
+
+                    paramId++;
+                }
+            }
+            #endif
+            // ------------------------
+        }
         // MIDI ENCODERS -> ENGINE
         paramId = 0;
         for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
@@ -424,6 +426,10 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
 
             paramId++;
         }
+    }
+    else
+    {
+        std::cout << ".";
     }
 
     // ENGINE -> PATCH
