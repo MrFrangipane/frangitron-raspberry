@@ -61,7 +61,7 @@ void initPatch(Configuration* conf)
     conf->modules[1].type = "djDeck";
     conf->modules[1].inputIndex = MODULE_INPUT_NONE;
     conf->modules[1].overrides[2].isActive = true; // Track
-    conf->modules[1].overrides[2].value = 0.0;     // 01
+    conf->modules[1].overrides[2].value = 0.0;     // 00
     conf->modules[1].layout.row = 1;
     conf->modules[1].layout.col = 0;
     conf->modules[1].layout.colSpan = 2;
@@ -86,7 +86,7 @@ void initPatch(Configuration* conf)
     conf->modules[4].type = "djDeck";
     conf->modules[4].inputIndex = MODULE_INPUT_NONE;
     conf->modules[4].overrides[2].isActive = true; // Track
-    conf->modules[4].overrides[2].value = 1.0;     // 02
+    conf->modules[4].overrides[2].value = 4.0;     // 04
     conf->modules[4].layout.row = 1;
     conf->modules[4].layout.col = 4;
     conf->modules[4].layout.colSpan = 2;
