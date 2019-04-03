@@ -357,8 +357,6 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     bool pressed = false;
     bool clicked = false;
 
-    s->uiPtr;
-
     UiStatus uiStatus = s->uiStatus(s->uiPtr);
 
     // SELECTION CHANGED
