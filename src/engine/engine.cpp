@@ -357,79 +357,74 @@ int Engine::_audioCallback(void* bufferOut, void* bufferIn, unsigned int bufferS
     bool pressed = false;
     bool clicked = false;
 
-    if( s->uiPtr != nullptr )
+    s->uiPtr;
+
+    UiStatus uiStatus = s->uiStatus(s->uiPtr);
+
+    // SELECTION CHANGED
+    if( s->engine.selectedModule != uiStatus.selectedModule)
     {
-        UiStatus uiStatus = s->uiStatus(s->uiPtr);
-
-        // SELECTION CHANGED
-        if( s->engine.selectedModule != uiStatus.selectedModule)
-        {
-            s->engine.selectedModule = uiStatus.selectedModule;
-            for( int i = 0; i < MIDI_ENCODER_COUNT; i++ )
-                s->midiEncoders[i].reset();
-        }
-
-        // SOMETHING SELECTED
-        if( s->engine.selectedModule != -1 )
-        {
-            // UI SLIDERS -> ENGINE ---
-            #ifndef RASPBERRYPI
-            if( s->uiFrame != uiStatus.frame ) {
-                s->uiFrame = uiStatus.frame;
-
-                paramId = 0;
-                for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
-                {
-                    if( paramId >= MIDI_ENCODER_COUNT ) break;
-                    if( !parameter.isVisible ) {
-                        paramId++;
-                        continue;
-                    }
-
-                    pressed = uiStatus.paramPressed[paramId];
-                    clicked = uiStatus.paramClicked[paramId];
-                    increment = uiStatus.paramIncrements[paramId];
-
-                    s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
-                    s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
-                    s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
-                        parameter.min, fmin(parameter.value + increment, parameter.max)
-                    );
-
-                    paramId++;
-                }
-            }
-            #endif
-            // ------------------------
-        }
-        // MIDI ENCODERS -> ENGINE
-        paramId = 0;
-        for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
-        {
-            if( paramId >= MIDI_ENCODER_COUNT ) break;
-            if( !parameter.isVisible ) {
-                paramId++;
-                continue;
-            }
-
-            pressed = s->midiEncoders[paramId].pressed(s->time.status());
-            clicked = s->midiEncoders[paramId].clicked(s->time.status());
-            increment = s->midiEncoders[paramId].increment(s->time.status()) * parameter.step;
-
-            s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
-            s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
-            s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
-                parameter.min, fmin(parameter.value + increment, parameter.max)
-            );
-
-            s->midiEncoders[paramId].setIncrement(0, s->time.status());
-
-            paramId++;
-        }
+        s->engine.selectedModule = uiStatus.selectedModule;
+        for( int i = 0; i < MIDI_ENCODER_COUNT; i++ )
+            s->midiEncoders[i].reset();
     }
-    else
+
+    // SOMETHING SELECTED
+    if( s->engine.selectedModule != -1 )
     {
-        std::cout << ".";
+        // UI SLIDERS -> ENGINE ---
+        #ifndef RASPBERRYPI
+        if( s->uiFrame != uiStatus.frame ) {
+            s->uiFrame = uiStatus.frame;
+
+            paramId = 0;
+            for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
+            {
+                if( paramId >= MIDI_ENCODER_COUNT ) break;
+                if( !parameter.isVisible ) {
+                    paramId++;
+                    continue;
+                }
+
+                pressed = uiStatus.paramPressed[paramId];
+                clicked = uiStatus.paramClicked[paramId];
+                increment = uiStatus.paramIncrements[paramId];
+
+                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
+                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
+                s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
+                    parameter.min, fmin(parameter.value + increment, parameter.max)
+                );
+
+                paramId++;
+            }
+        }
+        #endif
+        // ------------------------
+    }
+    // MIDI ENCODERS -> ENGINE
+    paramId = 0;
+    for( ModuleParameter parameter : s->engine.modulesStatuses[s->engine.selectedModule].params )
+    {
+        if( paramId >= MIDI_ENCODER_COUNT ) break;
+        if( !parameter.isVisible ) {
+            paramId++;
+            continue;
+        }
+
+        pressed = s->midiEncoders[paramId].pressed(s->time.status());
+        clicked = s->midiEncoders[paramId].clicked(s->time.status());
+        increment = s->midiEncoders[paramId].increment(s->time.status()) * parameter.step;
+
+        s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].pressed = pressed;
+        s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].clicked = clicked;
+        s->engine.modulesStatuses[s->engine.selectedModule].params[paramId].value = fmax(
+            parameter.min, fmin(parameter.value + increment, parameter.max)
+        );
+
+        s->midiEncoders[paramId].setIncrement(0, s->time.status());
+
+        paramId++;
     }
 
     // ENGINE -> PATCH
