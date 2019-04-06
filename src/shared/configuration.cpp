@@ -1,4 +1,6 @@
 #include "shared/configuration.h"
+// Here we put ugly stuff that makes engine and Ui code more generic
+// expecting to parse a JSON file at some point (instead of doing that)
 
 
 void initConfig(Configuration* conf)
@@ -9,21 +11,21 @@ void initConfig(Configuration* conf)
     initDjTracks(conf);
 }
 
-// Here we put ugly stuff that makes engine and Ui code more generic
-// expecting to parse a JSON file at some point (instead of doing that)
+
 void initSamples(Configuration* conf)
 {
-    conf->samples[0].name = "Kick 01";    
-    conf->samples[0].filepath = "/var/frangitron/samples/KIT111AI.wav";
+    int index = 0;
+    QString root("/var/frangitron/samples");
+    QDir rootDir(root);
+    QStringList files = rootDir.entryList(QStringList() << "*.wav" << "*.WAV", QDir::Files);
 
-    conf->samples[1].name = "Kick 02";
-    conf->samples[1].filepath = "/var/frangitron/samples/BD11_WAV.wav";
+    for( QString file : files )
+    {
+        conf->samples[index].name = file.split(".", QString::SkipEmptyParts).at(0).toStdString();
+        conf->samples[index].filepath = (root + QString('/') + file).toStdString();
 
-    conf->samples[2].name = "Snare 01";
-    conf->samples[2].filepath = "/var/frangitron/samples/SN_11.wav";
-
-    conf->samples[3].name = "Snare 02";
-    conf->samples[3].filepath = "/var/frangitron/samples/SN_12.wav";
+        index ++;
+    }
 }
 
 
