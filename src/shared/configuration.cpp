@@ -49,6 +49,7 @@ void initDjTracks(Configuration* conf)
 void initPatch(Configuration* conf)
 {
     // INPUT
+    /*
     conf->modules[0].name = "IN";
     conf->modules[0].type = "levelMeter";
     conf->modules[0].inputIndex = MODULE_INPUT_SOUNDCARD;
@@ -84,7 +85,6 @@ void initPatch(Configuration* conf)
     conf->modules[3].routedToMasterBus = true;
 
     // DECK B
-    /*
     conf->modules[4].name = "DECK B";
     conf->modules[4].type = "djDeck";
     conf->modules[4].inputIndex = MODULE_INPUT_NONE;
@@ -93,7 +93,6 @@ void initPatch(Configuration* conf)
     conf->modules[4].layout.row = 1;
     conf->modules[4].layout.col = 4;
     conf->modules[4].layout.colSpan = 2;
-    */
 
     conf->modules[5].name = "FILTER B";
     conf->modules[5].type = "filter";
@@ -129,4 +128,5 @@ void initPatch(Configuration* conf)
     conf->modules[9].layout.row = 0;
     conf->modules[9].layout.col = 4;
     conf->modules[9].layout.colStretch = 100;
+    */
 }
