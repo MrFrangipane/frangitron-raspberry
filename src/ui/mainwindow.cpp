@@ -145,7 +145,8 @@ void MainWindow::callbackSetStatus(void *thisPtr, EngineStatus status) {
 }
 
 UiStatus MainWindow::getStatus() {
-    return _uiStatus;
+    return UiStatus();
+    //return _uiStatus;
 }
 
 void MainWindow::setEngineStatus(EngineStatus engineStatus) {

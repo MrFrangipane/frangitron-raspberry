@@ -49,7 +49,6 @@ void initDjTracks(Configuration* conf)
 void initPatch(Configuration* conf)
 {
     // INPUT
-    /*
     conf->modules[0].name = "IN";
     conf->modules[0].type = "levelMeter";
     conf->modules[0].inputIndex = MODULE_INPUT_SOUNDCARD;
@@ -128,5 +127,4 @@ void initPatch(Configuration* conf)
     conf->modules[9].layout.row = 0;
     conf->modules[9].layout.col = 4;
     conf->modules[9].layout.colStretch = 100;
-    */
 }
